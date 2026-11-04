@@ -12,3 +12,6 @@ Las decide Alba salvo las marcadas como técnicas. La más reciente prevalece.
 | 2026-11-04 | **Amazon sin reembolso** (sus normas prohíben incentivos). Tiendas con cashback sin confirmar = sin reembolso hasta confirmarlo. Masvida se queda al menos el 30 % de cada comisión. | Técnica, por condiciones de los programas |
 | 2026-11-04 | Seguros, préstamos e hipotecas **fuera** hasta tener asesoría legal (requieren registro en DGSFP o como intermediaria de crédito). | Técnica, por normativa |
 | 2026-11-04 | Arquitectura: web estática sin compilación + Supabase + Cloudflare Pages. | Técnica |
+| 2026-11-04 | **Casa compartida:** varias personas adultas gestionan el mismo hogar y ven lo mismo en tiempo real, con tres permisos (todo, organización, solo calendario). Mi dinero y las facturas son solo de quien las sube. Los peques no tienen cuenta. | Alba |
+| 2026-11-04 | **Inicio de sesión:** correo sin contraseña (enlace mágico) y Google al lanzar; Apple cuando la app vaya a la App Store. | Alba |
+| 2026-11-04 | Calendario con vista semana y mes, filtro por persona, quién lleva o recoge, repeticiones y días en la otra casa. | Alba |

@@ -126,6 +126,7 @@ button{cursor:pointer}
 .field{display:flex;flex-direction:column;gap:6px}
 .field>label,.field>.lab{font-size:13px;font-weight:700;color:var(--muted)}
 .field select,.field input[type=number]{border:0;background:var(--bg);border-radius:16px;padding:12px 14px;width:100%}
+a.btn{text-decoration:none;color:var(--ink)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .saved{font-size:13px;font-weight:700;color:var(--ok)}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);
@@ -335,6 +336,28 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .wsel{background:var(--bg);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px}
 .wsel .btn{padding:8px 12px;font-size:13.5px}
 .chip.sw{width:34px;height:34px;padding:0}
+.calh{display:flex;justify-content:space-between;align-items:center}.calh b{font-size:16px}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.wkd,.mgd{border:0;background:var(--bg);border-radius:16px;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;color:var(--ink)}
+.wkd span{font-size:11px;font-weight:800;color:var(--muted)}.wkd b{font-size:18px;font-variant-numeric:tabular-nums}
+.wkd i,.mgd i{display:flex;gap:2px;height:6px}.wkd em,.mgd em{width:6px;height:6px;border-radius:50%}
+.wkd.hoy,.mgd.hoy{box-shadow:inset 0 0 0 2px var(--ink)}.wkd.sel,.mgd.sel{background:var(--ink);color:var(--bg)}.wkd.sel span{color:var(--bg);opacity:.7}
+.wkd.away,.mgd.away{background-image:repeating-linear-gradient(135deg,transparent 0 5px,var(--line) 5px 7px)}.wkd.sel.away,.mgd.sel.away{background-image:none}
+.awk{display:inline-block;width:14px;height:10px;border-radius:3px;vertical-align:-1px;background-image:repeating-linear-gradient(135deg,transparent 0 3px,var(--muted) 3px 4px)}
+.mg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.mgl{text-align:center;font-size:11px;font-weight:800;color:var(--muted)}
+.mgd{padding:6px 0;border-radius:12px}.mgd b{font-size:14px;font-variant-numeric:tabular-nums}.mgd.out{opacity:.35}
+.evc{display:grid;grid-template-columns:54px 1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.evc:last-of-type{border-bottom:0}.evt{font-weight:800;font-size:13px;font-variant-numeric:tabular-nums;padding-top:2px}
+.evb{display:flex;flex-direction:column;gap:5px;min-width:0}.evn{font-weight:700}.evm{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.evp{display:flex}.evp .tav{margin-left:-6px;box-shadow:0 0 0 2px var(--surface)}
+.upr{border:0;background:transparent;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;text-align:left;padding:8px 0;border-bottom:1px solid var(--line);font:inherit;color:var(--ink);width:100%}
+.upr:last-child{border-bottom:0}.upd{background:var(--bg);border-radius:12px;padding:6px 0;display:flex;flex-direction:column;align-items:center}.upd b{font-size:17px}.upd small{font-size:11px;color:var(--muted)}
+.upr .n{font-weight:700}.upr .m{font-size:13px;color:var(--muted)}
+.tdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt2{border:0;background:var(--surface);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink)}
+.opt2 small{color:var(--muted);font-size:12.5px}.opt2[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
+.field input[type=date],.field input[type=time]{border:0;background:var(--bg);border-radius:14px;padding:12px 14px;font:inherit;width:100%;box-sizing:border-box;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -429,13 +452,13 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   <section class="view" id="v-pedidos" hidden><div class="card"><div id="peds"></div></div><span class="aff">Reenvía tus correos de pedido a tu-buzon@masvida.app y aparecen aquí solos.</span></section>
   <section class="view" id="v-wallet" hidden><div class="wal" id="wal"></div><div class="btns"><button class="btn" data-toast="Escanearías el código de barras de la tarjeta">Añadir tarjeta</button></div></section>
   <section class="view" id="v-mant" hidden><div class="card"><div id="mant"></div></div></section>
-  <section class="view" id="v-cal" hidden><div class="card"><div id="cal"></div></div></section>
+  <section class="view" id="v-cal" hidden><div id="cal-box" class="view"></div></section>
   <section class="view" id="v-tareas" hidden>
     <div class="seg4" id="tk-seg" style="grid-template-columns:repeat(3,1fr)"><button data-tk="hoy" aria-pressed="true">Hoy</button><button data-tk="reparto" aria-pressed="false">Reparto</button><button data-tk="premios" aria-pressed="false">Premios</button></div>
     <div id="tk-box" class="view"></div>
   </section>
   <section class="view" id="v-armario" hidden><div id="ar-box" class="view"></div></section>
-  <section class="view" id="v-familia" hidden><div id="fam" class="view"></div></section>
+  <section class="view" id="v-familia" hidden><div id="share" class="view"></div><div id="fam" class="view"></div></section>
   <section class="view" id="v-menu" hidden>
     <div class="seg4" id="mn-seg"><button data-mn="hoy" aria-pressed="true">Hoy</button><button data-mn="semana" aria-pressed="false">Semana</button><button data-mn="compra" aria-pressed="false">Compra</button><button data-mn="recetas" aria-pressed="false">Recetas</button></div>
     <div id="mn-box" class="view"></div>
@@ -446,7 +469,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   <section class="view" id="v-perfil" hidden>
     <div class="level" id="level"></div>
     <div class="card" id="refwin"></div>
-    <button class="hr" data-v="familia"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c3 0 6 1.8 6 5.5"/></svg></i><span><b>Tu familia</b><small>Quién vive en casa, tallas y edades</small></span><span class='tag' id='tag-familia'></span></button>
+    <button class="hr" data-v="familia"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c3 0 6 1.8 6 5.5"/></svg></i><span><b>Tu familia y casa compartida</b><small>Quién vive en casa y quién la gestiona contigo</small></span><span class='tag' id='tag-familia'></span></button>
     <button class="hr" data-v="dinero"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i><span><b>Mi dinero</b><small>Conecta tu banco y te decimos dónde ahorrar más</small></span><span class="tag new">2,99 €/mes</span></button>
     <div class="card"><div class="card-h"><h2>Tu reembolso sube</h2></div><p class="muted small" style="margin:0">Masvida es gratis y completa desde el primer día. Cada amiga que se une te sube de nivel, y cuanto más alto, más dinero te devolvemos en tus compras y reservas.</p><div id="levels"></div></div>
     <div class="card">
@@ -704,8 +727,7 @@ function renderHogar(){
   $("#docs").innerHTML=DOCS.map(li).join("");$("#peds").innerHTML=PEDS.map(li).join("");
   $("#wal").innerHTML=WAL.map(([n,m,c])=>`<div class="wc" style="background:var(--${c})">${n}<small>${m}</small></div>`).join("");
   $("#mant").innerHTML=MANT.map((x,i)=>`<div class="chk ${x[2]?"done":""}"><button class="box ${x[2]?"on":""}" data-mant="${i}" aria-label="Hecho">✓</button><span><span class="lbl" style="font-weight:700">${x[0]}</span><br><span class="small muted">${x[1]}</span></span><span></span></div>`).join("");
-  $("#cal").innerHTML=CAL.map(x=>li(x)+(x[4]?`<div class="btns" style="margin:-4px 0 8px"><button class="btn" data-v="ofertas">Ver ideas de regalo</button></div>`:"")).join("");
-  renderMenu();renderEvento();tkRender();arRender();famRender();
+  renderMenu();renderEvento();tkRender();arRender();famRender();calRender();shRender();
 }
 let TASKS=S.get("tasks",[["Reservar la sala del parque","Laura",1],["Comprar decoración","Marc",1],["Mandar invitaciones","Laura",0],["Encargar la tarta","Ana",0]]);
 const EXP=[["Laura",90,"Sala del parque"],["Marc",50,"Decoración"],["Ana",0,"Todavía no ha pagado"]];
@@ -844,7 +866,7 @@ function renderMenu(){
 }
 /* NAVEGACIÓN */
 const TT={inicio:["Masvida · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],ofertas:["Elegidas para ti","Ofertas"],
- hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Esta semana","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],familia:["Quién vive en casa","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
+ hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
 const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",familia:"perfil",eventos:"hogar",dinero:"perfil"};
 const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú"};
 function go(v){const top=PARENT[v]||v;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
@@ -852,7 +874,7 @@ function go(v){const top=PARENT[v]||v;document.querySelectorAll("section.view").
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
 function resetBill(){$("#step-res").hidden=true;$("#step-load").hidden=true;$("#step-up").hidden=false}
 function renderAll(form=true){if(!BILLS[cur]||(BILLS[cur].need&&!BILLS[cur].need(P)))cur="luz";renderTypes();renderAids();renderOffers();renderHome();renderLevels();renderLuz();renderFuel();renderReemb();renderHogar();renderDinero();renderEsc();renderVentajas();renderHubTags();if(form)renderForm()}
-function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs","2 pronto");t("pedidos","3");t("wallet","4");t("mant",MANT.filter(x=>!x[2]).length+" pend.");t("cal","4");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
+function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs","2 pronto");t("pedidos","3");t("wallet","4");t("mant",MANT.filter(x=>!x[2]).length+" pend.");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.v)go(b.dataset.v);
@@ -898,7 +920,7 @@ $("#q").addEventListener("input",e=>{q=e.target.value.trim();renderOffers()});
 $("#file").addEventListener("change",e=>{if(e.target.files.length)analyse();e.target.value=""});
 /* TAREAS DE CASA: reparto entre la familia y premios por estrellas (como en Vitalis, adaptado) */
 const DAY0=Math.floor(Date.now()/864e5);
-const MEM=S.get("mem",[{id:"laura",n:"Laura",c:"peach",kid:0,talla:"M",home:"siempre"},{id:"noa",n:"Noa",c:"mint",kid:1,age:8,pie:31,talla:"8 años",home:"siempre"},{id:"leo",n:"Leo",c:"lav",kid:1,age:12,pie:37,talla:"12 años",home:"alterno"}]);
+const MEM=S.get("mem",[{id:"laura",n:"Laura",c:"peach",kid:0,talla:"M",home:"siempre",acc:"titular"},{id:"noa",n:"Noa",c:"mint",kid:1,age:8,pie:31,talla:"8 años",home:"siempre"},{id:"leo",n:"Leo",c:"lav",kid:1,age:12,pie:37,talla:"12 años",home:"alterno"}]);
 const memOf=id=>MEM.find(m=>m.id===id)||MEM[0];
 const CH0=[
  {id:"c1",n:"Poner una lavadora",a:"Ropa",ev:3,u:"d",last:-3,who:"laura",st:2},
@@ -1101,6 +1123,125 @@ document.addEventListener("click",e=>{
   if(d.arcat){keep();arNew.cat=d.arcat;arRender();return}
   if(d.arcol){keep();arNew.col=d.arcol;arRender();return}
   if(b.id==="ar-save"){keep();const n=arNew.n.trim();if(!n){toast("Escribe qué prenda es");return}WD.push({id:"w"+Date.now(),m:m.id,n:n[0].toUpperCase()+n.slice(1),cat:arNew.cat,col:arNew.col,talla:arNew.cat==="shoes"&&m.kid?String(m.pie):m.talla,st:"armario"});arNew=null;wdSave();arRender();toast("Prenda guardada");return}
+});
+
+/* CALENDARIO FAMILIAR: semana y mes, por persona, con quién lleva y quién recoge */
+const ECAT={cole:["Cole","sky"],extra:["Extraescolar","mint"],medico:["Médico","peach"],cumple:["Cumpleaños","butter"],plan:["Plan","lav"],casa:["Casa","sky"],otro:["Otro","butter"]};
+const D0=new Date();D0.setHours(0,0,0,0);
+const dOff=n=>{const d=new Date(D0);d.setDate(d.getDate()+n);return d};
+const offOf=d=>Math.round((d-D0)/864e5);
+const dowMon=d=>(d.getDay()+6)%7; // 0 = lunes
+const MES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DL=["L","M","X","J","V","S","D"],DN=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const nextDow=w=>{let n=(w-dowMon(D0)+7)%7;return n};
+const EV0=[
+ {id:"e0",t:"Recoger a Noa del cole",cat:"cole",d:0,h:"16:30",who:["noa"],lleva:"laura",note:"Hoy sale antes por la reunión de profes"},
+ {id:"e1",t:"Natación",cat:"extra",d:nextDow(3),h:"17:30",who:["noa"],rep:"semana",lleva:"laura",note:"Bañador, gorro y chanclas"},
+ {id:"e2",t:"Fútbol",cat:"extra",d:nextDow(1),h:"18:00",who:["leo"],rep:"semana",lleva:"laura"},
+ {id:"e3",t:"Reunión de familias del cole",cat:"cole",d:nextDow(1)+7,h:"17:00",who:["laura"]},
+ {id:"e4",t:"Cumpleaños de la tía Ana",cat:"cumple",d:5,who:[],rep:"año",regalo:1},
+ {id:"e5",t:"Dentista de Leo",cat:"medico",d:9,h:"10:15",who:["leo"],lleva:"laura",note:"Pedir justificante para el cole"},
+ {id:"e6",t:"Excursión al Montseny",cat:"cole",d:12,h:"08:30",who:["noa"],note:"Autorización firmada y 8 € · picnic"},
+ {id:"e7",t:"Cumple de Martina (amiga de Noa)",cat:"cumple",d:10,h:"17:00",who:["noa"],lleva:"laura",regalo:1},
+ {id:"e8",t:"Granja escuela en familia",cat:"plan",d:nextDow(5)+7,h:"10:00",who:["laura","noa","leo"],esc:1},
+ {id:"e9",t:"Pasar la ITV",cat:"casa",d:20,h:"09:00",who:["laura"],note:"Te avisamos desde Documentos"}
+];
+let EV=S.get("ev",EV0),calView="semana",calSel=0,calWeek=0,calMonth=0,calWho="todos",calNew=null;
+const evSave=()=>S.set("ev",EV);
+function evOn(off){
+  return EV.filter(e=>{if(e.rep==="semana")return off>=e.d&&(off-e.d)%7===0;if(e.rep==="año"){const a=dOff(e.d),b=dOff(off);return a.getDate()===b.getDate()&&a.getMonth()===b.getMonth()&&off>=e.d-366}return e.d===off})
+   .filter(e=>calWho==="todos"||e.who.includes(calWho)||e.lleva===calWho).sort((a,b)=>(a.h||"00").localeCompare(b.h||"00"));
+}
+const awayOn=(m,off)=>m.home==="alterno"&&[5,6].includes(dowMon(dOff(off)))&&Math.floor((offOf(dOff(off))+dowMon(D0))/7)%2===0;
+function evCard(e,off){
+  const [cl,cc]=ECAT[e.cat]||ECAT.otro,ppl=e.who.map(memOf).filter(Boolean);
+  return `<div class="evc"><span class="evt">${e.h||"Todo el día"}</span><span class="evb"><span class="evn">${e.t}</span>
+   <span class="evm"><span class="pl" style="background:var(--${cc});color:var(--p-ink)">${cl}</span>${e.rep==="semana"?'<span class="small muted">Cada semana</span>':e.rep==="año"?'<span class="small muted">Cada año</span>':""}${e.lleva?`<span class="small muted">Lleva ${memOf(e.lleva).n}</span>`:""}</span>
+   ${e.note?`<span class="small muted">${e.note}</span>`:""}
+   ${e.regalo?`<span class="btns"><button class="btn" style="padding:7px 12px" data-v="ofertas">Ideas de regalo con reembolso</button></span>`:""}${e.esc?`<span class="btns"><button class="btn" style="padding:7px 12px" data-v="ofertas">Ver la oferta en Escapadas</button></span>`:""}</span>
+   <span class="evp">${ppl.map(m=>av(m,26)).join("")}</span></div>`;
+}
+function calRender(){
+  const box=$("#cal-box");if(!box)return;
+  const kidsAway=off=>MEM.filter(m=>m.kid&&awayOn(m,off));
+  const head=`<div class="seg4" style="grid-template-columns:repeat(2,1fr)"><button data-calv="semana" aria-pressed="${calView==="semana"}">Semana</button><button data-calv="mes" aria-pressed="${calView==="mes"}">Mes</button></div>
+   <div class="chips"><button class="chip" data-calwho="todos" aria-pressed="${calWho==="todos"}">Todos</button>${MEM.map(m=>`<button class="chip" data-calwho="${m.id}" aria-pressed="${calWho===m.id}"><span class="tdot" style="background:var(--${m.c})"></span>${m.n}</button>`).join("")}</div>`;
+  let grid;
+  if(calView==="semana"){
+    const start=calWeek*7-dowMon(D0),days=[...Array(7)].map((_,i)=>start+i),d0=dOff(start),d6=dOff(start+6);
+    grid=`<div class="card" style="gap:10px"><div class="calh"><button class="ibtn" data-calw="-1" aria-label="Semana anterior">‹</button><b>${d0.getDate()}${d0.getMonth()!==d6.getMonth()?" "+MES[d0.getMonth()].slice(0,3):""} – ${d6.getDate()} ${MES[d6.getMonth()]}</b><button class="ibtn" data-calw="1" aria-label="Semana siguiente">›</button></div>
+     <div class="wk">${days.map(o=>{const ev=evOn(o),dt=dOff(o),aw=kidsAway(o).length;return`<button class="wkd ${o===calSel?"sel":""} ${o===0?"hoy":""} ${aw?"away":""}" data-calsel="${o}"><span>${DL[dowMon(dt)]}</span><b>${dt.getDate()}</b><i>${ev.slice(0,3).map(e=>`<em style="background:var(--${(memOf(e.who[0]||e.lleva)||{c:"line"}).c})"></em>`).join("")}</i></button>`}).join("")}</div>
+     ${MEM.some(m=>m.home==="alterno")?`<span class="small muted"><span class="awk"></span> Días en que ${MEM.filter(m=>m.home==="alterno").map(m=>m.n).join(" y ")} está en la otra casa: no le ponemos tareas ni comidas.</span>`:""}</div>`;
+  }else{
+    const ref=new Date(D0.getFullYear(),D0.getMonth()+calMonth,1),first=offOf(ref)-dowMon(ref),dim=new Date(ref.getFullYear(),ref.getMonth()+1,0).getDate(),rows=Math.ceil((dowMon(ref)+dim)/7);
+    grid=`<div class="card" style="gap:10px"><div class="calh"><button class="ibtn" data-calm="-1" aria-label="Mes anterior">‹</button><b>${MES[ref.getMonth()][0].toUpperCase()+MES[ref.getMonth()].slice(1)} ${ref.getFullYear()}</b><button class="ibtn" data-calm="1" aria-label="Mes siguiente">›</button></div>
+     <div class="mg">${DL.map(l=>`<span class="mgl">${l}</span>`).join("")}${[...Array(rows*7)].map((_,i)=>{const o=first+i,dt=dOff(o),inM=dt.getMonth()===ref.getMonth(),ev=evOn(o);return`<button class="mgd ${inM?"":"out"} ${o===calSel?"sel":""} ${o===0?"hoy":""} ${kidsAway(o).length?"away":""}" data-calsel="${o}"><b>${dt.getDate()}</b><i>${ev.slice(0,3).map(e=>`<em style="background:var(--${(memOf(e.who[0]||e.lleva)||{c:"line"}).c})"></em>`).join("")}</i></button>`}).join("")}</div></div>`;
+  }
+  const sd=dOff(calSel),list=evOn(calSel),tk=CH.filter(c=>nextOf(c)<=calSel&&nextOf(c)>=calSel-0&&calSel>=0).length;
+  const up=[];for(let o=calSel+1;o<=calSel+21&&up.length<5;o++)evOn(o).forEach(e=>up.length<5&&up.push([o,e]));
+  box.innerHTML=head+grid+`
+   <div class="card"><div class="card-h"><h2>${calSel===0?"Hoy":calSel===1?"Mañana":DN[dowMon(sd)]+" "+sd.getDate()}</h2><span class="small muted">${list.length?list.length+(list.length===1?" plan":" planes"):"Día libre"}</span></div>
+    ${list.length?list.map(e=>evCard(e,calSel)).join(""):'<span class="small muted">Nada apuntado para este día.</span>'}
+    ${calSel===0?`<div class="li"><span><span class="n">Tareas de casa</span><br><span class="m">${CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length} por hacer hoy</span></span><button class="btn" style="padding:7px 12px" data-v="tareas">Ver</button></div>`:""}</div>
+   ${up.length?`<div class="card"><h2>Lo que viene</h2>${up.map(([o,e])=>{const d=dOff(o);return`<button class="upr" data-calsel="${o}"><span class="upd"><b>${d.getDate()}</b><small>${MES[d.getMonth()].slice(0,3)}</small></span><span><span class="n">${e.t}</span><br><span class="m">${e.h||"Todo el día"}${e.who.length?" · "+e.who.map(id=>memOf(id).n).join(", "):""}</span></span></button>`}).join("")}</div>`:""}
+   ${calNew?calForm():`<div class="btns"><button class="btn pri" id="cal-new">+ Añadir al calendario</button><button class="btn" data-toast="Conectarías Google Calendar o el calendario del móvil y verías aquí sus citas">Conectar Google Calendar</button></div>`}
+   <span class="aff">Todo lo que se apunta aquí lo ven al momento las personas que gestionan la casa contigo.</span>`;
+}
+function calForm(){const f=calNew;return`<div class="card"><h2>Nuevo plan</h2>
+  <div class="field"><span class="pk-l">Qué es</span><input id="cn-t" value="${f.t}" placeholder="Ej.: piscina, revisión del pediatra…" autocomplete="off"></div>
+  <span class="pk-l">Tipo</span><div class="chips">${Object.entries(ECAT).map(([k,[l]])=>`<button class="chip" data-cnc="${k}" aria-pressed="${f.cat===k}">${l}</button>`).join("")}</div>
+  <div class="two"><div class="field"><span class="pk-l">Día</span><input id="cn-d" type="date" value="${(()=>{const d=dOff(f.d);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")})()}"></div><div class="field"><span class="pk-l">Hora</span><input id="cn-h" type="time" value="${f.h}"></div></div>
+  <span class="pk-l">Para quién</span><div class="chips">${MEM.map(m=>`<button class="chip" data-cnw="${m.id}" aria-pressed="${f.who.includes(m.id)}">${m.n}</button>`).join("")}</div>
+  <span class="pk-l">Quién lleva o recoge</span><div class="chips"><button class="chip" data-cnl="" aria-pressed="${!f.lleva}">Nadie</button>${MEM.filter(m=>!m.kid).map(m=>`<button class="chip" data-cnl="${m.id}" aria-pressed="${f.lleva===m.id}">${m.n}</button>`).join("")}</div>
+  <span class="pk-l">Repetir</span><div class="cards" style="--n:3">${[["","No"],["semana","Cada semana"],["año","Cada año"]].map(([k,l])=>`<button data-cnr="${k}" aria-pressed="${(f.rep||"")===k}">${l}</button>`).join("")}</div>
+  <div class="field"><span class="pk-l">Nota</span><input id="cn-n" value="${f.note}" placeholder="Ej.: llevar bañador" autocomplete="off"></div>
+  <div class="btns"><button class="btn pri" id="cn-save">Guardar</button><button class="btn" id="cn-cancel">Cancelar</button></div></div>`}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||!b.closest("#v-cal"))return;const d=b.dataset;
+  const keep=()=>{if(!$("#cn-t"))return;calNew.t=$("#cn-t").value;calNew.h=$("#cn-h").value;calNew.note=$("#cn-n").value;const v=$("#cn-d").value;if(v){const[y,m,dd]=v.split("-").map(Number);calNew.d=offOf(new Date(y,m-1,dd))}};
+  if(d.calv){calView=d.calv;calRender();return}
+  if(d.calwho){calWho=d.calwho;calRender();return}
+  if(d.calw){calWeek+= +d.calw;calSel=calWeek*7-dowMon(D0)+(calWeek?0:dowMon(D0));calRender();return}
+  if(d.calm){calMonth+= +d.calm;const r=new Date(D0.getFullYear(),D0.getMonth()+calMonth,1);calSel=calMonth?offOf(r):0;calRender();return}
+  if(d.calsel!=null){calSel=+d.calsel;calRender();return}
+  if(b.id==="cal-new"){calNew={t:"",cat:"extra",d:Math.max(calSel,0),h:"17:00",who:[],lleva:"",rep:"",note:""};calRender();$("#cn-t").focus();return}
+  if(b.id==="cn-cancel"){calNew=null;calRender();return}
+  if(d.cnc){keep();calNew.cat=d.cnc;calRender();return}
+  if(d.cnw){keep();const w=calNew.who;w.includes(d.cnw)?w.splice(w.indexOf(d.cnw),1):w.push(d.cnw);calRender();return}
+  if(d.cnl!=null){keep();calNew.lleva=d.cnl;calRender();return}
+  if(d.cnr!=null){keep();calNew.rep=d.cnr;calRender();return}
+  if(b.id==="cn-save"){keep();const f=calNew;if(!f.t.trim()){toast("Escribe qué es");return}EV.push({id:"e"+Date.now(),t:f.t.trim(),cat:f.cat,d:f.d,h:f.h,who:f.who,lleva:f.lleva||undefined,rep:f.rep||undefined,note:f.note.trim()||undefined});calNew=null;calSel=f.d;evSave();calRender();renderHubTags();toast("Apuntado. Lo verán también quienes gestionan la casa contigo");return}
+});
+
+/* CASA COMPARTIDA: varias personas adultas gestionan la misma casa y ven lo mismo */
+const PERM={todo:["Todo","Ve y cambia todo, menos Mi dinero"],org:["Organización","Calendario, tareas, menú y armario"],cal:["Solo calendario","Ve el calendario de los peques"]};
+let SH=S.get("share",{inv:[],feed:[]}),shNew=null;
+const shSave=()=>S.set("share",SH);
+function shRender(){
+  const box=$("#share");if(!box)return;
+  const mgr=MEM.filter(m=>m.acc);
+  const feed=[...CLOG.slice(-4).reverse().map(l=>({w:l.w,t:l.r?`ha canjeado «${l.r}»`:`ha hecho «${(CH.find(c=>c.id===l.c)||{}).n||"una tarea"}»`,d:l.d})),...SH.feed].slice(0,5);
+  box.innerHTML=`<div class="card"><div class="card-h"><h2>Quién gestiona la casa</h2><span class="small muted">Ven lo mismo, al momento</span></div>
+   ${mgr.map(m=>`<div class="li"><span style="display:flex;gap:12px;align-items:center">${av(m,40)}<span><span class="n">${m.n}${m.id==="laura"?" (tú)":""}</span><br><span class="m">${m.acc==="titular"?"Titular de la casa":PERM[m.perm||"todo"][0]+" · "+PERM[m.perm||"todo"][1].toLowerCase()}</span></span></span>${m.acc==="titular"?'<span class="pl pl-o">Titular</span>':`<button class="btn" style="padding:7px 12px" data-shq="${m.id}">Quitar acceso</button>`}</div>`).join("")}
+   ${SH.inv.map(v=>`<div class="li"><span><span class="n">${v.n}</span><br><span class="m">Invitación enviada · ${PERM[v.perm][0]}</span></span><span class="btns"><button class="btn" style="padding:7px 12px" data-shok="${v.id}">Simular que acepta</button></span></div>`).join("")}
+   ${shNew?`<div class="wsel"><div class="field"><span class="pk-l">Nombre</span><input id="sh-n" value="${shNew.n}" placeholder="Ej.: Marc, la abuela Carmen" autocomplete="off"></div>
+     <span class="pk-l">Qué puede ver y cambiar</span>${Object.entries(PERM).map(([k,[l,s]])=>`<button class="opt2" data-shp="${k}" aria-pressed="${shNew.perm===k}"><b>${l}</b><small>${s}</small></button>`).join("")}
+     <div class="btns"><button class="btn pri" id="sh-send">Crear invitación</button><button class="btn" id="sh-cancel">Cancelar</button></div></div>`:
+    `<div class="btns"><button class="btn pri" id="sh-new">+ Invitar a gestionar la casa</button></div>`}
+   ${SH.link?`<div class="wsel"><b>Enlace para ${SH.link.n}</b><span class="code" style="font-size:15px">masvida.app/unirse/${SH.link.code}</span><span class="small muted">Caduca en 7 días y solo sirve una vez.</span><div class="btns"><button class="btn" data-shcopy="1">Copiar enlace</button><a class="btn" href="https://wa.me/?text=${encodeURIComponent("Te invito a gestionar nuestra casa en Masvida: https://masvida.app/unirse/"+SH.link.code)}" target="_blank" rel="noopener">Enviar por WhatsApp</a></div></div>`:""}
+  </div>
+  <div class="card"><h2>Últimos cambios en casa</h2>${feed.length?feed.map(f=>{const m=memOf(f.w);return`<div class="li"><span style="display:flex;gap:10px;align-items:center">${av(m,28)}<span><span class="n">${m.n}</span> <span class="m">${f.t}</span></span></span><span class="small muted">${f.d===DAY0?"Hoy":"Hace "+(DAY0-f.d)+" d"}</span></div>`}).join(""):'<span class="small muted">Cuando alguien marque una tarea o apunte un plan, lo verás aquí.</span>'}</div>
+  <span class="aff">Mi dinero y tus facturas solo los ves tú. Los peques no necesitan cuenta: los gestionáis las personas adultas.</span>`;
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||!b.closest("#share"))return;const d=b.dataset;
+  if(b.id==="sh-new"){shNew={n:"",perm:"todo"};SH.link=null;shRender();$("#sh-n").focus();return}
+  if(b.id==="sh-cancel"){shNew=null;shRender();return}
+  if(d.shp){shNew.n=$("#sh-n").value;shNew.perm=d.shp;shRender();return}
+  if(b.id==="sh-send"){const n=$("#sh-n").value.trim();if(!n){toast("Escribe su nombre");return}const code=Math.random().toString(36).slice(2,8).toUpperCase();SH.inv.push({id:"i"+Date.now(),n,perm:shNew.perm,code});SH.link={n,code};shNew=null;shSave();shRender();return}
+  if(d.shcopy){const t="https://masvida.app/unirse/"+SH.link.code;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Enlace copiado")).catch(()=>toast(t));return}
+  if(d.shok){const v=SH.inv.find(x=>x.id===d.shok);SH.inv=SH.inv.filter(x=>x!==v);const m={id:"m"+Date.now(),n:v.n,kid:0,talla:"M",home:"siempre",c:PAL[MEM.length%PAL.length],acc:"gestiona",perm:v.perm};MEM.push(m);STARS[m.id]=0;SH.feed.unshift({w:m.id,t:"se ha unido a la casa",d:DAY0});SH.link=null;memSave();tkSave();shSave();renderAll(false);toast(`${v.n} ya ve la casa contigo`);return}
+  if(d.shq){const m=memOf(d.shq);delete m.acc;delete m.perm;memSave();shRender();toast(`${m.n} ya no tiene acceso. Sigue en la familia`);return}
 });
 
 renderAll();
