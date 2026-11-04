@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F0F0E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icono.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icono.svg">
+<title>Masvida</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: app móvil minimalista (máx. 440px): blanco y negro, tipografía grande, botones píldora y un único pastel melocotón; cinco pestañas abajo */
+:root{
+  --bg:#FFFFFF; --surface:#F4F4F2; --sunk:#EAEAE7; --line:#E3E3DF;
+  --ink:#0B0B0B; --muted:#6B6B66;
+  --accent:#0B0B0B; --accent-ink:#FFFFFF; --pastel:#FFD9C7; --pastel-ink:#3D1A0C;
+  --sage:#F4F4F2; --sage-ink:#0B0B0B; --lilac:#F4F4F2; --lilac-ink:#0B0B0B;
+  --butter:#F4F4F2; --butter-ink:#0B0B0B; --sky:#F4F4F2; --sky-ink:#0B0B0B;
+  --ok:#17804B; --ok-soft:#DFF2E7; --warn:#8A5A00; --warn-soft:#FBEFD3;
+  --peach:#FFD9C7; --lav:#E4DDFF; --mint:#CDEFDD; --sky:#D5E7FF; --butter:#FFEFB5; --p-ink:#0B0B0B;
+  --f-display:"Plus Jakarta Sans","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B0B0B; --surface:#181817; --sunk:#232321; --line:#2C2C2A;
+  --ink:#F5F5F2; --muted:#A3A39D;
+  --accent:#F5F5F2; --accent-ink:#0B0B0B; --pastel:#FFD9C7; --pastel-ink:#3D1A0C;
+  --sage:#181817; --sage-ink:#F5F5F2; --lilac:#181817; --lilac-ink:#F5F5F2;
+  --butter:#181817; --butter-ink:#F5F5F2; --sky:#181817; --sky-ink:#F5F5F2;
+  --ok:#6FD39C; --ok-soft:#173326; --warn:#F0CF6E; --warn-soft:#352B12;
+  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F5F5F2; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0B0B0B; --surface:#181817; --sunk:#232321; --line:#2C2C2A;
+  --ink:#F5F5F2; --muted:#A3A39D;
+  --accent:#F5F5F2; --accent-ink:#0B0B0B; --pastel:#FFD9C7; --pastel-ink:#3D1A0C;
+  --sage:#181817; --sage-ink:#F5F5F2; --lilac:#181817; --lilac-ink:#F5F5F2;
+  --butter:#181817; --butter-ink:#F5F5F2; --sky:#181817; --sky-ink:#F5F5F2;
+  --ok:#6FD39C; --ok-soft:#173326; --warn:#F0CF6E; --warn-soft:#352B12;
+  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F5F5F2; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px calc(100px + env(safe-area-inset-bottom,0px))}
+.app{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{margin:0;text-wrap:balance;font-family:var(--f-display);letter-spacing:-.03em}
+h1{font-size:30px;font-weight:800;line-height:1.04}
+h2{font-size:20px;font-weight:800}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.big{font-family:var(--f-display);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.muted{color:var(--muted)} .small{font-size:13px}
+.eyebrow{font-size:13px;font-weight:600;color:var(--muted)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--pastel);color:var(--pastel-ink);display:grid;place-items:center;font-weight:800;border:0}
+.demo{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--surface);border-radius:999px;padding:4px 10px}
+.view{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.card-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{border:0;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:6px;text-align:left;min-height:132px;justify-content:space-between;background:var(--surface);color:var(--ink)}
+.tile .big{font-size:34px;line-height:1}
+.tile span{font-size:13.5px;font-weight:600}
+.tile.wide{grid-column:1/-1;min-height:0;background:var(--pastel);color:var(--pastel-ink)}
+.tile.wide .big{font-size:52px;color:var(--pastel-ink)}
+.btn{border:0;background:var(--bg);border-radius:999px;padding:12px 18px;font-weight:700;font-size:14.5px;display:inline-flex;align-items:center;justify-content:center;gap:6px;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.card .btn,.opt .btn,.aid .btn,.of .btn{background:transparent}
+.btn.pri,.btn.dark{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.type{border:0;background:var(--bg);border-radius:20px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;font-weight:700;font-size:13px;text-align:center}
+.type .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;background:var(--surface)!important;color:var(--ink)!important}
+.type .st{font-size:11px;font-weight:600;color:var(--muted)}
+.type.done .st{color:var(--ok)}
+.type[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
+.group-t{font-size:13px;font-weight:700;color:var(--muted);margin-top:4px}
+.drop{border-radius:24px;background:var(--pastel);color:var(--pastel-ink);padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.drop .muted,.drop .aff{color:var(--pastel-ink);opacity:.75}
+.drop .btn{box-shadow:inset 0 0 0 1.5px var(--pastel-ink);color:var(--pastel-ink);background:transparent}
+.drop .btn.pri{background:var(--pastel-ink);color:#fff;box-shadow:none}
+.drop b{font-family:var(--f-display);font-size:22px;letter-spacing:-.03em}
+.hero{border-radius:24px;padding:20px;background:var(--pastel);color:var(--pastel-ink);display:flex;flex-direction:column;gap:4px}
+.hero .big{font-size:44px;line-height:1.02}
+.hero .lab{font-size:13.5px;opacity:.8}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cmp>div{background:var(--surface);border-radius:20px;padding:14px}
+.cmp .big{display:block;font-size:24px}
+.opt{background:var(--bg);border-radius:20px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.opt.best{box-shadow:inset 0 0 0 2px var(--ink)}
+.opt .n{font-weight:700}
+.opt .p{font-weight:800;text-align:right;white-space:nowrap;letter-spacing:-.02em}
+.opt .m{grid-column:1/-1;font-size:13px;color:var(--muted)}
+.opt .btns{grid-column:1/-1}
+.aff{font-size:11.5px;color:var(--muted)}
+.prog{height:6px;background:var(--sunk);border-radius:5px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ink);width:0;transition:width .9s}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:13.5px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.card .chip{background:var(--bg)}
+.card .chip[aria-pressed="true"]{background:var(--ink)}
+.wrap-chips{flex-wrap:wrap;overflow:visible}
+.offers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.of{display:flex;flex-direction:column;gap:6px;min-width:0}
+.of .img{aspect-ratio:1/1;border-radius:20px;display:grid;place-items:center;font-weight:800;font-size:34px;max-width:100%;position:relative;background:var(--surface)!important;color:var(--ink)!important}
+.of .img .pct{position:absolute;top:10px;left:10px;background:var(--pastel);color:var(--pastel-ink);font-size:12px;font-weight:800;border-radius:999px;padding:3px 9px}
+.of .n{font-weight:700;font-size:14px;line-height:1.25}
+.of .st{font-size:12px;color:var(--muted)}
+.of .pr{display:flex;gap:6px;align-items:baseline}
+.of .pr b{font-weight:800;font-size:17px;letter-spacing:-.02em}
+.of .pr s{font-size:12px;color:var(--muted)}
+.why{font-size:11.5px;font-weight:700;color:var(--muted)}
+.aid{background:var(--surface);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.aid .h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.aid .n{font-weight:800;font-size:16px;letter-spacing:-.02em}
+.lvl{font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.l-yes{background:var(--ok-soft);color:var(--ok)} .l-maybe{background:var(--warn-soft);color:var(--warn)}
+.aid .amt{font-weight:700}
+.aid ul{margin:0;padding-left:18px;font-size:13px;color:var(--muted)}
+.form{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.field>.lab{font-size:13px;font-weight:700;color:var(--muted)}
+.field select,.field input[type=number]{border:0;background:var(--bg);border-radius:16px;padding:12px 14px;width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved{font-size:13px;font-weight:700;color:var(--ok)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);
+  padding:6px max(10px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))}
+nav.tabs .in{max-width:440px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+nav.tabs button{border:0;background:transparent;border-radius:14px;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--muted)}
+nav.tabs svg{width:22px;height:22px}
+nav.tabs button[aria-current="page"]{color:var(--ink)}
+nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);border-radius:999px;padding:11px 18px;font-size:14px;font-weight:600;z-index:9;max-width:calc(100% - 32px)}
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:999px;padding:4px 6px 4px 16px}
+.search input{border:0;background:transparent;flex:1;min-width:0;padding:9px 0;font-size:15px;outline:none}
+.search .x{border:0;background:var(--bg);border-radius:50%;width:32px;height:32px;font-weight:800}
+.row-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.row-h button{border:0;background:transparent;font-weight:700;font-size:13.5px;text-decoration:underline;padding:4px 0}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:42%;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;padding-bottom:2px}
+.rail::-webkit-scrollbar{display:none}
+.rail .of{scroll-snap-align:start}
+.freq{font-size:11.5px;font-weight:700;color:var(--muted)}
+.level{background:var(--ink);color:var(--bg);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.level .big{font-size:30px}
+.level .bar{height:8px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden}
+.level .bar i{display:block;height:100%;background:var(--pastel)}
+.code{display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(255,255,255,.1);border-radius:999px;padding:6px 6px 6px 16px;font-weight:800;letter-spacing:.06em}
+.code .btn{background:var(--pastel);color:var(--pastel-ink);box-shadow:none;padding:9px 14px}
+.lv{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
+.lv:last-child{border-bottom:0}
+.lv .dot{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line)}
+.lv.on .dot{background:var(--ink);color:var(--bg);box-shadow:none}
+.lv .t{font-weight:800}
+.lv .d{font-size:13px;color:var(--muted)}
+.st-pill{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px}
+.st-on{background:var(--ok-soft);color:var(--ok)} .st-trial{background:var(--pastel);color:var(--pastel-ink)} .st-off{background:var(--bg);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.t-lav{background:var(--lav)!important;color:var(--p-ink)!important} .t-mint{background:var(--mint)!important;color:var(--p-ink)!important}
+.t-sky2{background:var(--sky)!important;color:var(--p-ink)!important} .t-butter2{background:var(--butter)!important;color:var(--p-ink)!important}
+.tile{position:relative;overflow:hidden}
+.tile .tic{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.55);display:grid;place-items:center}
+.tile .tic svg{width:18px;height:18px}
+.tile.wide::after{content:"";position:absolute;right:-30px;bottom:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.35)}
+.tile.dark::after{background:rgba(255,255,255,.07)}
+.pk{display:flex;flex-direction:column;gap:8px}
+.pk-l{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(var(--n,3),1fr);gap:8px}
+.cards button{border:0;background:var(--bg);border-radius:18px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:800;font-size:14px;text-align:center}
+.cards button small{font-weight:500;font-size:11.5px;color:var(--muted)}
+.cards button svg{width:24px;height:24px}
+.cards button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.cards button[aria-pressed="true"] small{color:var(--bg);opacity:.75}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stp{background:var(--bg);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.stp span{font-size:13px;font-weight:700;color:var(--muted)}
+.stp .ctl{display:flex;align-items:center;justify-content:space-between}
+.stp .ctl b{font-size:24px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stp .ctl button{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);font-size:20px;font-weight:800;line-height:1}
+.pk .chip{background:var(--bg)}
+.pk .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.pk-sec{display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.pk-sec+.pk-sec{border-top:1px solid var(--line);padding-top:16px}
+.pk-h{display:flex;align-items:center;gap:10px}
+.pk-h i{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-style:normal}
+.pk-h i svg{width:18px;height:18px}
+.pk-h b{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.backb{border:0;background:var(--surface);border-radius:999px;padding:7px 12px 7px 8px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:2px;margin-bottom:6px}
+.backb svg{width:16px;height:16px}
+.hub{display:flex;flex-direction:column;gap:8px}
+.hr{border:0;background:var(--surface);border-radius:20px;padding:14px;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;text-align:left;width:100%}
+.hr i{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:var(--p-ink)}
+.hr i svg{width:22px;height:22px}
+.hr b{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.01em}
+.hr small{display:block;font-size:12.5px;color:var(--muted)}
+.hr .tag{font-size:12px;font-weight:800;border-radius:999px;padding:3px 9px;white-space:nowrap;background:var(--bg)}
+.hr .tag.new{background:var(--ink);color:var(--bg)}
+.hub-t{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.li{display:grid;grid-template-columns:1fr auto;gap:8px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}
+.li:last-child{border-bottom:0}
+.li .n{font-weight:700}
+.li .m{font-size:13px;color:var(--muted)}
+.pl{font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.pl-u{background:var(--peach);color:var(--p-ink)} .pl-o{background:var(--mint);color:var(--p-ink)} .pl-i{background:var(--bg);color:var(--ink)}
+.chk{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.chk:last-child{border-bottom:0}
+.box{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:transparent;padding:0;display:grid;place-items:center;color:transparent;font-size:13px;font-weight:900}
+.box.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chk.done .lbl{text-decoration:line-through;color:var(--muted)}
+.wal{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wc{border-radius:18px;padding:14px;min-height:96px;display:flex;flex-direction:column;justify-content:space-between;font-weight:800;color:var(--p-ink)}
+.wc small{font-weight:600;font-size:11.5px;opacity:.75}
+.kwh{display:grid;grid-template-columns:repeat(24,1fr);gap:2px;align-items:end;height:110px}
+.kwh i{display:block;border-radius:3px 3px 0 0;min-height:3px}
+.kwh-x{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.split{display:flex;height:12px;border-radius:999px;overflow:hidden}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.leg span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;background:var(--c)}
+.wx{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wx>div{background:var(--surface);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.wx b{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.lockbox{position:relative;border-radius:20px;overflow:hidden}
+.lockbox .blur{filter:blur(5px);opacity:.6;pointer-events:none}
+.lockbox .ov{position:absolute;inset:0;display:grid;justify-items:center;align-items:start;padding-top:48px}
+.mbar{display:grid;grid-template-columns:96px 1fr 62px;gap:8px;align-items:center;font-size:13.5px}
+.mbar .tr{height:10px;background:var(--bg);border-radius:6px;overflow:hidden}
+.mbar .tr i{display:block;height:100%;border-radius:6px;background:var(--ink)}
+.mbar .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.menu{display:grid;grid-template-columns:40px 1fr;gap:6px 10px;font-size:14px}
+.menu .d{font-weight:800;color:var(--muted)}
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border-radius:999px;padding:4px}
+.seg2 button{border:0;background:transparent;border-radius:999px;padding:10px 6px;font-weight:800;font-size:13.5px;color:var(--muted)}
+.seg2 button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.esc{background:var(--surface);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.esc .ph{height:120px;display:flex;align-items:flex-end;justify-content:space-between;padding:12px;color:var(--p-ink)}
+.esc .ph b{font-size:22px;font-weight:800;letter-spacing:-.03em}
+.esc .ph span{background:rgba(255,255,255,.7);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800}
+.esc .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.esc .n{font-weight:800;font-size:16px;letter-spacing:-.02em}
+.esc .m{font-size:13px;color:var(--muted)}
+.esc .pr{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.esc .pr b{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.esc .pr s{font-size:13px;color:var(--muted)}
+.field input[type=date]{border:0;background:var(--bg);border-radius:16px;padding:12px 14px;width:100%;min-width:0}
+.share{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.share a,.share button{border:0;background:rgba(255,255,255,.1);color:inherit;border-radius:16px;padding:10px 2px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700;text-decoration:none}
+.share span{width:30px;height:30px;border-radius:50%;background:var(--pastel);color:var(--pastel-ink);display:grid;place-items:center}
+.share svg{width:16px;height:16px}
+.seg4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--surface);border-radius:999px;padding:4px}
+.seg4 button{border:0;background:transparent;border-radius:999px;padding:9px 2px;font-weight:800;font-size:13px;color:var(--muted)}
+.seg4 button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.wstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.ws{border:0;background:var(--surface);border-radius:16px;padding:8px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink)}
+.ws span{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.ws b{font-size:17px;font-weight:800}
+.ws i{display:flex;gap:3px}
+.ws em{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.ws em.on{background:var(--ink)} .ws em.pr{background:var(--peach)}
+.ws.t{background:var(--ink);color:var(--bg)} .ws.t span{color:var(--bg);opacity:.7} .ws.t em.on{background:var(--bg)}
+.dayc{background:var(--surface);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.dayc .dh{display:flex;align-items:center;gap:8px}
+.dayc .dh b{font-size:16px;font-weight:800}
+.dtag{font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 9px;background:var(--ink);color:var(--bg)}
+.dtag.soft{background:var(--bg);color:var(--ink)} .dtag.away{background:var(--sky);color:var(--p-ink)}
+.slot{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;background:var(--bg);border-radius:16px;padding:10px}
+.slot .th{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:20px;color:var(--p-ink)}
+.slot .sl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.slot .st{font-weight:700;font-size:14.5px;line-height:1.25}
+.slot .sp{font-size:11.5px;font-weight:800;color:var(--warn)}
+.slot .acts{display:flex;gap:4px}
+.mini{width:32px;height:32px;border-radius:50%;border:0;background:var(--surface);font-weight:900;font-size:14px;display:grid;place-items:center}
+.mini.ok{background:var(--ink);color:var(--bg)}
+.mini svg{width:16px;height:16px}
+.mini[aria-pressed="true"]{background:var(--peach);color:var(--p-ink)}
+.slot.prop{box-shadow:inset 0 0 0 1.5px dashed var(--line);outline:1.5px dashed var(--line);outline-offset:-1.5px}
+.meal{background:var(--surface);border-radius:22px;overflow:hidden}
+.meal .ph{height:110px;display:flex;align-items:flex-end;padding:12px;font-size:40px;font-weight:800;color:var(--p-ink)}
+.meal .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px}
+.meal .sl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meal .n{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.prop-box{background:var(--peach);color:var(--p-ink);border-radius:18px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.prop-box b{display:block}
+.prop-box span{font-size:12.5px;opacity:.8}
+.store{background:var(--surface);border-radius:22px;padding:14px}
+.store summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.store summary::-webkit-details-marker{display:none}
+.store summary h3{margin:0;display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800}
+.store summary h3 em{margin-left:auto;font-style:normal;font-size:12.5px;color:var(--muted);font-weight:700}
+.aisle{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 2px}
+.srow{display:grid;grid-template-columns:28px 1fr auto auto auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:0}
+.srow .nm{font-weight:600;min-width:0}
+.srow .from{display:block;font-size:11.5px;color:var(--muted);font-weight:500}
+.srow .qty{font-size:13px;color:var(--muted);white-space:nowrap}
+.srow.done .nm{text-decoration:line-through;color:var(--muted)}
+.ibtn{width:30px;height:30px;border-radius:50%;border:0;background:var(--bg);display:grid;place-items:center}
+.ibtn svg{width:15px;height:15px}
+.addf{display:grid;grid-template-columns:1fr 56px auto;gap:6px}
+.addf input,.addf select{border:0;background:var(--bg);border-radius:14px;padding:11px 12px;min-width:0}
+.rec{background:var(--surface);border-radius:20px;padding:12px;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;border:0;text-align:left;width:100%}
+.rec .th{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-weight:800;font-size:22px;color:var(--p-ink)}
+.rec b{display:block;font-weight:800}
+.rec small{font-size:12.5px;color:var(--muted)}
+.recd{background:var(--surface);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.recd ol,.recd ul{margin:0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.extra-h{display:flex;flex-direction:column;gap:2px;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.prog i{transition:none}}
+.tk{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.tk:last-of-type{border-bottom:0}
+.tk .bd{display:flex;flex-direction:column;gap:4px;min-width:0}.tk .n{font-weight:700}
+.tk .mt{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tk.done .n{text-decoration:line-through;color:var(--muted)}
+.tk .rt{display:flex;flex-direction:column;align-items:center;gap:3px}
+.tk-who{border:0;background:transparent;padding:0;border-radius:50%}
+.tav{display:inline-grid;place-items:center;border-radius:50%;font-weight:800;color:var(--p-ink);flex:none}
+.tk-st{font-size:12px;font-weight:800;color:var(--warn)}
+.tk-late{background:var(--warn-soft);color:var(--warn)}
+.tk-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;gap:2px}
+.rw{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.rw .ic{width:40px;height:40px;border-radius:12px;background:var(--bg);display:grid;place-items:center;font-size:20px}
+.rw .bd{display:flex;flex-direction:column;gap:2px;min-width:0}.rw small{font-size:12px;color:var(--muted)}
+.rw .acts{display:flex;gap:6px;align-items:center}
+.rw .btn[disabled]{opacity:.55}
+.field input{border:0;background:var(--bg);border-radius:14px;padding:12px 14px;font:inherit;width:100%;box-sizing:border-box}
+.wg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.look{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.wt{border:0;border-radius:16px;aspect-ratio:3/4;padding:8px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;position:relative;min-width:0}
+.wt .e{font-size:24px}.wt .nm{font-size:12px;font-weight:700;line-height:1.2}
+.wt .bdg{position:absolute;top:6px;right:6px;font-size:10.5px;font-weight:800;background:rgba(255,255,255,.9);color:#0B0B0B;border-radius:999px;padding:2px 7px}
+.wt.lavar,.wt.pequeno{opacity:.72}
+.wt[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+.wsel{background:var(--bg);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.wsel .btn{padding:8px 12px;font-size:13.5px}
+.chip.sw{width:34px;height:34px;padding:0}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <div class="top">
+    <div><button class="backb" id="back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span id="back-l">Ahorro</span></button><div class="eyebrow" id="eyebrow">Masvida · ahorro sin esfuerzo</div><h1 id="title">Lo que ahorras, lo vives</h1></div>
+    <div style="display:flex;gap:8px;align-items:center"><span class="demo">Prototipo</span><button class="avatar" data-v="perfil" aria-label="Tu perfil">L</button></div>
+  </div>
+
+  <section class="view" id="v-inicio">
+    <div class="bento">
+      <button class="tile wide" data-v="facturas"><span>Podrías ahorrar al año</span><span class="big" id="b-save">0 €</span><span id="b-save-sub">Revisa tu primera factura</span></button>
+      <button class="tile t-lav" data-v="ayudas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><span class="big" id="b-aids">0</span><span>ayudas que te pueden corresponder</span></button>
+      <button class="tile t-mint" data-v="facturas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg></span><span class="big" id="b-bills">0/0</span><span>facturas revisadas</span></button>
+      <button class="tile t-butter2" data-v="ofertas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg></span><span class="big" id="b-offers">0</span><span>ofertas para tu perfil</span></button>
+      <button class="tile t-sky2" data-v="docs"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><span class="big">28 d</span><span>para que renueve tu seguro de hogar</span></button>
+      <button class="tile wide dark" style="background:var(--ink);color:var(--bg)" data-v="perfil"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:var(--bg)" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
+    </div>
+    <div class="wx"><div><span class="small muted">Hoy</span><b>14° · lluvia a las 18 h</b><span class="small muted">Datos de AEMET</span></div><div><span class="small muted">Farmacia de guardia</span><b>A 600 m</b><span class="small muted">Abierta hasta las 22 h</span></div></div>
+    <div class="card"><div class="card-h"><h2>Lo siguiente</h2></div><div id="next"></div></div>
+  </section>
+
+  <section class="view" id="v-facturas" hidden>
+    <div class="card" style="gap:10px"><h2>¿Qué quieres revisar?</h2><div id="types"></div>
+      <span class="aff">Solo aparecen servicios en los que se puede cambiar de compañía. El agua, por ejemplo, la gestiona tu ayuntamiento.</span></div>
+    <div class="drop" id="step-up">
+      <b id="up-title">Sube tu factura de la luz</b>
+      <span class="muted small">Foto o PDF. La leemos por ti, sin escribir nada.</span>
+      <div class="btns"><label class="btn pri file">Subir factura<input type="file" id="file" accept="image/*,application/pdf"></label><button class="btn" id="sample">Probar con un ejemplo</button></div>
+      <span class="aff">En el prototipo se usa siempre una factura de ejemplo; tu archivo no sale del móvil.</span>
+    </div>
+    <div class="card" id="step-load" hidden><h2>Leyendo tu factura…</h2><div class="prog"><i id="bar"></i></div><span class="muted small" id="load-msg">Buscando lo que pagas</span></div>
+    <div class="view" id="step-res" hidden></div>
+  </section>
+
+  <section class="view" id="v-ayudas" hidden>
+    <div class="hero"><span class="lab">Según tu perfil, podrías optar a</span><span class="big" id="a-count">0 ayudas</span><span class="lab">Orientativo: decide la Administración. Revisa el perfil si algo ha cambiado.</span></div>
+    <div id="aids" class="view" style="gap:10px"></div>
+    <div class="extra-h"><h2>Otras ventajas</h2><span class="small muted">No son ayudas públicas: son bonificaciones de empresas asociadas que te pueden interesar.</span></div>
+    <div id="ventajas" class="view" style="gap:10px"></div>
+    <button class="btn" data-v="perfil">Revisar mi perfil</button>
+  </section>
+
+  <section class="view" id="v-ofertas" hidden>
+    <div class="seg2" id="oseg"><button data-oseg="compras" aria-pressed="true">Compras del día a día</button><button data-oseg="escapadas" aria-pressed="false">Escapadas chollo</button></div>
+    <div id="o-compras" class="view">
+    <label class="search" for="q"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Busca: champú, pienso, auriculares…" autocomplete="off"><button class="x" id="qx" aria-label="Borrar búsqueda" hidden>×</button></label>
+    <div class="chips" id="cats"></div>
+    <div id="offers" class="view" style="gap:18px"></div>
+    <span class="aff">Todas las ofertas llevan enlace de afiliación: la tienda nos paga una comisión, a ti te cuesta lo mismo y te devolvemos una parte.</span>
+    </div>
+    <div id="o-escapadas" class="view" hidden>
+      <div class="card" id="esc-form"></div>
+      <div id="esc-res" class="view" style="gap:10px"></div>
+      <span class="aff">Hoteles, viajes, actividades y entradas de plataformas asociadas. Al reservar nos pagan una comisión, a ti te cuesta lo mismo y te devolvemos una parte.</span>
+    </div>
+  </section>
+
+
+  <section class="view" id="v-ahorro" hidden>
+    <div class="hub">
+      <button class="hr" data-v="facturas"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></i><span><b>Tus facturas</b><small>Luz, gas, fibra, seguros, alarma, banco</small></span><span class='tag' id='tag-facturas'></span></button>
+      <button class="hr" data-v="luz"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i><span><b>Tu consumo de luz</b><small>Conectado con Datadis, gratis</small></span><span class='tag' id='tag-luz'></span></button>
+      <button class="hr" data-v="gasolina"><i style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 8h6"/></svg></i><span><b>Gasolina</b><small>La más barata para ti, con tus tarjetas</small></span><span class='tag' id='tag-gasolina'></span></button>
+      <button class="hr" data-v="ayudas"><i style="background:var(--lav)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></i><span><b>Ayudas y ventajas</b><small>Subvenciones según tu perfil y otras bonificaciones</small></span><span class='tag' id='tag-ayudas'></span></button>
+      <button class="hr" data-v="reembolso"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2"/></svg></i><span><b>Tu reembolso</b><small>Lo que te devolvemos por tus compras</small></span><span class='tag' id='tag-reembolso'></span></button>
+    </div>
+  </section>
+
+  <section class="view" id="v-hogar" hidden>
+    <div class="hub">
+      <span class="hub-t">Casa en orden</span>
+      <button class="hr" data-v="docs"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></i><span><b>Documentos y fechas</b><small>ITV, DNI, seguros, garantías</small></span><span class='tag' id='tag-docs'></span></button>
+      <button class="hr" data-v="pedidos"><i style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg></i><span><b>Pedidos y devoluciones</b><small>Dónde está cada pedido y hasta cuándo devolverlo</small></span><span class='tag' id='tag-pedidos'></span></button>
+      <button class="hr" data-v="wallet"><i style="background:var(--lav)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i><span><b>Wallet</b><small>Tarjetas de fidelización y entradas</small></span><span class='tag' id='tag-wallet'></span></button>
+      <button class="hr" data-v="mant"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg></i><span><b>Mantenimiento</b><small>Caldera, filtros y aparatos</small></span><span class='tag' id='tag-mant'></span></button>
+      <span class="hub-t">Organización familiar</span>
+      <button class="hr" data-v="armario"><i style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3c-.5 1.5-2 2.5-4 2.5S8.5 4.5 8 3z"/></svg></i><span><b>Armario</b><small>Uno por persona, tallas y cesto de la ropa</small></span><span class='tag' id='tag-armario'></span></button>
+      <button class="hr" data-v="tareas"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></i><span><b>Tareas de casa</b><small>Repartidas entre todos, con premios</small></span><span class='tag' id='tag-tareas'></span></button>
+      <button class="hr" data-v="cal"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></i><span><b>Calendario familiar</b><small>Cumpleaños, extraescolares, custodias</small></span><span class='tag' id='tag-cal'></span></button>
+      <button class="hr" data-v="menu"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M2 10h20M9 6c0-1.5 1-2 1-3M14 6c0-1.5 1-2 1-3"/></svg></i><span><b>Menú y compra</b><small>El menú de la semana y la lista hecha</small></span><span class='tag' id='tag-menu'></span></button>
+      <button class="hr" data-v="eventos"><i style="background:var(--lav)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l5-14 9 9z"/><path d="M14 4l1 2M19 6l-2 1M20 11l-2-.5"/></svg></i><span><b>Eventos</b><small>Cumpleaños y viajes con gastos compartidos</small></span><span class='tag' id='tag-eventos'></span></button>
+    </div>
+  </section>
+
+  <section class="view" id="v-luz" hidden><div id="luz" class="view"></div></section>
+  <section class="view" id="v-gasolina" hidden><div class="card"><div class="card-h"><h2>Cerca de ti</h2><span class="small muted">Precio con tus tarjetas</span></div><div id="fuel"></div></div><span class="aff">Precios oficiales del Ministerio, actualizados cada día. Los descuentos dependen de las condiciones de cada tarjeta.</span></section>
+  <section class="view" id="v-reembolso" hidden><div id="reemb" class="view"></div></section>
+  <section class="view" id="v-docs" hidden><div class="card"><div id="docs"></div></div><div class="btns"><button class="btn pri" data-toast="Haz una foto o reenvía el correo a tu-buzon@masvida.app y leemos las fechas por ti">Añadir documento</button></div></section>
+  <section class="view" id="v-pedidos" hidden><div class="card"><div id="peds"></div></div><span class="aff">Reenvía tus correos de pedido a tu-buzon@masvida.app y aparecen aquí solos.</span></section>
+  <section class="view" id="v-wallet" hidden><div class="wal" id="wal"></div><div class="btns"><button class="btn" data-toast="Escanearías el código de barras de la tarjeta">Añadir tarjeta</button></div></section>
+  <section class="view" id="v-mant" hidden><div class="card"><div id="mant"></div></div></section>
+  <section class="view" id="v-cal" hidden><div class="card"><div id="cal"></div></div></section>
+  <section class="view" id="v-tareas" hidden>
+    <div class="seg4" id="tk-seg" style="grid-template-columns:repeat(3,1fr)"><button data-tk="hoy" aria-pressed="true">Hoy</button><button data-tk="reparto" aria-pressed="false">Reparto</button><button data-tk="premios" aria-pressed="false">Premios</button></div>
+    <div id="tk-box" class="view"></div>
+  </section>
+  <section class="view" id="v-armario" hidden><div id="ar-box" class="view"></div></section>
+  <section class="view" id="v-familia" hidden><div id="fam" class="view"></div></section>
+  <section class="view" id="v-menu" hidden>
+    <div class="seg4" id="mn-seg"><button data-mn="hoy" aria-pressed="true">Hoy</button><button data-mn="semana" aria-pressed="false">Semana</button><button data-mn="compra" aria-pressed="false">Compra</button><button data-mn="recetas" aria-pressed="false">Recetas</button></div>
+    <div id="mn-box" class="view"></div>
+  </section>
+  <section class="view" id="v-eventos" hidden><div id="evento" class="view"></div></section>
+  <section class="view" id="v-dinero" hidden><div id="dinero" class="view"></div></section>
+
+  <section class="view" id="v-perfil" hidden>
+    <div class="level" id="level"></div>
+    <div class="card" id="refwin"></div>
+    <button class="hr" data-v="familia"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c3 0 6 1.8 6 5.5"/></svg></i><span><b>Tu familia</b><small>Quién vive en casa, tallas y edades</small></span><span class='tag' id='tag-familia'></span></button>
+    <button class="hr" data-v="dinero"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i><span><b>Mi dinero</b><small>Conecta tu banco y te decimos dónde ahorrar más</small></span><span class="tag new">2,99 €/mes</span></button>
+    <div class="card"><div class="card-h"><h2>Tu reembolso sube</h2></div><p class="muted small" style="margin:0">Masvida es gratis y completa desde el primer día. Cada amiga que se une te sube de nivel, y cuanto más alto, más dinero te devolvemos en tus compras y reservas.</p><div id="levels"></div></div>
+    <div class="card">
+      <div class="card-h"><h2>Tu perfil</h2><span class="saved" id="saved"></span></div>
+      <p class="muted small" style="margin:0">Con esto calculamos tus ayudas y elegimos tus ofertas. Lo puedes cambiar cuando quieras y no se comparte con nadie.</p>
+      <div class="form" id="form"></div>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs" aria-label="Secciones"><div class="in" id="tabs">
+  <button data-v="inicio" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>Inicio</button>
+  <button data-v="ahorro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2"/></svg>Ahorro</button>
+  <button data-v="ofertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>Ofertas</button>
+  <button data-v="hogar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Hogar</button>
+  <button data-v="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Tú</button>
+</div></nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const S={get(k,d){try{const v=localStorage.getItem("pj2-"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pj2-"+k,JSON.stringify(v))}catch(e){}}};
+const $=s=>document.querySelector(s);
+const eur=v=>Math.round(v).toLocaleString("es-ES")+" €";
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,2800)}
+
+/* PERFIL (ejemplo, editable) */
+let P=S.get("profile",{ccaa:"Cataluña",edad:38,adultos:1,hijos:2,menor3:0,escolar:2,ingresos:"medios",vivienda:"alquiler",situacion:["monoparental"],coche:"si",mascotas:["gato"],intereses:["hogar","belleza","viajes","deporte"],tiendas:["Tienda online grande","Supermercado"]});
+const OPT={ccaa:["Cataluña","Madrid","Andalucía","Comunidad Valenciana","Otra"],ingresos:[["bajos","Menos de 15.000 €"],["medios","15.000–35.000 €"],["altos","Más de 35.000 €"]],vivienda:[["alquiler","De alquiler"],["propiedad","En propiedad"],["otra","Otra situación"]],
+ situacion:[["monoparental","Familia monoparental"],["numerosa","Familia numerosa"],["desempleo","Alguien en paro"],["autonoma","Trabajo por cuenta propia"]],
+ mascotas:[["perro","Perro"],["gato","Gato"],["otra","Otra"]],intereses:[["hogar","Hogar"],["moda","Moda"],["belleza","Belleza"],["tecnologia","Tecnología"],["viajes","Viajes"],["deporte","Deporte"],["ninos","Niños"]],
+ tiendas:["Tienda online grande","Supermercado","Muebles y deco","Deporte","Moda","Mascotas"]};
+const FI={home:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3"/>',other:'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>',
+ fam:'<circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.8-3.5 3.2-5.5 6-5.5s5.2 2 6 5.5M14 20c.4-2.4 1.8-4 4-4s3 1.2 3.5 3"/>',
+ heart:'<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>',pin:'<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
+ car:'<path d="M5 16l1.5-5h11L19 16"/><rect x="3" y="16" width="18" height="4" rx="1.5"/><circle cx="7" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>',no:'<circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/>'};
+const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${FI[k]}</svg>`;
+function renderForm(){
+  const cards=(k,opts,n)=>`<div class="cards" style="--n:${n||opts.length}">${opts.map(([v,l,sm,ic])=>`<button data-one="${k}" data-val="${v}" aria-pressed="${P[k]==v}">${ic?ico(ic):""}${l}${sm?`<small>${sm}</small>`:""}</button>`).join("")}</div>`;
+  const step=(k,l,min,max)=>`<div class="stp"><span>${l}</span><div class="ctl"><button data-step="${k}" data-d="-1" data-min="${min}" aria-label="Menos">−</button><b>${P[k]}</b><button data-step="${k}" data-d="1" data-max="${max}" aria-label="Más">+</button></div></div>`;
+  const multi=k=>`<div class="chips wrap-chips">${OPT[k].map(x=>{const[v,l]=Array.isArray(x)?x:[x,x];return`<button class="chip" data-multi="${k}" data-val="${v}" aria-pressed="${P[k].includes(v)}">${l}</button>`}).join("")}</div>`;
+  const sec=(ic,col,t,body)=>`<div class="pk-sec"><div class="pk-h"><i style="background:var(--${col});color:var(--p-ink)">${ico(ic)}</i><b>${t}</b></div>${body}</div>`;
+  const pk=(l,body)=>`<div class="pk"><span class="pk-l">${l}</span>${body}</div>`;
+  $("#form").innerHTML=
+   sec("pin","peach","Dónde vives",
+     pk("Comunidad",`<div class="chips wrap-chips">${OPT.ccaa.map(c=>`<button class="chip" data-one="ccaa" data-val="${c}" aria-pressed="${P.ccaa===c}">${c}</button>`).join("")}</div>`)+
+     pk("Tu vivienda",cards("vivienda",[["alquiler","Alquiler","",'key'],["propiedad","Propia","",'home'],["otra","Otra","",'other']]))+
+     `<div class="steps">${step("edad","Tu edad",18,99)}</div>`)+
+   sec("fam","lav","Tu hogar",
+     `<div class="steps">${step("adultos","Adultos",1,6)}${step("hijos","Hijos",0,8)}${step("menor3","Menores de 3",0,8)}${step("escolar","En el cole",0,8)}</div>`+
+     pk("Ingresos del hogar al año",cards("ingresos",[["bajos","Menos de 15.000 €"],["medios","15–35.000 €"],["altos","Más de 35.000 €"]]))+
+     pk("Tu situación",multi("situacion")))+
+   sec("heart","mint","Lo que te interesa",
+     pk("Coche",cards("coche",[["si","Tengo coche","",'car'],["no","No tengo","",'no']],2))+
+     pk("Mascotas",multi("mascotas"))+
+     pk("Ofertas que te interesan",multi("intereses"))+
+     pk("Tiendas donde compras",multi("tiendas")));
+}
+function save(){S.set("profile",P);$("#saved").textContent="Guardado";clearTimeout(save.h);save.h=setTimeout(()=>$("#saved").textContent="",1500);renderAll(false)}
+
+/* FACTURAS */
+const BILLS={
+ luz:{g:"Casa",n:"Luz",ic:"kWh",c:"butter",now:74,u:"m",read:"290 kWh/mes · 4,6 kW · tarifa fija",opts:[["Tarifa con discriminación horaria",61,"Para tu consumo de noche y fin de semana"],["Tarifa fija sencilla",64,"El mismo precio a todas horas"]]},
+ gas:{g:"Casa",n:"Gas",ic:"m³",c:"sky",now:48,u:"m",read:"3.900 kWh/año · tarifa RL.1",opts:[["Tarifa regulada (TUR)",39,"Precio fijado por el Gobierno cada trimestre"],["Mercado sin permanencia",42,"Precio fijo un año"]]},
+ fibra:{g:"Casa",n:"Fibra y móvil",ic:"5G",c:"lilac",now:45,u:"m",read:"Fibra 600 Mb · 2 líneas",opts:[["Fibra 600 Mb + 2 líneas",32,"Mismos megas, sin permanencia"],["Fibra 1 Gb + 2 líneas",36,"Más velocidad por poco más"]]},
+ tv:{g:"Casa",n:"TV y plataformas",ic:"TV",c:"sage",now:38,u:"m",read:"3 plataformas de vídeo y fútbol",opts:[["Paquete con las mismas plataformas",27,"Juntas en tu operador de fibra"],["Quitar la que menos usas",29,"No abres una de ellas desde agosto"]]},
+ alarma:{g:"Casa",n:"Alarma",ic:"24h",c:"butter",now:42,u:"m",read:"Con central · sin permanencia",opts:[["Alarma con central y cámara",33,"Instalación gratuita"],["Alarma sin cuotas",12,"Compras el equipo y avisa a tu móvil"]]},
+ hogar:{g:"Seguros",n:"Hogar",ic:"⌂",c:"sky",now:318,u:"a",ins:1,read:"Continente 25.000 € · renueva el 2 dic",opts:[["Mismas coberturas",226,"Misma franquicia y asistencia 24 h"],["Más contenido asegurado",249,"Contenido hasta 25.000 €"]]},
+ coche:{g:"Seguros",n:"Coche",ic:"km",c:"lilac",now:540,u:"a",ins:1,need:p=>p.coche==="si",read:"Terceros ampliado · sin partes",opts:[["Terceros ampliado equivalente",432,"Lunas, robo e incendio"],["Todo riesgo con franquicia",515,"Más cobertura por casi lo mismo"]]},
+ salud:{g:"Seguros",n:"Salud",ic:"+",c:"sage",now:95,u:"m",ins:1,read:"2 asegurados · sin copago",opts:[["Cuadro médico parecido",78,"Mismas especialidades cerca de casa"],["Con copago bajo",62,"Pagas 3 € por consulta"]]},
+ mascota:{g:"Seguros",n:"Mascota",ic:"♥",c:"butter",now:19,u:"m",ins:1,need:p=>p.mascotas.length>0,read:"1 gato · accidentes y enfermedad",opts:[["Cobertura equivalente",13,"Sin carencia en accidentes"],["Solo accidentes",7,"Lo básico"]]},
+ banco:{g:"Dinero",n:"Cuenta del banco",ic:"€",c:"sage",now:96,u:"a",read:"Comisión de mantenimiento 8 €/mes",opts:[["Cuenta sin comisiones",0,"Sin condiciones de nómina"],["Cuenta remunerada",0,"Sin comisiones y paga intereses"]]}
+};
+let cur=S.get("cur","luz"),done=S.get("done",{});
+const yr=(b,p)=>b.u==="m"?(b.now-p)*12:(b.now-p);
+const visibleBills=()=>Object.entries(BILLS).filter(([k,b])=>!b.need||b.need(P));
+function renderTypes(){
+  const groups={};visibleBills().forEach(([k,b])=>(groups[b.g]=groups[b.g]||[]).push([k,b]));
+  $("#types").innerHTML=Object.entries(groups).map(([g,list])=>`<div class="group-t">${g}</div><div class="types" style="margin-top:6px">${list.map(([k,b])=>`<button class="type ${done[k]!=null?"done":""}" data-type="${k}" aria-pressed="${k===cur}"><span class="ic" style="background:var(--${({sage:"mint",lilac:"lav",butter:"butter",sky:"sky"})[b.c]})!important;color:var(--p-ink)!important">${b.ic}</span>${b.n}<span class="st">${done[k]!=null?"Ahorro: "+eur(done[k]):"Sin revisar"}</span></button>`).join("")}</div>`).join("");
+  const b=BILLS[cur];$("#up-title").textContent=b.ins?`Sube tu póliza de ${b.n.toLowerCase()}`:`Sube tu factura de ${b.n.toLowerCase()}`;
+}
+function analyse(){
+  $("#step-up").hidden=true;$("#step-res").hidden=true;$("#step-load").hidden=false;
+  const bar=$("#bar");bar.style.width="0";requestAnimationFrame(()=>requestAnimationFrame(()=>bar.style.width="100%"));
+  const m=["Buscando lo que pagas","Comparando con el mercado","Calculando tu ahorro"];let i=0;const t=setInterval(()=>{i++;if(m[i])$("#load-msg").textContent=m[i]},450);
+  setTimeout(()=>{clearInterval(t);result()},1500);
+}
+function result(){
+  const b=BILLS[cur],best=b.opts[0],sv=yr(b,best[1]);done[cur]=sv;S.set("done",done);
+  const unit=b.u==="m"?"€/mes":"€/año";
+  $("#step-load").hidden=true;const r=$("#step-res");r.hidden=false;
+  r.innerHTML=`<div class="hero"><span class="lab">${b.n}: pagas de más</span><span class="big">${eur(sv)}/año</span><span class="lab">Hemos leído: ${b.read}</span></div>
+   <div class="cmp"><div><span class="small muted">Pagas ahora</span><span class="big">${b.now} ${unit}</span></div><div><span class="small muted">Podrías pagar</span><span class="big">${best[1]} ${unit}</span></div></div>
+   <div class="card"><h2>Tus opciones</h2>${b.opts.map((o,i)=>`<div class="opt ${i?"":"best"}"><span class="n">${o[0]}</span><span class="p">${o[1]} ${unit}</span><span class="m">${o[2]} · ahorras ${eur(yr(b,o[1]))} al año</span>${i?"":`<div class="btns"><button class="btn pri" data-toast="${b.ins?"Te contactaría la correduría asociada":"Cambio solicitado: la nueva compañía gestiona la baja"}">${b.ins?"Pedir esta póliza":"Cambiar con un clic"}</button></div>`}</div>`).join("")}
+   <span class="aff">${b.ins?"Los seguros se ofrecen a través de una correduría registrada, que nos paga una comisión.":"Enlace de afiliación: si cambias, la compañía nos paga una comisión. Tu precio es el mismo."}</span></div>
+   <div class="btns"><button class="btn" id="again">Revisar otra</button><button class="btn dark" data-toast="Copiado: «Pagaba ${eur(sv)} de más al año en ${b.n.toLowerCase()} y no lo sabía»">Compartir mi ahorro</button></div>`;
+  renderTypes();renderHome();window.scrollTo(0,0);
+}
+
+/* AYUDAS (catálogo de ejemplo con requisitos simplificados) */
+const AIDS=[
+ {n:"Deducción por maternidad",amt:"Hasta 1.200 € al año por hijo menor de 3",who:"Estado · en la renta",docs:["Que la madre trabaje o cobre paro","Se pide en la declaración o por adelantado"],t:p=>p.menor3>0?"yes":null},
+ {n:"Deducción por familia monoparental o numerosa",amt:"Hasta 1.200 € al año",who:"Estado · en la renta",docs:["Título de familia numerosa, o monoparental con 2 hijos o más"],t:p=>p.situacion.includes("numerosa")||(p.situacion.includes("monoparental")&&p.hijos>=2)?"yes":(p.situacion.includes("monoparental")?"maybe":null),why:p=>p.situacion.includes("monoparental")&&p.hijos<2?"Con 1 hijo, según tu comunidad puede haber otras deducciones":""},
+ {n:"Bono social de la luz",amt:"Descuento en la factura de la luz",who:"Estado · con tu compañía regulada",docs:["Ingresos por debajo del umbral","Tarifa regulada (PVPC)"],t:p=>p.ingresos==="bajos"?"yes":(p.ingresos==="medios"&&(p.situacion.includes("monoparental")||p.situacion.includes("numerosa"))?"maybe":null),why:p=>p.ingresos!=="bajos"?"Las familias monoparentales y numerosas tienen umbrales más altos":""},
+ {n:"Bono social térmico",amt:"Pago único para calefacción",who:"Estado · automático si tienes bono social",docs:["Se cobra solo si tienes el bono social de la luz"],t:p=>p.ingresos==="bajos"?"maybe":null},
+ {n:"Complemento de ayuda para la infancia",amt:"Importe mensual por hijo, según su edad",who:"Seguridad Social",docs:["Hijos menores de 18","Ingresos por debajo del límite"],t:p=>p.hijos>0&&p.ingresos!=="altos"?(p.ingresos==="bajos"?"yes":"maybe"):null},
+ {n:"Beca de comedor escolar",amt:"Parte o todo el comedor",who:p=>p.ccaa==="Cataluña"?"Consell comarcal":"Tu comunidad",docs:["Hijos en edad escolar","Convocatoria anual, suele abrir en primavera"],t:p=>p.escolar>0&&p.ingresos!=="altos"?"maybe":null},
+ {n:"Bono Alquiler Joven",amt:"Ayuda mensual al alquiler, según convocatoria",who:"Estado y comunidades",docs:["Hasta 35 años","Ingresos limitados","Contrato de alquiler"],t:p=>p.vivienda==="alquiler"&&p.edad<=35&&p.ingresos!=="altos"?"yes":null},
+ {n:"Ayudas al alquiler",amt:"Parte del alquiler, según convocatoria",who:"Tu comunidad",docs:["Contrato de alquiler","Ingresos limitados"],t:p=>p.vivienda==="alquiler"&&p.edad>35&&p.ingresos!=="altos"?"maybe":null},
+ {n:"Placas solares y eficiencia en casa",amt:"Deducciones y subvenciones, si están vigentes",who:"Estado y comunidades",docs:["Vivienda en propiedad","Obra o instalación con factura"],t:p=>p.vivienda==="propiedad"?"maybe":null,lead:"Te ponemos en contacto con instaladores"},
+ {n:"Tarifa plana de autónomos",amt:"Cuota reducida el primer año",who:"Seguridad Social",docs:["Alta nueva como autónoma"],t:p=>p.situacion.includes("autonoma")?"maybe":null},
+ {n:"Ingreso mínimo vital",amt:"Ingreso mensual según el hogar",who:"Seguridad Social",docs:["Ingresos y patrimonio bajos"],t:p=>p.ingresos==="bajos"?"maybe":null}
+];
+const myAids=()=>AIDS.map(a=>({...a,lvl:a.t(P)})).filter(a=>a.lvl).sort((a,b)=>(a.lvl==="yes"?0:1)-(b.lvl==="yes"?0:1));
+function renderAids(){
+  const l=myAids();$("#a-count").textContent=l.length+(l.length===1?" ayuda":" ayudas");
+  $("#aids").innerHTML=l.map(a=>{const who=typeof a.who==="function"?a.who(P):a.who,why=a.why?a.why(P):"";return`<div class="aid"><div class="h"><span class="n">${a.n}</span><span class="lvl ${a.lvl==="yes"?"l-yes":"l-maybe"}">${a.lvl==="yes"?"Probablemente sí":"Comprueba"}</span></div><span class="amt">${a.amt}</span><span class="small muted">${who}</span><ul>${a.docs.map(d=>`<li>${d}</li>`).join("")}</ul>${why?`<span class="small muted">${why}</span>`:""}<div class="btns"><button class="btn" data-toast="${a.lead||"Te llevamos a la página oficial para pedirla"}">${a.lead?"Pedir presupuesto":"Cómo pedirla"}</button><button class="btn" data-toast="Te avisaremos cuando abra el plazo">Avísame</button></div></div>`}).join("")||'<div class="aid">Con tu perfil no hemos encontrado ayudas. Si algo cambia, actualízalo.</div>';
+}
+
+/* OFERTAS: ordenadas por lo a menudo que se compra cada cosa (1 = cada semana, 4 = de vez en cuando) */
+const CATS=[["super","Supermercado",1],["belleza","Belleza",1],["mascotas","Mascotas",1],["ninos","Niños",2],["moda","Moda",2],["deporte","Deporte",3],["tecnologia","Tecnología",3],["hogar","Hogar",4]];
+const OFF=[
+ {c:"super",n:"Aceite de oliva virgen extra 1 l",s:"Supermercado",p:6.9,o:8.9},{c:"super",n:"Detergente 60 lavados",s:"Supermercado",p:9.5,o:14},{c:"super",n:"Café en grano 1 kg",s:"Tienda online grande",p:12.9,o:17.5},
+ {c:"belleza",n:"Sérum de vitamina C",s:"Tienda online grande",p:18,o:29},{c:"belleza",n:"Champú sin sulfatos",s:"Perfumería",p:7.5,o:11},{c:"belleza",n:"Crema solar facial SPF 50",s:"Perfumería",p:12,o:19},{c:"belleza",n:"Secador iónico",s:"Tienda online grande",p:49,o:79},{c:"belleza",n:"Paleta de sombras",s:"Perfumería",p:14,o:24},
+ {c:"mascotas",n:"Pienso para gato 10 kg",s:"Mascotas",p:38,o:46,need:p=>p.mascotas.includes("gato")},{c:"mascotas",n:"Arena aglomerante 10 l",s:"Mascotas",p:8.5,o:12,need:p=>p.mascotas.includes("gato")},{c:"mascotas",n:"Pienso para perro 12 kg",s:"Mascotas",p:41,o:52,need:p=>p.mascotas.includes("perro")},{c:"mascotas",n:"Arenero autolimpiable",s:"Tienda online grande",p:149,o:199,need:p=>p.mascotas.includes("gato")},
+ {c:"ninos",n:"Pañales talla 5, 150 u.",s:"Supermercado",p:32,o:39,need:p=>p.hijos>0},{c:"ninos",n:"Mochila escolar",s:"Tienda online grande",p:24,o:35,need:p=>p.escolar>0},{c:"ninos",n:"Juego de construcción",s:"Tienda online grande",p:29,o:42,need:p=>p.hijos>0},
+ {c:"moda",n:"Abrigo de entretiempo",s:"Moda",p:59,o:89},{c:"moda",n:"Vaqueros rectos",s:"Moda",p:29,o:45},{c:"moda",n:"Zapatillas blancas",s:"Moda",p:39,o:59},
+ {c:"deporte",n:"Zapatillas de running",s:"Deporte",p:45,o:65},{c:"deporte",n:"Esterilla de yoga",s:"Deporte",p:15,o:25},{c:"deporte",n:"Mallas deportivas",s:"Deporte",p:19,o:29},
+ {c:"tecnologia",n:"Auriculares inalámbricos",s:"Tienda online grande",p:29,o:49},{c:"tecnologia",n:"Funda y protector de móvil",s:"Tienda online grande",p:9,o:16},
+ {c:"hogar",n:"Freidora de aire 5,5 l",s:"Tienda online grande",p:69,o:99},{c:"hogar",n:"Juego de sábanas 150",s:"Muebles y deco",p:22,o:35},{c:"hogar",n:"Sofá de 3 plazas",s:"Muebles y deco",p:399,o:489},
+ 
+];
+let cat="para",q="";
+const fits=o=>(!o.need||o.need(P));
+const catOn=c=>P.intereses.includes(c)||(c==="mascotas"&&P.mascotas.length>0)||(c==="ninos"&&P.hijos>0)||c==="super";
+const norm=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const PAST={super:"mint",belleza:"lav",mascotas:"butter",ninos:"sky",moda:"peach",deporte:"mint",tecnologia:"sky",hogar:"butter",viajes:"lav"};
+const card=o=>`<div class="of"><div class="img" style="background:var(--${PAST[o.c]})!important;color:var(--p-ink)!important"><span class="pct">-${Math.round((1-o.p/o.o)*100)} %</span>${o.n[0]}</div><span class="n">${o.n}</span><span class="st">${o.s}</span><span class="pr"><b>${o.p.toLocaleString("es-ES")} €</b><s>${o.o.toLocaleString("es-ES")} €</s></span><span class="freq">+${(o.p*cbNow()/100).toLocaleString("es-ES",{maximumFractionDigits:2})} € de vuelta</span><button class="btn" data-toast="Se abriría la tienda con el enlace de afiliación">Ver oferta</button></div>`;
+const freqLabel={1:"Lo compras a menudo",2:"Cada pocas semanas",3:"De vez en cuando",4:"Compras grandes"};
+const CICO={super:'<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h12L22 7H6"/>',belleza:'<path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8L19 21l-.8-2.4-2-.8 2-.8z"/>',
+ mascotas:'<circle cx="6" cy="10" r="2"/><circle cx="10" cy="6" r="2"/><circle cx="14" cy="6" r="2"/><circle cx="18" cy="10" r="2"/><path d="M12 12c-3 0-5 3.5-5 5.5 0 1.5 1.2 2.5 2.7 2.5 1 0 1.5-.5 2.3-.5s1.3.5 2.3.5c1.5 0 2.7-1 2.7-2.5 0-2-2-5.5-5-5.5z"/>',
+ ninos:'<circle cx="12" cy="8" r="5"/><path d="M12 13v8M10 21h4"/>',moda:'<path d="M8 3l4 3 4-3 5 4-3 3v11H6V10L3 7z"/>',deporte:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+ tecnologia:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="2" y="15" width="5" height="6" rx="2"/><rect x="17" y="15" width="5" height="6" rx="2"/>',hogar:'<path d="M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M2 12h20v6H2zM5 18v2M19 18v2"/>'};
+const CCOL={super:"mint",belleza:"lav",mascotas:"butter",ninos:"sky",moda:"peach",deporte:"mint",tecnologia:"sky",hogar:"butter"};
+const ci=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${CICO[k]}</svg>`;
+const rail=(t,sub,list,more)=>list.length?`<div class="view" style="gap:8px"><div class="row-h"><div><h2>${t}</h2><span class="freq">${sub}</span></div>${more||""}</div><div class="rail">${list.map(card).join("")}</div></div>`:"";
+const pctOf=o=>(o.o-o.p)/o.o;
+function renderOffers(){
+  $("#qx").hidden=!q;$("#cats").hidden=true;
+  if(q){
+    const t=norm(q),list=OFF.filter(o=>fits(o)&&(norm(o.n).includes(t)||norm(o.s).includes(t)||norm(CATS.find(c=>c[0]===o.c)[1]).includes(t)));
+    $("#offers").innerHTML=`<span class="muted small">${list.length} ${list.length===1?"oferta":"ofertas"} para «${q}»</span>`+(list.length?`<div class="offers">${list.map(card).join("")}</div>`:'<div class="aid">No hay ofertas con esa palabra ahora. Te avisamos si aparece alguna.<div class="btns"><button class="btn" data-toast="Te avisaremos cuando haya ofertas">Avísame</button></div></div>');
+    return;
+  }
+  if(cat!=="para"){const c=CATS.find(x=>x[0]===cat),list=OFF.filter(o=>o.c===cat&&fits(o));
+    $("#offers").innerHTML=`<div class="row-h"><button class="backb" data-cat="para" style="margin:0">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>'}<span>Todas las categorías</span></button></div><div class="pk-h"><i style="background:var(--${CCOL[cat]});color:var(--p-ink)">${ci(cat)}</i><b>${c[1]}</b></div>`+(list.length?`<div class="offers">${list.map(card).join("")}</div>`:'<div class="aid">No hay ofertas de esta categoría para tu perfil.</div>');return}
+  const mine=CATS.filter(([k])=>catOn(k)).sort((a,b)=>a[2]-b[2]),others=CATS.filter(([k])=>!catOn(k));
+  const top=OFF.filter(o=>forYou(o)&&CATS.find(c=>c[0]===o.c)[2]<=2).sort((a,b)=>pctOf(b)-pctOf(a)).slice(0,6);
+  const capr=OFF.filter(o=>fits(o)&&o.o>=49&&catOn(o.c)).sort((a,b)=>pctOf(b)-pctOf(a));
+  const row=([k,l,f])=>{const list=OFF.filter(o=>o.c===k&&fits(o));if(!list.length)return"";const mx=Math.round(Math.max(...list.map(pctOf))*100);
+    return`<button class="hr" data-cat="${k}"><i style="background:var(--${CCOL[k]})">${ci(k)}</i><span><b>${l}</b><small>${list.length} ${list.length===1?"oferta":"ofertas"} · ${freqLabel[f].toLowerCase()}</small></span><span class="tag">hasta -${mx} %</span></button>`};
+  $("#offers").innerHTML=rail("Lo mejor para ti hoy","Lo que compras a menudo, con más descuento",top)+
+   `<div class="hub"><span class="hub-t">Tus categorías</span>${mine.map(row).join("")}${others.length?`<span class="hub-t">Más categorías</span>${others.map(row).join("")}`:""}</div>`+
+   rail("Date un capricho","Lo que te apetece, a mejor precio",capr);
+}
+const forYou=o=>fits(o)&&catOn(o.c);
+const cbNow=()=>[...LEVELS].reverse().find(l=>refs>=l.r).cb;
+
+/* NIVELES POR INVITACIONES: toda la app es gratis desde el primer día; invitar solo sube el reembolso */
+const INV="Te invito a Masvida: ahorro sin esfuerzo en facturas y compras, y te devuelven dinero. Lo que ahorras, lo vives. Gratis. Código LAURA-7K2";
+const INVURL="https://masvida.app/i/LAURA-7K2";
+const E2=encodeURIComponent;
+const SV2=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const SHARE=[["WhatsApp","https://wa.me/?text="+E2(INV+" "+INVURL),SV2('<path d="M4 20l1.3-3.8A8 8 0 1 1 8 19z"/>')],["Telegram","https://t.me/share/url?url="+E2(INVURL)+"&text="+E2(INV),SV2('<path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/>')],["Facebook","https://www.facebook.com/sharer/sharer.php?u="+E2(INVURL),SV2('<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/>')],["X","https://twitter.com/intent/tweet?text="+E2(INV)+"&url="+E2(INVURL),SV2('<path d="M4 4l16 16M20 4L4 20"/>')]];
+const IGI=SV2('<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>');
+const LEVELS=[
+ {r:0,n:"Ahorras",d:"Toda la app, gratis desde el primer día",cb:1},
+ {r:1,n:"Respiras",d:"Más reembolso en todas tus compras y reservas",cb:1.5},
+ {r:3,n:"Disfrutas",d:"Más reembolso en todas tus compras y reservas",cb:2},
+ {r:5,n:"Vives",d:"Más reembolso y ofertas antes que nadie",cb:2.5},
+ {r:10,n:"Masvida",d:"El reembolso más alto y ofertas exclusivas",cb:3}
+]
+let refs=S.get("refs",0);
+function renderRefWin(){
+  const per=3,earned=refs*per,nextMil=refs<10?10:Math.ceil((refs+1)/5)*5;
+  $("#refwin").innerHTML=`<div class="card-h"><h2>Lo que ganas invitando</h2></div>
+   <div class="wx"><div style="background:var(--mint)"><span class="small">Has ganado</span><b>${eur(earned)}</b><span class="small">${refs} ${refs===1?"amiga":"amigas"} × 3 €</span></div><div style="background:var(--lav)"><span class="small">Próximo regalo</span><b>${nextMil} amigas</b><span class="small">${refs>=10?"10 € extra cada 5 amigas":"Llegas al nivel Masvida"}</span></div></div>
+   <div class="li"><span><span class="n">Cada amiga, 3 € para las dos</span><br><span class="m">Cuando hace su primer cambio de tarifa, compra o reserva. Sin límite.</span></span></div>
+   <div class="li"><span><span class="n">Reto de Navidad</span><br><span class="m">Invita a 3 amigas antes del 31 de diciembre y te damos 5 € extra</span></span><span class="pl pl-u">${Math.min(refs,3)}/3</span></div>`;
+}
+function renderLevels(){renderRefWin();
+  const curL=[...LEVELS].reverse().find(l=>refs>=l.r),idx=LEVELS.indexOf(curL),next=LEVELS[idx+1];
+  const pct=next?Math.round((refs-curL.r)/(next.r-curL.r)*100):100;
+  $("#level").innerHTML=`<span class="small" style="opacity:.75">Nivel ${idx+1} de ${LEVELS.length}</span><span class="big">${curL.n}</span>
+   <span class="small" style="opacity:.85">${refs} ${refs===1?"amiga se ha unido":"amigas se han unido"}${next?` · te ${next.r-refs===1?"falta 1":"faltan "+(next.r-refs)} para el nivel ${next.n}`:" · estás en el nivel más alto"}</span>
+   <span class="small" style="opacity:.85">Te devolvemos el <b>${curL.cb.toLocaleString("es-ES")} %</b> de lo que compras en tiendas asociadas${next?` · el ${next.cb.toLocaleString("es-ES")} % en el siguiente nivel`:""}</span>
+   <div class="bar"><i style="width:${pct}%"></i></div>
+   <div class="code"><span>LAURA-7K2</span><button class="btn" id="copy">Copiar</button></div>
+   <div class="share">${SHARE.map(([n,u,ic])=>`<a href="${u}" target="_blank" rel="noopener" aria-label="Compartir por ${n}"><span>${ic}</span>${n}</a>`).join("")}<button id="ig"><span>${IGI}</span>Instagram</button></div>
+   <button class="btn" style="background:transparent;color:var(--bg);box-shadow:inset 0 0 0 1.5px var(--bg)" id="sim">Simular que se une una amiga</button>`;
+  $("#levels").innerHTML=LEVELS.map((l,i)=>{const on=refs>=l.r;const st=!on?`<span class="st-pill st-off">${l.r-refs===1?"Te falta 1 invitación":"Te faltan "+(l.r-refs)+" invitaciones"}</span>`:`<span class="st-pill st-on">Conseguido</span>`;
+    return`<div class="lv ${on?"on":""}"><span class="dot">${i+1}</span><div><div class="t">${l.n}</div><div class="d">${l.d}</div><div class="d">Reembolso del <b>${l.cb.toLocaleString("es-ES")} %</b> · ${l.r?`con ${l.r} ${l.r===1?"amiga":"amigas"}`:"desde el primer día"}</div>${st}</div></div>`}).join("");
+  $("#b-lv-t").textContent=`Nivel ${idx+1} · ${curL.n}`;
+  $("#b-lv").textContent=next?`Invita a ${next.r-refs} ${next.r-refs===1?"amiga":"amigas"} más`:"Tienes el reembolso más alto";
+  $("#b-lv-s").textContent=next?`y te devolvemos el ${next.cb.toLocaleString("es-ES")} % en vez del ${curL.cb.toLocaleString("es-ES")} %`:"Gracias por recomendarnos";
+}
+
+/* INICIO */
+function renderHome(){
+  const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null),tot=rev.reduce((s,[k])=>s+done[k],0);
+  $("#b-save").textContent=eur(tot);$("#b-save-sub").textContent=rev.length?`Con ${rev.length} ${rev.length===1?"factura revisada":"facturas revisadas"} · sigue revisando`:"Revisa tu primera factura";
+  $("#b-bills").textContent=rev.length+"/"+vb.length;$("#b-aids").textContent=myAids().length;$("#b-offers").textContent=OFF.filter(forYou).length;
+  const pend=vb.filter(([k])=>done[k]==null).slice(0,3);
+  $("#next").innerHTML=pend.map(([k,b])=>`<div class="opt" style="margin-bottom:8px"><span class="n">Revisa ${b.ins?"tu seguro de "+b.n.toLowerCase():"tu "+b.n.toLowerCase()}</span><span class="p muted small">1 min</span><div class="btns"><button class="btn" data-go-bill="${k}">Revisar</button></div></div>`).join("")||'<span class="muted">Has revisado todo. Te avisaremos si algo sube de precio.</span>';
+}
+
+
+/* AHORRO Y HOGAR: módulos gratuitos para nosotras (datos de ejemplo) */
+let luzOn=S.get("luz",false);
+const KWH=[.18,.15,.14,.13,.13,.14,.22,.38,.31,.2,.18,.19,.24,.33,.28,.17,.16,.21,.35,.52,.61,.55,.41,.27];
+function renderLuz(){
+  if(!luzOn){$("#luz").innerHTML=`<div class="hero"><span class="lab">Conecta tu luz una vez</span><span class="big" style="font-size:30px">Y vemos tu consumo hora a hora</span><span class="lab">Con Datadis, la plataforma oficial de las distribuidoras. Gratis y sin cambiar nada.</span></div>
+   <div class="card"><h2>Cómo funciona</h2><div class="li"><span><span class="n">1. Autorizas a Masvida en Datadis</span><br><span class="m">Con tu DNI y el código de tu contrato (CUPS), que sale en la factura</span></span></div><div class="li"><span><span class="n">2. Leemos tu consumo de cada hora</span><br><span class="m">Llega con un día de retraso</span></span></div><div class="li"><span><span class="n">3. Te decimos qué tarifa te conviene</span><br><span class="m">Y te avisamos si cambia algo</span></span></div>
+   <div class="btns"><button class="btn pri" id="luz-on">Conectar mi luz</button></div></div>`;return}
+  const mx=Math.max(...KWH),col=h=>(h<8)?"var(--mint)":((h>=10&&h<14)||(h>=18&&h<22))?"var(--peach)":"var(--butter)";
+  const tot=KWH.reduce((a,b)=>a+b,0),val=KWH.slice(0,8).reduce((a,b)=>a+b,0),pun=KWH.filter((_,h)=>(h>=10&&h<14)||(h>=18&&h<22)).reduce((a,b)=>a+b,0),lla=tot-val-pun;
+  const pc=v=>Math.round(v/tot*100);
+  $("#luz").innerHTML=`<div class="card"><div class="card-h"><h2>Ayer gastaste ${tot.toFixed(1).replace(".",",")} kWh</h2><span class="small muted">≈ ${(tot*.16).toFixed(2).replace(".",",")} €</span></div>
+   <div class="kwh">${KWH.map((v,h)=>`<i style="height:${v/mx*100}%;background:${col(h)}"></i>`).join("")}</div><div class="kwh-x"><span>0 h</span><span>6 h</span><span>12 h</span><span>18 h</span><span>23 h</span></div>
+   <div class="split"><i style="width:${pc(val)}%;background:var(--mint)"></i><i style="width:${pc(lla)}%;background:var(--butter)"></i><i style="width:${pc(pun)}%;background:var(--peach)"></i></div>
+   <div class="leg"><span style="--c:var(--mint)">Valle ${pc(val)} %</span><span style="--c:var(--butter)">Llano ${pc(lla)} %</span><span style="--c:var(--peach)">Punta ${pc(pun)} %</span></div></div>
+   <div class="hero"><span class="lab">Nuestra propuesta</span><span class="big" style="font-size:32px">156 € menos al año</span><span class="lab">Gastas mucho en horas punta (de 18 a 22 h). Con una tarifa por tramos y poniendo la lavadora después de las 22 h, pagarías bastante menos.</span></div>
+   <div class="btns"><button class="btn pri" data-v="facturas">Ver la tarifa</button><button class="btn" id="luz-off">Desconectar</button></div>
+   <span class="aff">Datos de ejemplo. En la app real vendrían de Datadis con tu permiso.</span>`;
+}
+const CARDS=S.get("cards",["club","super"]);
+const FUEL=[{n:"Gasolinera A",dir:"Av. Principal · 1,2 km",p:1.589,dsc:.05,card:"club"},{n:"Gasolinera B",dir:"Ronda Norte · 2,4 km",p:1.555,dsc:0},{n:"Gasolinera del súper",dir:"Junto al súper · 3,1 km",p:1.569,dsc:.02,card:"super"}];
+function renderFuel(){
+  const f=FUEL.map(x=>({...x,real:x.p-(x.card&&CARDS.includes(x.card)?x.dsc:0)})).sort((a,b)=>a.real-b.real);
+  $("#fuel").innerHTML=f.map((x,i)=>`<div class="li"><span><span class="n">${x.n}</span>${i===0?' <span class="pl pl-o">La mejor</span>':""}<br><span class="m">${x.dir} · oficial ${x.p.toFixed(3).replace(".",",")} €${x.real<x.p?" · con tu tarjeta":""}</span></span><span style="font-weight:800">${x.real.toFixed(3).replace(".",",")} €</span></div>`).join("")+`<div class="btns" style="margin-top:6px"><button class="btn" data-toast="Se abriría el mapa con la ruta">Cómo llegar</button></div>`;
+}
+const REEMB=[["Pienso para gato · Mascotas","0,76 €","Disponible"],["Sérum de vitamina C","0,36 €","Disponible"],["Escapada 2 noches · Viajes","3,56 €","Pendiente"],["Cambio de tarifa de luz","8,00 €","Disponible"],["Zapatillas de running","0,90 €","Disponible"],["Fibra y móvil","2,54 €","Pendiente"]];
+function renderReemb(){
+  $("#reemb").innerHTML=`<div class="hero"><span class="lab">Puedes retirar</span><span class="big">10,02 €</span><span class="lab">Y 6,10 € más en camino (se confirman cuando la tienda valida la compra)</span></div>
+   <div class="btns"><button class="btn pri" data-toast="Te lo enviaríamos por Bizum o transferencia en 48 h">Retirar a mi cuenta</button><button class="btn" data-v="perfil">Subir mi reembolso</button></div>
+   <div class="card"><h2>Movimientos</h2>${REEMB.map(([n,v,st])=>`<div class="li"><span><span class="n">${n}</span><br><span class="m">${st}</span></span><span style="font-weight:800">+${v}</span></div>`).join("")}</div>
+   <span class="aff">Te devolvemos una parte de la comisión que nos pagan las tiendas. Se puede retirar a partir de 10 €.</span>`;
+}
+const DOCS=[["ITV del coche","Pide cita: hay hueco esta semana","18 nov","u"],["Seguro de hogar","Renueva solo · hay uno 92 € más barato","2 dic","u"],["Seguro del coche","Póliza guardada","15 mar 2027","i"],["Garantía de la lavadora","Factura guardada","Jun 2027","i"],["DNI","Te avisamos 3 meses antes","2029","i"],["Declaración de la renta","Abre en abril","Abr 2027","i"]];
+const PEDS=[["Zapatillas de running","Tienda de deporte · SEUR","Llega hoy","o"],["Funda del móvil","Tienda online · Correos","8 nov","i"],["Aspiradora sin cable","Tienda online grande · entregada el 26 oct","Devolver: 5 días","u"]];
+const WAL=[["Gasolinera A","Club · 5 cts/l","peach"],["Súper del barrio","Tarjeta cliente","mint"],["Biblioteca","N.º 0042-7719","sky"],["Cine · sábado","2 entradas · 18:30","lav"]];
+let MANT=S.get("mant",[["Revisión de la caldera","Obligatoria · última en enero",0],["Filtro de la campana","Cada 3 meses",0],["Purgar radiadores","Antes del invierno",1],["Revisar el extintor del coche","Una vez al año",0]]);
+const CAL=[["Natación","Jueves 17:30","Jue","i"],["Fin de semana en la otra casa","Viernes a domingo · el menú se ajusta solo","Vie–Dom","i"],["Cumpleaños de la tía Ana","Te sugerimos ideas de regalo","Dom","u",1],["Reunión del cole","Martes 17:00","Mar","i"]];
+const li=([n,m,t,c])=>`<div class="li"><span><span class="n">${n}</span><br><span class="m">${m}</span></span><span class="pl pl-${c}">${t}</span></div>`;
+function renderHogar(){
+  $("#docs").innerHTML=DOCS.map(li).join("");$("#peds").innerHTML=PEDS.map(li).join("");
+  $("#wal").innerHTML=WAL.map(([n,m,c])=>`<div class="wc" style="background:var(--${c})">${n}<small>${m}</small></div>`).join("");
+  $("#mant").innerHTML=MANT.map((x,i)=>`<div class="chk ${x[2]?"done":""}"><button class="box ${x[2]?"on":""}" data-mant="${i}" aria-label="Hecho">✓</button><span><span class="lbl" style="font-weight:700">${x[0]}</span><br><span class="small muted">${x[1]}</span></span><span></span></div>`).join("");
+  $("#cal").innerHTML=CAL.map(x=>li(x)+(x[4]?`<div class="btns" style="margin:-4px 0 8px"><button class="btn" data-v="ofertas">Ver ideas de regalo</button></div>`:"")).join("");
+  renderMenu();renderEvento();tkRender();arRender();famRender();
+}
+let TASKS=S.get("tasks",[["Reservar la sala del parque","Laura",1],["Comprar decoración","Marc",1],["Mandar invitaciones","Laura",0],["Encargar la tarta","Ana",0]]);
+const EXP=[["Laura",90,"Sala del parque"],["Marc",50,"Decoración"],["Ana",0,"Todavía no ha pagado"]];
+function renderEvento(){
+  const tot=EXP.reduce((a,e)=>a+e[1],0),sh=tot/EXP.length;
+  const debt=EXP.filter(e=>e[1]<sh).map(e=>[e[0],sh-e[1]]),cred=EXP.filter(e=>e[1]>sh).map(e=>[e[0],e[1]-sh]),mv=[];
+  debt.forEach(d=>cred.forEach(c=>{const m=Math.min(d[1],c[1]);if(m>.005){mv.push(`${d[0]} paga ${eur(m)} a ${c[0]}`);d[1]-=m;c[1]-=m}}));
+  $("#evento").innerHTML=`<div class="hero"><span class="lab">Sábado 23 nov</span><span class="big" style="font-size:32px">Cumple de Noa</span><span class="lab">${eur(tot)} gastados de 250 € de presupuesto</span><div class="prog" style="background:rgba(0,0,0,.12)"><i style="width:${tot/250*100}%;background:var(--p-ink)"></i></div></div>
+   <div class="card"><h2>Tareas</h2>${TASKS.map((t,i)=>`<div class="chk ${t[2]?"done":""}"><button class="box ${t[2]?"on":""}" data-task="${i}" aria-label="Marcar">✓</button><span class="lbl">${t[0]}</span><span class="small muted">${t[1]}</span></div>`).join("")}</div>
+   <div class="card"><h2>Gastos compartidos</h2>${EXP.map(e=>`<div class="li"><span><span class="n">${e[0]}</span><br><span class="m">${e[2]}</span></span><span style="font-weight:800">${eur(e[1])}</span></div>`).join("")}<div class="aid" style="background:var(--bg)"><b>Para quedar en paz (${eur(sh)} cada uno)</b><span class="small">${mv.join(" · ")||"Todo saldado"}</span></div></div>
+   <div class="btns"><button class="btn pri" data-toast="Plantillas: cumpleaños, viaje, comunión, mudanza">Nuevo evento</button><button class="btn" data-v="ofertas">Ofertas para la fiesta</button></div>`;
+}
+/* MI DINERO: módulo de pago (2,99 €/mes) con conexión bancaria */
+let dineroOn=S.get("dinero",false);
+function renderDinero(){
+  const body=`<div class="card"><div class="card-h"><h2>Noviembre</h2><span class="small muted">1.287 € gastados</span></div>${[["Supermercado",508],["Casa y suministros",201],["Compras online",162],["Ropa y casa",231],["Gasolina",118],["Comida a domicilio",64]].map(([n,v])=>`<div class="mbar"><span>${n}</span><span class="tr"><i style="width:${v/508*100}%"></i></span><span class="v">${eur(v)}</span></div>`).join("")}</div>
+   <div class="card"><h2>Lo que hemos visto</h2>${li(["Suscripción sin usar","Audiolibros · 9,99 €/mes, sin abrir desde junio","120 €/año","u"])}${li(["Cargo repetido","El gimnasio te ha cobrado dos veces este mes","39 €","u"])}${li(["Comida a domicilio","El doble que en septiembre","+32 €","i"])}</div>
+   <div class="card"><h2>A fin de mes</h2><span class="small muted">Si sigues así, te quedarán unos <b>214 €</b>. Con lo que hemos visto, podrían ser <b>292 €</b>.</span></div>`;
+  $("#dinero").innerHTML=`<div class="hero"><span class="lab">Mi dinero · 2,99 €/mes</span><span class="big" style="font-size:30px">Tu banco, mirado por ti cada día</span><span class="lab">Conectas tu cuenta una vez y te avisamos de lo que se te escapa: suscripciones olvidadas, cargos repetidos, gastos que se disparan y cómo llegar mejor a fin de mes.</span></div>`+
+   (dineroOn?body+`<div class="btns"><button class="btn" id="din-off">Desactivar Mi dinero</button></div>`:
+   `<div class="lockbox"><div class="blur">${body}</div><div class="ov"><div class="btns"><button class="btn pri" id="din-on">${SVGL}Activar por 2,99 €/mes</button></div></div></div>`)+
+   `<span class="aff">Te ayudamos con el presupuesto y el ahorro del día a día. No damos recomendaciones de inversión. Conexión segura con tu banco a través de un proveedor autorizado.</span>`;
+}
+const SVGL='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
+
+/* ESCAPADAS CHOLLO: hoteles, viajes, actividades y entradas por afiliación (datos de ejemplo) */
+let E=S.get("esc",{tipo:"escapada",cuando:"finde",quien:"familia",pres:"300"});if(!E.donde)E.donde="todo";if(E.dq==null)E.dq="";
+const ESC=[
+ {t:"escapada",n:"Hotel con spa en la Costa Brava",m:"2 noches · desayuno incluido · 1 h 30 en coche",p:178,o:236,q:["pareja","familia"],w:["finde","mes","puente"],col:"sky",tag:"Hotel",d:["playa","cerca"],dn:"Costa Brava"},
+ {t:"escapada",n:"Casa rural con piscina en el Pirineo",m:"2 noches · hasta 6 personas · admite mascotas",p:240,o:320,q:["familia","amigas"],w:["finde","proximo","puente"],col:"mint",tag:"Casa rural",d:["montana","cerca"],dn:"Pirineo"},
+ {t:"escapada",n:"Apartamento junto a la playa",m:"3 noches · cocina y terraza",p:265,o:350,q:["familia","amigas"],w:["mes","puente"],col:"butter",tag:"Apartamento",d:["playa"],dn:"Costa Dorada"},
+ {t:"escapada",n:"Hotel boutique en el centro de Girona",m:"1 noche · late checkout",p:92,o:128,q:["pareja","sola"],w:["finde","proximo","mes"],col:"lav",tag:"Hotel",d:["ciudad","cerca"],dn:"Girona"},
+ {t:"viaje",n:"Lisboa: vuelo + hotel",m:"4 noches · salida desde Barcelona",p:390,o:520,q:["pareja","amigas","sola"],w:["mes","puente"],col:"peach",tag:"Vuelo + hotel",d:["ciudad","fuera"],dn:"Lisboa, Portugal"},
+ {t:"viaje",n:"Mallorca en familia: ferry + hotel",m:"5 noches · media pensión · niños gratis",p:610,o:820,q:["familia"],w:["puente","mes"],col:"sky",tag:"Ferry + hotel",d:["playa"],dn:"Mallorca"},
+ {t:"viaje",n:"Roma: vuelo + apartamento",m:"3 noches",p:340,o:445,q:["pareja","amigas","sola"],w:["mes"],col:"butter",tag:"Vuelo + apartamento",d:["ciudad","fuera"],dn:"Roma, Italia"},
+ {t:"actividad",n:"Granja escuela: un día con animales",m:"Sábado o domingo · ideal de 3 a 10 años",p:18,o:25,q:["familia"],w:["finde","proximo"],col:"mint",tag:"Actividad",d:["cerca","montana"],dn:"Montseny"},
+ {t:"actividad",n:"Concierto a la luz de las velas",m:"Música clásica · varias fechas",p:24,o:35,q:["pareja","amigas","sola"],w:["finde","proximo","mes"],col:"lav",tag:"Entradas",d:["cerca","ciudad"],dn:"Barcelona"},
+ {t:"actividad",n:"Parque acuático cubierto",m:"Entrada de día · familias",p:21,o:30,q:["familia","amigas"],w:["finde","proximo","mes"],col:"sky",tag:"Entradas",d:["cerca"],dn:"Cerca de casa"},
+ {t:"actividad",n:"Ruta en kayak por la costa",m:"3 horas con guía",p:32,o:45,q:["pareja","amigas","sola"],w:["proximo","mes"],col:"peach",tag:"Actividad",d:["playa","cerca"],dn:"Costa Brava"},
+ {t:"actividad",n:"Exposición inmersiva",m:"Entradas con hora · niños desde 4 años",p:14,o:19,q:["familia","pareja","amigas","sola"],w:["finde","proximo","mes","puente"],col:"butter",tag:"Entradas",d:["cerca","ciudad"],dn:"Barcelona"},
+ {t:"actividad",n:"Taller de cerámica",m:"2 horas · todo el material incluido",p:29,o:42,q:["pareja","amigas","sola"],w:["proximo","mes"],col:"mint",tag:"Taller",d:["cerca"],dn:"Cerca de casa"}
+];
+function renderEsc(){
+  const ch=(k,opts)=>`<div class="chips wrap-chips">${opts.map(([v,l])=>`<button class="chip" data-esc="${k}" data-val="${v}" aria-pressed="${E[k]===v}">${l}</button>`).join("")}</div>`;
+  const tipo=`<div class="cards" style="--n:3">${[["escapada","Escapada","1–3 noches",'home'],["viaje","Viaje","Vuelo u hotel",'pin'],["actividad","Plan","Un día o una tarde",'heart']].map(([v,l,sm,ic])=>`<button data-esc="tipo" data-val="${v}" aria-pressed="${E.tipo===v}">${ico(ic)}${l}<small>${sm}</small></button>`).join("")}</div>`;
+  $("#esc-form").innerHTML=`<div class="pk"><span class="pk-l">¿Qué te apetece?</span>${tipo}</div>
+   <div class="pk"><span class="pk-l">¿Dónde?</span>${ch("donde",[["todo","Me da igual"],["cerca","Cerca de casa"],["playa","Playa"],["montana","Montaña"],["ciudad","Ciudad"],["fuera","Extranjero"]])}<label class="search" for="e-dq" style="background:var(--bg)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><input id="e-dq" type="search" placeholder="O escribe un destino: Girona, Lisboa…" value="${E.dq}" autocomplete="off"></label></div>
+   <div class="pk"><span class="pk-l">¿Cuándo?</span>${ch("cuando",[["finde","Este finde"],["proximo","El próximo"],["mes","Este mes"],["puente","Puente de diciembre"],["fechas","Elegir fechas"]])}${E.cuando==="fechas"?`<div class="two" style="margin-top:4px"><div class="field"><label for="e-ida">Desde</label><input type="date" id="e-ida" data-edate="ida" value="${E.ida||""}"></div><div class="field"><label for="e-vuelta">Hasta</label><input type="date" id="e-vuelta" data-edate="vuelta" value="${E.vuelta||""}"></div></div>`:""}</div>
+   <div class="pk"><span class="pk-l">¿Con quién?</span>${ch("quien",[["familia","En familia"],["pareja","En pareja"],["amigas","Con amigas"],["sola","Yo sola"]])}</div>
+   <div class="pk"><span class="pk-l">¿Cuánto quieres gastar?</span>${ch("pres",[["100","Hasta 100 €"],["300","Hasta 300 €"],["700","Hasta 700 €"],["sin","Sin límite"]])}</div>`;
+  const max=E.pres==="sin"?1e9:+E.pres;
+  const list=ESC.filter(x=>x.t===E.tipo&&x.q.includes(E.quien)&&(E.cuando==="fechas"||x.w.includes(E.cuando))&&(E.donde==="todo"||x.d.includes(E.donde))&&(!E.dq||norm(x.dn+" "+x.n).includes(norm(E.dq)))&&x.p<=max).sort((a,b)=>(b.o-b.p)/b.o-(a.o-a.p)/a.o);
+  const cb=cbNow();
+  $("#esc-res").innerHTML=`<span class="small muted">${list.length?`${list.length} ${list.length===1?"chollo":"chollos"} para ti${E.cuando==="fechas"&&E.ida?` del ${new Date(E.ida).toLocaleDateString("es-ES",{day:"numeric",month:"short"})}${E.vuelta?" al "+new Date(E.vuelta).toLocaleDateString("es-ES",{day:"numeric",month:"short"}):""}`:""}`:"No hay chollos con estos filtros"}</span>`+
+   (list.map(x=>`<div class="esc"><div class="ph" style="background:var(--${x.col})"><span>${x.tag}</span><span>-${Math.round((1-x.p/x.o)*100)} %</span></div><div class="bd"><span class="n">${x.n}</span><span class="m">${x.dn} · ${x.m}</span><span class="pr"><b>${eur(x.p)}</b><s>${eur(x.o)}</s><span class="freq">+${(x.p*cb/100).toLocaleString("es-ES",{maximumFractionDigits:2})} € de vuelta</span></span><div class="btns" style="margin-top:6px"><button class="btn pri" data-toast="Se abriría la reserva en la plataforma asociada">Reservar</button><button class="btn" data-toast="Guardado en tus planes">Guardar</button></div></div></div>`).join("")||'<div class="aid">Prueba con otra fecha o con más presupuesto. Te avisamos si aparece algo.<div class="btns"><button class="btn" data-toast="Te avisaremos">Avísame</button></div></div>');
+}
+/* OTRAS VENTAJAS dentro de Ayudas: bonificaciones de empresas asociadas (afiliación) */
+const VENT=[
+ {n:"Cuenta sin comisiones con bienvenida",amt:"Hasta 100 € al abrirla, según la promoción",who:"Banco asociado",docs:["Sin comisiones de mantenimiento","Condiciones de la promoción en la web del banco"],t:p=>true},
+ {n:"Cuenta remunerada para tus ahorros",amt:"Intereses por el dinero que no usas",who:"Banco asociado",docs:["Sin permanencia","Rentabilidad según el banco"],t:p=>true},
+ {n:"Cuenta para tus hijos",amt:"Sin comisiones y con tarjeta para ellos",who:"Banco asociado",docs:["Para menores de 18"],t:p=>p.hijos>0},
+ {n:"Placas solares con estudio gratis",amt:"Cuánto ahorrarías y qué subvenciones hay",who:"Instaladores asociados",docs:["Vivienda en propiedad o comunidad de vecinos"],t:p=>p.vivienda==="propiedad"}
+];
+function renderVentajas(){
+  $("#ventajas").innerHTML=VENT.filter(v=>v.t(P)).map(a=>`<div class="aid"><div class="h"><span class="n">${a.n}</span><span class="lvl l-maybe">Ventaja</span></div><span class="amt">${a.amt}</span><span class="small muted">${a.who}</span><ul>${a.docs.map(d=>`<li>${d}</li>`).join("")}</ul><div class="btns"><button class="btn" data-toast="Se abriría la web de la empresa asociada (enlace de afiliación)">Ver condiciones</button></div></div>`).join("")+`<span class="aff">Enlaces de afiliación: si abres una cuenta o pides un estudio, la empresa nos paga una comisión. No son recomendaciones de inversión.</span>`;
+}
+
+/* MENÚ Y COMPRA (adaptado de Vitalis): Hoy · Semana · Compra · Recetas */
+const REC={
+ lentejas:{n:"Lentejas con verduras",t:40,col:"butter",ing:[["Lentejas",400,"g","Súper","Despensa"],["Zanahorias",2,"u","Frutería","Fruta y verdura"],["Pimiento verde",1,"u","Frutería","Fruta y verdura"],["Cebolla",1,"u","Frutería","Fruta y verdura"]],st:["Sofríe la verdura picada","Añade las lentejas y agua","Cuece 30 minutos"]},
+ tortilla:{n:"Tortilla de patatas y ensalada",t:30,col:"peach",ing:[["Huevos",6,"u","Súper","Lácteos y huevos"],["Patatas",1,"kg","Frutería","Fruta y verdura"],["Lechuga",1,"u","Frutería","Fruta y verdura"]],st:["Fríe las patatas a fuego lento","Mezcla con el huevo batido","Cuaja por los dos lados"]},
+ pasta:{n:"Pasta con atún y tomate",t:20,col:"mint",ing:[["Pasta",500,"g","Súper","Despensa"],["Atún en lata",3,"u","Súper","Despensa"],["Tomate triturado",1,"u","Súper","Despensa"]],st:["Cuece la pasta","Calienta el tomate con el atún","Mezcla y sirve"]},
+ crema:{n:"Crema de calabaza",t:35,col:"butter",ing:[["Calabaza",1,"kg","Frutería","Fruta y verdura"],["Puerro",1,"u","Frutería","Fruta y verdura"],["Patatas",.5,"kg","Frutería","Fruta y verdura"]],st:["Rehoga el puerro","Añade calabaza y patata","Cuece y tritura"]},
+ pollo:{n:"Pollo al horno con patatas",t:60,col:"peach",ing:[["Pollo troceado",1.2,"kg","Carnicería","Carne y pescado"],["Patatas",1,"kg","Frutería","Fruta y verdura"],["Limón",1,"u","Frutería","Fruta y verdura"]],st:["Coloca el pollo sobre las patatas","Hornea 50 minutos a 200 °C"]},
+ arroz:{n:"Arroz con verduras",t:35,col:"mint",ing:[["Arroz",400,"g","Súper","Despensa"],["Calabacín",1,"u","Frutería","Fruta y verdura"],["Pimiento rojo",1,"u","Frutería","Fruta y verdura"]],st:["Sofríe la verdura","Añade el arroz y el caldo","Cuece 18 minutos"]},
+ merluza:{n:"Merluza con brócoli",t:25,col:"sky",ing:[["Merluza",4,"u","Pescadería","Carne y pescado"],["Brócoli",1,"u","Frutería","Fruta y verdura"]],st:["Cuece el brócoli al vapor","Haz la merluza a la plancha"]},
+ garbanzos:{n:"Garbanzos con espinacas",t:25,col:"lav",ing:[["Garbanzos cocidos",2,"u","Súper","Despensa"],["Espinacas",300,"g","Frutería","Fruta y verdura"],["Ajo",1,"u","Frutería","Fruta y verdura"]],st:["Saltea el ajo y las espinacas","Añade los garbanzos"]},
+ pizza:{n:"Pizza casera",t:30,col:"peach",ing:[["Masa de pizza",2,"u","Súper","Despensa"],["Mozzarella",250,"g","Súper","Lácteos y huevos"],["Tomate triturado",1,"u","Súper","Despensa"]],st:["Extiende la masa","Añade tomate y queso","Hornea 12 minutos"]},
+ hamburguesas:{n:"Hamburguesas caseras",t:20,col:"sky",ing:[["Carne picada",600,"g","Carnicería","Carne y pescado"],["Pan de hamburguesa",4,"u","Súper","Panadería"],["Tomate",2,"u","Frutería","Fruta y verdura"]],st:["Forma las hamburguesas","Hazlas a la plancha"]},
+ paella:{n:"Paella",t:50,col:"butter",ing:[["Arroz",400,"g","Súper","Despensa"],["Pollo troceado",.6,"kg","Carnicería","Carne y pescado"],["Judía verde",250,"g","Frutería","Fruta y verdura"]],st:["Dora el pollo","Sofríe la verdura","Añade arroz y caldo, 18 minutos"]},
+ yogur:{n:"Fruta y yogur",t:5,col:"lav",ing:[["Fruta variada",1.5,"kg","Frutería","Fruta y verdura"],["Yogures",8,"u","Súper","Lácteos y huevos"]],st:["Corta la fruta y sirve con yogur"]},
+ sandwich:{n:"Sándwiches y crudités",t:10,col:"mint",ing:[["Pan de molde",1,"u","Súper","Panadería"],["Pavo en lonchas",200,"g","Súper","Carne y pescado"],["Zanahorias",3,"u","Frutería","Fruta y verdura"]],st:["Prepara los sándwiches","Corta la zanahoria en bastones"]}
+};
+const MEALS2={comida:"Comida",cena:"Cena"};
+const DAYN=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],DAYL=["L","M","X","J","V","S","D"];
+const TODAYI=2; /* prototipo: hoy es miércoles */
+const PROP=[["lentejas","tortilla"],["pasta","crema"],["pollo","sandwich"],["arroz","merluza"],["garbanzos","pizza"],[null,"hamburguesas"],["paella","yogur"]];
+const ALT=Object.keys(REC);
+let MW=S.get("mw",PROP.map((d,i)=>d.map((r,j)=>({r,ok:i<TODAYI||(i===TODAYI&&j===0)?1:0,kids:!(i>=4)}))));
+let mnTab="hoy",shopChk=S.get("shopchk",{}),shopHome=S.get("shophome",{}),shopStore=S.get("shopstore",{}),shopExtra=S.get("shopextra",[]),recOpen=null,recQ="";
+const STORES=["Súper","Frutería","Carnicería","Pescadería"];
+const AIS=["Fruta y verdura","Carne y pescado","Lácteos y huevos","Panadería","Despensa","Droguería y casa","Otros"];
+const OFFERITEMS={"Aceite de oliva virgen extra 1 l":1,"Yogures":"2x1 en tu súper","Atún en lata":"-20 %","Pasta":"3x2"};
+const HEARTI='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>';
+const HOUSEI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>';
+const MOVEI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg>';
+const slotHTML=(d,m)=>{const x=MW[d][m];const meal=m?"cena":"comida";
+  if(!x.r)return`<div class="slot"><span class="th" style="background:var(--surface)">·</span><span><span class="sl">${MEALS2[meal]}</span><br><span class="st muted">Fuera de casa</span></span><span class="acts"><button class="mini" data-mnpick="${d}|${m}" aria-label="Elegir plato">+</button></span></div>`;
+  const r=REC[x.r];return`<div class="slot ${x.ok?"":"prop"}"><span class="th" style="background:var(--${r.col})">${r.n[0]}</span><span><span class="sl">${MEALS2[meal]}${x.ok?"":" · <span class=\"sp\">Propuesta</span>"}</span><br><span class="st">${r.n}</span></span><span class="acts">${x.ok?"":`<button class="mini ok" data-mnok="${d}|${m}" aria-label="Aceptar">✓</button>`}<button class="mini" data-mnalt="${d}|${m}" aria-label="Otra propuesta">↻</button><button class="mini" data-mnkids="${d}|${m}" aria-pressed="${x.kids}" aria-label="Con los peques">${HEARTI}</button></span></div>`};
+function shopping(){
+  const items={};MW.forEach(day=>day.forEach(x=>{if(!x.r||!x.ok)return;const r=REC[x.r];r.ing.forEach(([n,q,u,st,ai])=>{const k=n;if(!items[k])items[k]={n,q:0,u,st,ai,from:new Set()};items[k].q+=q;items[k].from.add(r.n)})}));
+  shopExtra.forEach(e=>{items[e.n]=items[e.n]||{n:e.n,q:e.q,u:"u",st:e.st,ai:"Otros",from:new Set(),extra:1}});
+  Object.values(items).forEach(e=>{if(shopStore[e.n])e.st=shopStore[e.n]});return Object.values(items)}
+const fq=e=>e.u==="u"?`${e.q} ${e.q===1?"unidad":"unidades"}`:e.u==="kg"?`${String(Math.round(e.q*10)/10).replace(".",",")} kg`:`${Math.round(e.q)} g`;
+function renderMenu(){
+  document.querySelectorAll("#mn-seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mn===mnTab));
+  const props=MW.flat().filter(x=>x.r&&!x.ok).length;
+  if(mnTab==="hoy"){
+    const mealCard=(d,m)=>{const x=MW[d][m],meal=m?"cena":"comida";if(!x.r)return`<div class="meal"><div class="bd"><span class="sl">${MEALS2[meal]}</span><span class="n">Fuera de casa</span><span class="small muted">Nada que cocinar</span></div></div>`;const r=REC[x.r];
+      return`<div class="meal"><div class="ph" style="background:var(--${r.col})">${r.n[0]}</div><div class="bd"><span class="sl">${MEALS2[meal]} · ${r.t} min${x.kids?" · con los peques":""}${x.ok?"":" · propuesta"}</span><span class="n">${r.n}</span><span class="small muted">${r.ing.map(i=>i[0]).join(", ")}</span><div class="btns">${x.ok?"":`<button class="btn pri" data-mnok="${d}|${m}">Aceptar</button>`}<button class="btn" data-mnrec="${x.r}">Ver receta</button><button class="btn" data-mnalt="${d}|${m}">Cambiar</button></div></div></div>`};
+    $("#mn-box").innerHTML=`<h2>${DAYN[TODAYI]}</h2>${mealCard(TODAYI,0)}${mealCard(TODAYI,1)}<span class="pk-l" style="margin-top:6px">Mañana, ${DAYN[TODAYI+1].toLowerCase()}</span>${slotHTML(TODAYI+1,0)}${slotHTML(TODAYI+1,1)}`;return}
+  if(mnTab==="semana"){
+    $("#mn-box").innerHTML=`<div class="wstrip">${MW.map((day,i)=>`<button class="ws ${i===TODAYI?"t":""}" data-mnjump="${i}"><span>${DAYL[i]}</span><b>${3+i}</b><i>${day.map(x=>`<em class="${x.r&&x.ok?"on":x.r?"pr":""}"></em>`).join("")}</i></button>`).join("")}</div>
+     ${props?`<div class="prop-box"><div><b>${props} ${props===1?"propuesta":"propuestas"}</b><span>✓ aceptar · ↻ cambiar</span></div><button class="btn pri" style="background:var(--p-ink);color:var(--peach)" id="mn-all">Aceptar todas</button></div>`:""}
+     ${MW.map((day,i)=>`<div class="dayc" id="mnd-${i}"><div class="dh"><b>${DAYN[i]} ${3+i}</b>${i===TODAYI?'<span class="dtag">Hoy</span>':i===TODAYI+1?'<span class="dtag soft">Mañana</span>':""}${i>=4?'<span class="dtag away">Los peques en la otra casa</span>':""}</div>${slotHTML(i,0)}${slotHTML(i,1)}</div>`).join("")}
+     <span class="small muted">El corazón indica que comen los peques. Tócalo si un día cambia: la compra se ajusta sola.</span>
+     <div class="btns"><button class="btn" data-mn="compra">Ver la lista de la compra</button></div>`;return}
+  if(mnTab==="compra"){
+    const all=shopping(),buy=all.filter(e=>!shopHome[e.n]),home=all.filter(e=>shopHome[e.n]);const done=buy.filter(e=>shopChk[e.n]).length;
+    if(!all.length){$("#mn-box").innerHTML=`<div class="aid">La lista está vacía. Acepta comidas en Semana y aparecerán sus ingredientes, cada uno en su tienda.<div class="btns"><button class="btn pri" data-mn="semana">Planificar la semana</button></div></div>`;return}
+    const row=e=>`<div class="srow ${shopChk[e.n]?"done":""}"><button class="box ${shopChk[e.n]?"on":""}" data-shchk="${e.n}" aria-label="Al carro">✓</button><span class="nm">${e.n}${OFFERITEMS[e.n]&&OFFERITEMS[e.n]!==1?` <span class="pl pl-u">${OFFERITEMS[e.n]}</span>`:""}<span class="from">${e.extra?"Añadido a mano":[...e.from].join(", ")}</span></span><span class="qty">${fq(e)}</span><button class="ibtn" data-shhome="${e.n}" aria-label="Ya lo tengo en casa">${HOUSEI}</button><button class="ibtn" data-shmove="${e.n}" aria-label="Cambiar de tienda">${MOVEI}</button></div>`;
+    const stores=STORES.filter(st=>buy.some(e=>e.st===st));
+    $("#mn-box").innerHTML=`<div class="view" style="gap:6px"><div class="row-h"><span class="small muted">${done} de ${buy.length} en el carro</span><button class="btn" id="sh-copy" style="padding:8px 14px">Copiar lista</button></div><div class="prog"><i style="width:${buy.length?done/buy.length*100:0}%"></i></div><span class="small muted">Antes de salir, toca la casita en lo que ya tengas. Con las flechas lo pasas a otra tienda.</span></div>
+     ${stores.map(st=>{const it=buy.filter(e=>e.st===st),left=it.filter(e=>!shopChk[e.n]).length;return`<details class="store" open><summary><h3>${st}<em>${left?left+" por coger":"Completo"}</em></h3></summary>${AIS.filter(a=>it.some(e=>e.ai===a)).map(a=>`<div class="aisle">${a}</div>${it.filter(e=>e.ai===a).map(row).join("")}`).join("")}</details>`}).join("")}
+     <div class="card"><span class="pk-l">¿Te hace falta?</span><div class="chips wrap-chips">${["Papel de cocina","Leche","Pan","Detergente"].filter(n=>!all.some(e=>e.n===n)).map(n=>`<button class="chip" data-shsugg="${n}">+ ${n}</button>`).join("")}</div>
+      <span class="pk-l">Añadir algo más</span><form class="addf" id="sh-add"><input id="sh-n" placeholder="Ej.: papel de cocina" autocomplete="off" aria-label="Producto"><input id="sh-q" type="number" min="1" value="1" aria-label="Unidades"><button class="btn pri" type="submit">Añadir</button></form></div>
+     ${home.length?`<details class="store"><summary><h3>Ya en casa<em>${home.length}</em></h3></summary>${home.map(e=>`<div class="li"><span>${e.n}</span><button class="btn" style="padding:7px 12px" data-shhome="${e.n}">Hay que comprar</button></div>`).join("")}</details>`:""}
+     <div class="aid"><b>Ahorra en esta compra</b><span class="small">Hay ofertas en tu súper en yogures, atún y pasta. Si compras online desde Masvida, te devolvemos el ${cbNow().toLocaleString("es-ES")} %.</span><div class="btns"><button class="btn" data-v="ofertas">Ver ofertas del súper</button></div></div>`;return}
+  // recetas
+  const q=norm(recQ),list=Object.entries(REC).filter(([k,r])=>!q||norm(r.n).includes(q)||r.ing.some(i=>norm(i[0]).includes(q)));
+  if(recOpen){const r=REC[recOpen];$("#mn-box").innerHTML=`<button class="backb" data-mnrec="">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>'}<span>Recetas</span></button><div class="meal"><div class="ph" style="background:var(--${r.col})">${r.n[0]}</div><div class="bd"><span class="sl">${r.t} min · 4 raciones</span><span class="n">${r.n}</span></div></div><div class="recd"><h2>Ingredientes</h2><ul>${r.ing.map(i=>`<li>${i[0]} · ${fq({q:i[1],u:i[2]})} <span class="muted">(${i[3]})</span></li>`).join("")}</ul><h2>Pasos</h2><ol>${r.st.map(x=>`<li>${x}</li>`).join("")}</ol></div>`;return}
+  $("#mn-box").innerHTML=`<label class="search" for="rq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="rq" type="search" placeholder="Buscar por nombre o ingrediente" value="${recQ}" autocomplete="off"></label>
+   ${list.map(([k,r])=>`<button class="rec" data-mnrec="${k}"><span class="th" style="background:var(--${r.col})">${r.n[0]}</span><span><b>${r.n}</b><small>${r.t} min · ${r.ing.map(i=>i[0]).slice(0,3).join(", ")}</small></span></button>`).join("")||'<div class="aid">No hay recetas con esa palabra.</div>'}
+   <div class="btns"><button class="btn pri" data-toast="Pegarías el texto de la receta o una foto y la leeríamos por ti">Añadir receta</button></div>`;
+}
+/* NAVEGACIÓN */
+const TT={inicio:["Masvida · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],ofertas:["Elegidas para ti","Ofertas"],
+ hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Esta semana","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],familia:["Quién vive en casa","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
+const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",familia:"perfil",eventos:"hogar",dinero:"perfil"};
+const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú"};
+function go(v){const top=PARENT[v]||v;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+ $("#back").hidden=!PARENT[v];if(PARENT[v]){$("#back").dataset.v=PARENT[v];$("#back-l").textContent=LBL[PARENT[v]]}
+ $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
+function resetBill(){$("#step-res").hidden=true;$("#step-load").hidden=true;$("#step-up").hidden=false}
+function renderAll(form=true){if(!BILLS[cur]||(BILLS[cur].need&&!BILLS[cur].need(P)))cur="luz";renderTypes();renderAids();renderOffers();renderHome();renderLevels();renderLuz();renderFuel();renderReemb();renderHogar();renderDinero();renderEsc();renderVentajas();renderHubTags();if(form)renderForm()}
+function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs","2 pronto");t("pedidos","3");t("wallet","4");t("mant",MANT.filter(x=>!x[2]).length+" pend.");t("cal","4");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.v)go(b.dataset.v);
+  if(b.dataset.toast)toast(b.dataset.toast);
+  if(b.dataset.type){cur=b.dataset.type;S.set("cur",cur);renderTypes();resetBill()}
+  if(b.dataset.goBill){cur=b.dataset.goBill;S.set("cur",cur);go("facturas");renderTypes();resetBill()}
+  if(b.id==="sample")analyse();
+  if(b.id==="again"){resetBill();window.scrollTo(0,0)}
+  if(b.dataset.cat){cat=b.dataset.cat;renderOffers();window.scrollTo(0,0)}
+  if(b.id==="qx"){q="";$("#q").value="";renderOffers()}
+  if(b.id==="sim"){refs=refs>=10?0:refs+1;S.set("refs",refs);renderLevels();renderOffers();toast(refs?"Se ha unido una amiga":"Contador reiniciado")}
+  if(b.id==="ig"){try{navigator.clipboard.writeText(INV+" "+INVURL).then(()=>toast("Texto copiado: pégalo en tu historia o en un mensaje de Instagram"),()=>toast("Copia el código LAURA-7K2 y compártelo en Instagram"))}catch(err){toast("Copia el código LAURA-7K2 y compártelo en Instagram")}}
+  if(b.id==="copy"){const t=INV+" "+INVURL;try{navigator.clipboard.writeText(t).then(()=>toast("Invitación copiada"),()=>toast(t))}catch(err){toast(t)}}
+  if(b.id==="luz-on"){luzOn=true;S.set("luz",true);renderLuz();renderHubTags();toast("Luz conectada (ejemplo)")}
+  if(b.id==="luz-off"){luzOn=false;S.set("luz",false);renderLuz();renderHubTags()}
+  if(b.id==="din-on"){dineroOn=true;S.set("dinero",true);renderDinero();toast("Mi dinero activado (ejemplo, sin cobro)")}
+  if(b.id==="din-off"){dineroOn=false;S.set("dinero",false);renderDinero()}
+  if(b.dataset.mant){MANT[+b.dataset.mant][2]=MANT[+b.dataset.mant][2]?0:1;S.set("mant",MANT);renderHogar();renderHubTags()}
+  if(b.dataset.mn){mnTab=b.dataset.mn;recOpen=null;renderMenu();window.scrollTo(0,0)}
+  if(b.dataset.mnok){const[d,m]=b.dataset.mnok.split("|");MW[d][m].ok=1;S.set("mw",MW);renderMenu();toast("Añadido a la lista de la compra")}
+  if(b.id==="mn-all"){MW.forEach(day=>day.forEach(x=>{if(x.r)x.ok=1}));S.set("mw",MW);renderMenu();toast("Semana planificada: la compra ya está hecha")}
+  if(b.dataset.mnalt){const[d,m]=b.dataset.mnalt.split("|");const x=MW[d][m];const opts=ALT.filter(k=>k!==x.r);x.r=opts[(ALT.indexOf(x.r)+1+d*1)%opts.length];x.ok=0;S.set("mw",MW);renderMenu()}
+  if(b.dataset.mnpick){const[d,m]=b.dataset.mnpick.split("|");MW[d][m].r=ALT[(+d*2+ +m)%ALT.length];MW[d][m].ok=0;S.set("mw",MW);renderMenu()}
+  if(b.dataset.mnkids){const[d,m]=b.dataset.mnkids.split("|");MW[d][m].kids=!MW[d][m].kids;S.set("mw",MW);renderMenu()}
+  if(b.dataset.mnjump){const el=document.getElementById("mnd-"+b.dataset.mnjump);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})}
+  if(b.dataset.mnrec!=null){recOpen=b.dataset.mnrec||null;if(recOpen)mnTab="recetas";renderMenu();window.scrollTo(0,0)}
+  if(b.dataset.shchk){shopChk[b.dataset.shchk]=!shopChk[b.dataset.shchk];S.set("shopchk",shopChk);renderMenu()}
+  if(b.dataset.shhome){shopHome[b.dataset.shhome]=!shopHome[b.dataset.shhome];S.set("shophome",shopHome);renderMenu()}
+  if(b.dataset.shmove){const e=shopping().find(x=>x.n===b.dataset.shmove);const nx=STORES[(STORES.indexOf(e.st)+1)%STORES.length];shopStore[e.n]=nx;S.set("shopstore",shopStore);renderMenu();toast("Movido a "+nx)}
+  if(b.dataset.shsugg){shopExtra.push({n:b.dataset.shsugg,q:1,st:"Súper"});S.set("shopextra",shopExtra);renderMenu()}
+  if(b.id==="sh-copy"){const t=shopping().filter(e=>!shopHome[e.n]).map(e=>`${e.st}: ${e.n} (${fq(e)})`).join("\n");try{navigator.clipboard.writeText(t).then(()=>toast("Lista copiada"),()=>toast("No se ha podido copiar"))}catch(err){toast("No se ha podido copiar")}}
+  if(b.dataset.task){TASKS[+b.dataset.task][2]=TASKS[+b.dataset.task][2]?0:1;S.set("tasks",TASKS);renderEvento()}
+  if(b.dataset.oseg){document.querySelectorAll("#oseg button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#o-compras").hidden=b.dataset.oseg!=="compras";$("#o-escapadas").hidden=b.dataset.oseg!=="escapadas";$("#title").textContent=b.dataset.oseg==="compras"?"Ofertas":"Escapadas chollo"}
+  if(b.dataset.esc){E[b.dataset.esc]=b.dataset.val;S.set("esc",E);renderEsc()}
+  if(b.dataset.one){P[b.dataset.one]=b.dataset.val;save();renderForm()}
+  if(b.dataset.step){const k=b.dataset.step,d=+b.dataset.d;let v=P[k]+d;if(b.dataset.min!=null)v=Math.max(+b.dataset.min,v);if(b.dataset.max!=null)v=Math.min(+b.dataset.max,v);P[k]=v;save();renderForm()}
+  if(b.dataset.multi){const k=b.dataset.multi,v=b.dataset.val;P[k]=P[k].includes(v)?P[k].filter(x=>x!==v):[...P[k],v];b.setAttribute("aria-pressed",P[k].includes(v));save()}
+});
+document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.edate){E[e.target.dataset.edate]=e.target.value;S.set("esc",E);if(E.ida&&E.vuelta&&E.vuelta<E.ida)toast("La fecha de vuelta es anterior a la de ida");renderEsc();return}const k=e.target.dataset&&e.target.dataset.k;if(!k)return;P[k]=e.target.type==="number"?Math.max(0,parseInt(e.target.value||"0",10)):e.target.value;save()});
+document.addEventListener("submit",e=>{if(e.target.id==="sh-add"){e.preventDefault();const n=$("#sh-n").value.trim();if(!n)return;shopExtra.push({n,q:Math.max(1,parseInt($("#sh-q").value||"1",10)),st:"Súper"});S.set("shopextra",shopExtra);renderMenu()}});
+document.addEventListener("input",e=>{if(e.target.id==="rq"){recQ=e.target.value;clearTimeout(window._rq);window._rq=setTimeout(()=>{renderMenu();const el=document.getElementById("rq");el.focus();el.setSelectionRange(recQ.length,recQ.length)},300);return}if(e.target.id==="e-dq"){E.dq=e.target.value.trim();S.set("esc",E);clearTimeout(window._dq);window._dq=setTimeout(()=>{const pos=e.target.selectionStart;renderEsc();const el=document.getElementById("e-dq");el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}},350)}});
+$("#q").addEventListener("input",e=>{q=e.target.value.trim();renderOffers()});
+$("#file").addEventListener("change",e=>{if(e.target.files.length)analyse();e.target.value=""});
+/* TAREAS DE CASA: reparto entre la familia y premios por estrellas (como en Vitalis, adaptado) */
+const DAY0=Math.floor(Date.now()/864e5);
+const MEM=S.get("mem",[{id:"laura",n:"Laura",c:"peach",kid:0,talla:"M",home:"siempre"},{id:"noa",n:"Noa",c:"mint",kid:1,age:8,pie:31,talla:"8 años",home:"siempre"},{id:"leo",n:"Leo",c:"lav",kid:1,age:12,pie:37,talla:"12 años",home:"alterno"}]);
+const memOf=id=>MEM.find(m=>m.id===id)||MEM[0];
+const CH0=[
+ {id:"c1",n:"Poner una lavadora",a:"Ropa",ev:3,u:"d",last:-3,who:"laura",st:2},
+ {id:"c2",n:"Tender y recoger la ropa",a:"Ropa",ev:3,u:"d",last:-3,who:"leo",st:3},
+ {id:"c3",n:"Sacar la basura y el reciclaje",a:"Cocina",ev:2,u:"d",last:-2,who:"leo",st:2,rot:1},
+ {id:"c4",n:"Poner y quitar la mesa",a:"Cocina",ev:1,u:"d",last:-1,who:"noa",st:1,rot:1},
+ {id:"c5",n:"Dar de comer a los gatos",a:"Mascotas",ev:1,u:"d",last:-1,who:"noa",st:1},
+ {id:"c6",n:"Fregar el suelo",a:"Toda la casa",ev:1,u:"s",last:-6,who:"laura",st:4},
+ {id:"c7",n:"Limpiar el baño",a:"Baño",ev:1,u:"s",last:-9,who:"leo",st:4},
+ {id:"c8",n:"Ordenar la habitación",a:"Dormitorios",ev:1,u:"s",last:-7,who:"noa",st:3},
+ {id:"c9",n:"Cambiar sábanas",a:"Dormitorios",ev:2,u:"s",last:-4,who:"laura",st:3},
+ {id:"c10",n:"Limpiar el arenero",a:"Mascotas",ev:2,u:"d",last:-1,who:"leo",st:2},
+ {id:"c11",n:"Limpiar la nevera",a:"Cocina",ev:1,u:"m",last:-20,who:"laura",st:5}
+];
+const RW0=[
+ {id:"r1",n:"Elegir la peli del viernes",st:10,ic:"🎬"},
+ {id:"r2",n:"30 minutos más de pantalla",st:15,ic:"📱"},
+ {id:"r3",n:"Elegir la cena del sábado",st:20,ic:"🍕"},
+ {id:"r4",n:"2 € extra de paga",st:25,ic:"🪙"},
+ {id:"r5",n:"Plan en familia: granja escuela",st:60,ic:"🐐",off:"Desde 18 € por persona en Escapadas, con tu reembolso"},
+ {id:"r6",n:"Entradas al parque acuático",st:80,ic:"🌊",off:"Desde 21 € la entrada en Escapadas, con tu reembolso"}
+];
+let CH=S.get("ch",CH0),RW=S.get("rw",RW0),STARS=S.get("stars",{laura:6,noa:14,leo:22}),CLOG=S.get("clog",[]),
+    tkTab="hoy",tkWho="todos",tkNew=null,tkRwNew=null,tkFor="noa";
+const UNI={d:["día","días"],s:["semana","semanas"],m:["mes","meses"]};
+const freqT=c=>c.ev===1?(c.u==="d"?"Cada día":c.u==="s"?"Cada semana":"Cada mes"):`Cada ${c.ev} ${UNI[c.u][1]}`;
+const nextOf=c=>c.last+(c.u==="d"?c.ev:c.u==="s"?c.ev*7:c.ev*30);
+const doneToday=c=>c.last===0&&CLOG.some(l=>l.c===c.id&&l.d===DAY0);
+const DOWN=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+const relD=n=>n===0?"hoy":n===1?"mañana":n<7?"el "+DOWN[new Date((DAY0+n)*864e5).getDay()]:`en ${n} días`;
+const av=(m,sz=30)=>`<span class="tav" style="width:${sz}px;height:${sz}px;background:var(--${m.c});font-size:${sz*.42}px">${m.n[0]}</span>`;
+function tkSave(){S.set("ch",CH);S.set("rw",RW);S.set("stars",STARS);S.set("clog",CLOG)}
+function tkRow(c){
+  const m=memOf(c.who),dn=doneToday(c),nx=nextOf(c),late=-nx;
+  const status=dn?`<span class="pl pl-o">Hecha hoy</span>`:late>0?`<span class="pl tk-late">${late===1?"1 día de retraso":late+" días de retraso"}</span>`:nx<=0?`<span class="pl pl-u">Toca hoy</span>`:`<span class="small muted">Toca ${relD(nx)}</span>`;
+  return `<div class="tk ${dn?"done":""}"><button class="box ${dn?"on":""}" data-tkdone="${c.id}" aria-label="${dn?"Desmarcar":"Hecha"}: ${c.n}">✓</button>
+   <span class="bd"><span class="n">${c.n}</span><span class="mt">${status}<span class="small muted">${c.a} · ${freqT(c)}${c.rot?" · por turnos":""}</span></span></span>
+   <span class="rt"><button class="tk-who" data-tkwho="${c.id}" aria-label="Cambiar quién la hace: ahora ${m.n}">${av(m,28)}</button><span class="tk-st">★ ${c.st}</span></span></div>`;
+}
+function tkRender(){
+  const box=$("#tk-box");if(!box)return;
+  document.querySelectorAll("#tk-seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tk===tkTab));
+  if(tkTab==="hoy"){
+    const filt=CH.filter(c=>tkWho==="todos"||c.who===tkWho).sort((a,b)=>nextOf(a)-nextOf(b));
+    const due=filt.filter(c=>nextOf(c)<=0||doneToday(c)),later=filt.filter(c=>!(nextOf(c)<=0||doneToday(c)));
+    const left=due.filter(c=>!doneToday(c)).length;
+    box.innerHTML=`<div class="chips">${[["todos","Todos"],...MEM.map(m=>[m.id,m.n])].map(([k,l])=>`<button class="chip" data-tkfil="${k}" aria-pressed="${tkWho===k}">${l}</button>`).join("")}<button class="chip" data-v="familia">+ Miembro</button></div>
+     <div class="card"><div class="card-h"><h2>Toca ya</h2><span class="small muted">${left?left+" por hacer":"Todo hecho"}</span></div>
+      ${due.length?due.map(tkRow).join(""):'<span class="small muted">La casa está al día. 🎉</span>'}</div>
+     ${later.length?`<div class="card"><div class="card-h"><h2>Próximas</h2></div>${later.map(tkRow).join("")}</div>`:""}
+     <span class="small muted">Márcala cuando la hagas: se programa sola para la próxima vez y las estrellas van a quien la ha hecho. Toca la inicial para pasársela a otra persona.</span>
+     ${tkNew?tkForm():`<div class="btns"><button class="btn pri" id="tk-new">+ Nueva tarea</button></div>`}`;return}
+  if(tkTab==="reparto"){
+    const wk=CLOG.filter(l=>l.d>DAY0-7);
+    const load=m=>CH.filter(c=>c.who===m.id).reduce((a,c)=>a+c.st*(c.u==="d"?7/c.ev:c.u==="s"?1/c.ev:.25/c.ev),0);
+    const tot=MEM.reduce((a,m)=>a+load(m),0)||1;
+    box.innerHTML=`<div class="card"><div class="card-h"><h2>Cómo está el reparto</h2><span class="small muted">esfuerzo por semana</span></div>
+      <div class="tk-bar">${MEM.map(m=>`<i style="width:${load(m)/tot*100}%;background:var(--${m.c})" title="${m.n}"></i>`).join("")}</div>
+      ${MEM.map(m=>`<div class="li"><span style="display:flex;gap:10px;align-items:center">${av(m,34)}<span><span class="n">${m.n}</span><br><span class="m">${CH.filter(c=>c.who===m.id).length} tareas · ${wk.filter(l=>l.w===m.id).length} hechas esta semana</span></span></span><span style="font-weight:800">${Math.round(load(m)/tot*100)} %</span></div>`).join("")}
+      <div class="btns"><button class="btn pri" id="tk-auto">Repartir de forma equilibrada</button><button class="btn" data-v="familia">Miembros de la familia</button></div>
+      <span class="small muted">Reparte según el esfuerzo de cada tarea (las estrellas) y lo a menudo que toca. A los peques solo les da tareas marcadas como aptas.</span></div>
+     ${MEM.map(m=>{const mine=CH.filter(c=>c.who===m.id);return`<div class="card"><div class="card-h"><h2 style="display:flex;gap:10px;align-items:center">${av(m,30)}${m.n}</h2><span class="tk-st">★ ${STARS[m.id]||0}</span></div>${mine.length?mine.map(c=>`<div class="li"><span><span class="n">${c.n}</span><br><span class="m">${freqT(c)}${c.rot?" · por turnos":""} · ★ ${c.st}</span></span><button class="btn" style="padding:7px 12px" data-tkwho="${c.id}">Pasar →</button></div>`).join(""):'<span class="small muted">Sin tareas asignadas.</span>'}</div>`}).join("")}
+     <div class="aid"><b>Por turnos</b><span class="small">Las tareas marcadas «por turnos» cambian de persona cada vez que se hacen, para que nadie cargue siempre con lo mismo.</span></div>`;return}
+  // premios
+  const m=memOf(tkFor),bal=STARS[m.id]||0,nextR=RW.filter(r=>r.st>bal).sort((a,b)=>a.st-b.st)[0];
+  box.innerHTML=`<div class="chips">${MEM.map(x=>`<button class="chip" data-tkfor="${x.id}" aria-pressed="${tkFor===x.id}">${x.n} · ★ ${STARS[x.id]||0}</button>`).join("")}</div>
+   <div class="hero" style="background:var(--${m.c})"><span class="lab">Estrellas de ${m.n}</span><span class="big">★ ${bal}</span><span class="lab">${nextR?`Le faltan ${nextR.st-bal} para «${nextR.n}»`:"Puede canjear cualquier premio"}</span>${nextR?`<div class="prog" style="background:rgba(0,0,0,.12)"><i style="width:${bal/nextR.st*100}%;background:var(--p-ink)"></i></div>`:""}</div>
+   <div class="card"><div class="card-h"><h2>Premios de la casa</h2><span class="small muted">Los decidís vosotros</span></div>
+    ${RW.slice().sort((a,b)=>a.st-b.st).map(r=>`<div class="rw ${bal>=r.st?"ok":""}"><span class="ic">${r.ic}</span><span class="bd"><b>${r.n}</b><small>★ ${r.st}${r.off?" · "+r.off:""}</small></span><span class="acts">${r.off?`<button class="ibtn" data-v="ofertas" aria-label="Ver en Escapadas">↗</button>`:""}<button class="btn ${bal>=r.st?"pri":""}" style="padding:8px 14px" data-tkredeem="${r.id}" ${bal>=r.st?"":"disabled"}>${bal>=r.st?"Canjear":"Faltan "+(r.st-bal)}</button></span></div>`).join("")}
+    ${tkRwNew?`<form class="addf" id="tk-rwf"><input id="tk-rwn" placeholder="Ej.: ir al cine" autocomplete="off" aria-label="Premio"><input id="tk-rws" type="number" min="1" value="20" aria-label="Estrellas"><button class="btn pri" type="submit">Añadir</button></form>`:`<div class="btns"><button class="btn" id="tk-rwnew">+ Nuevo premio</button></div>`}</div>
+   <div class="card"><h2>Últimos canjes y estrellas</h2>${CLOG.filter(l=>l.w===m.id).slice(-5).reverse().map(l=>`<div class="li"><span><span class="n">${l.r?"Canjeado: "+l.r:CH.find(c=>c.id===l.c)?.n||"Tarea"}</span><br><span class="m">${l.d===DAY0?"Hoy":"Hace "+(DAY0-l.d)+" días"}</span></span><span style="font-weight:800">${l.r?"−":"+"}★ ${l.s}</span></div>`).join("")||'<span class="small muted">Todavía nada. Marca una tarea hecha y aparecerá aquí.</span>'}</div>
+   <span class="aff">Los premios con ↗ son planes de Escapadas: si los reservas desde Masvida, también te devolvemos parte del dinero.</span>`;
+}
+function tkForm(){const f=tkNew;return`<div class="card"><h2>Nueva tarea</h2>
+  <div class="field"><span class="pk-l">Qué hay que hacer</span><input id="tk-n" value="${f.n}" placeholder="Ej.: regar las plantas" autocomplete="off"></div>
+  <span class="pk-l">Cada cuánto</span><div class="cards" style="--n:4">${[["1d","Cada día"],["3d","Cada 3 días"],["1s","Cada semana"],["1m","Cada mes"]].map(([k,l])=>`<button data-tkf="${k}" aria-pressed="${f.f===k}">${l}</button>`).join("")}</div>
+  <span class="pk-l">Quién la hace</span><div class="chips">${MEM.map(m=>`<button class="chip" data-tkfw="${m.id}" aria-pressed="${f.who===m.id}">${m.n}</button>`).join("")}<button class="chip" data-tkfw="rot" aria-pressed="${!!f.rot}">Por turnos</button></div>
+  <div class="stp"><span>Estrellas que da</span><div class="ctl"><button data-tkfs="-1" aria-label="Menos">−</button><b>★ ${f.st}</b><button data-tkfs="1" aria-label="Más">+</button></div></div>
+  <div class="btns"><button class="btn pri" id="tk-save">Guardar tarea</button><button class="btn" id="tk-cancel">Cancelar</button></div></div>`}
+function tkDone(c){
+  if(doneToday(c)){const i=CLOG.findIndex(l=>l.c===c.id&&l.d===DAY0);const l=CLOG.splice(i,1)[0];STARS[l.w]=Math.max(0,(STARS[l.w]||0)-l.s);c.last=c.prev??c.last;c.who=l.w;tkSave();tkRender();renderHubTags();return}
+  const w=c.who;c.prev=c.last;c.last=0;STARS[w]=(STARS[w]||0)+c.st;CLOG.push({c:c.id,w,s:c.st,d:DAY0});
+  let msg=`${c.st} ${c.st===1?"estrella":"estrellas"} para ${memOf(w).n}`;
+  if(c.rot){const pool=MEM.filter(m=>!m.kid||m.age>=11||c.st<=3);const i=pool.findIndex(m=>m.id===w);c.who=pool[(i+1)%pool.length].id;msg+=` · la próxima vez le toca a ${memOf(c.who).n}`}
+  if(/lavadora/i.test(c.n)&&typeof WD!=="undefined"){const n=WD.filter(x=>x.st==="lavar").length;if(n){WD.forEach(x=>{if(x.st==="lavar")x.st="armario"});wdSave();arRender();msg+=` · ${n} prendas limpias de vuelta al armario`}}
+  tkSave();tkRender();renderHubTags();toast(msg);
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||!b.closest("#v-tareas"))return;const d=b.dataset;
+  if(d.tk){tkTab=d.tk;tkRender();window.scrollTo(0,0);return}
+  if(d.tkfil){tkWho=d.tkfil;tkRender();return}
+  if(d.tkfor){tkFor=d.tkfor;tkRender();return}
+  if(d.tkdone){tkDone(CH.find(c=>c.id===d.tkdone));return}
+  if(d.tkwho){const c=CH.find(x=>x.id===d.tkwho),i=MEM.findIndex(m=>m.id===c.who);c.who=MEM[(i+1)%MEM.length].id;tkSave();tkRender();toast(`«${c.n}» ahora la hace ${memOf(c.who).n}`);return}
+  if(d.tkredeem){const r=RW.find(x=>x.id===d.tkredeem),bal=STARS[tkFor]||0;if(bal<r.st)return;STARS[tkFor]=bal-r.st;CLOG.push({r:r.n,w:tkFor,s:r.st,d:DAY0});tkSave();tkRender();toast(`${memOf(tkFor).n} ha canjeado «${r.n}» 🎉`);return}
+  if(b.id==="tk-new"){tkNew={n:"",f:"1s",who:"noa",rot:0,st:2};tkRender();return}
+  if(b.id==="tk-cancel"){tkNew=null;tkRender();return}
+  if(d.tkf){tkNew.n=$("#tk-n").value;tkNew.f=d.tkf;tkRender();return}
+  if(d.tkfw){tkNew.n=$("#tk-n").value;if(d.tkfw==="rot")tkNew.rot=tkNew.rot?0:1;else tkNew.who=d.tkfw;tkRender();return}
+  if(d.tkfs){tkNew.n=$("#tk-n").value;tkNew.st=Math.min(10,Math.max(1,tkNew.st+ +d.tkfs));tkRender();return}
+  if(b.id==="tk-save"){const n=$("#tk-n").value.trim();if(!n){toast("Escribe qué hay que hacer");return}const f=tkNew.f;CH.push({id:"c"+Date.now(),n,a:"Casa",ev:+f[0],u:f[1],last:-(+f[0]*(f[1]==="d"?1:f[1]==="s"?7:30)),who:tkNew.who,st:tkNew.st,rot:tkNew.rot});tkNew=null;tkSave();tkRender();renderHubTags();toast("Tarea creada");return}
+  if(b.id==="tk-rwnew"){tkRwNew=1;tkRender();$("#tk-rwn").focus();return}
+  if(b.id==="tk-auto"){
+    const w=c=>c.st*(c.u==="d"?7/c.ev:c.u==="s"?1/c.ev:.25/c.ev),ld={};MEM.forEach(m=>ld[m.id]=0);
+    CH.slice().sort((a,b)=>w(b)-w(a)).forEach(c=>{const pool=MEM.filter(m=>!m.kid||m.age>=11||c.st<=3);const t=pool.sort((a,b)=>ld[a.id]/(a.kid?.6:1)-ld[b.id]/(b.kid?.6:1))[0];c.who=t.id;ld[t.id]+=w(c)});
+    tkSave();tkRender();toast("Reparto equilibrado. Los peques llevan algo menos de carga");return}
+});
+document.addEventListener("submit",e=>{if(e.target.id!=="tk-rwf")return;e.preventDefault();const n=$("#tk-rwn").value.trim();if(!n)return;RW.push({id:"r"+Date.now(),n,st:Math.max(1,parseInt($("#tk-rws").value||"10",10)),ic:"🎁"});tkRwNew=null;tkSave();tkRender()});
+
+/* FAMILIA: miembros de la casa (los usan Tareas y Armario) */
+let famEdit=null;
+function memSave(){S.set("mem",MEM);P.adultos=Math.max(1,MEM.filter(m=>!m.kid).length);P.hijos=MEM.filter(m=>m.kid).length;S.set("profile",P)}
+const PAL=["peach","sky","mint","lav","butter"];
+function famRender(){
+  const box=$("#fam");if(!box)return;
+  if(famEdit){const f=famEdit;box.innerHTML=`<div class="card"><h2>${f.id?"Editar a "+f.n:"Nuevo miembro"}</h2>
+    <div class="field"><span class="pk-l">Nombre</span><input id="fm-n" value="${f.n}" placeholder="Ej.: Noa" autocomplete="off"></div>
+    <span class="pk-l">Es</span><div class="cards" style="--n:2"><button data-fmk="0" aria-pressed="${!f.kid}">Adulto</button><button data-fmk="1" aria-pressed="${!!f.kid}">Peque</button></div>
+    ${f.kid?`<div class="steps">${[["age","Edad",1,17],["pie","Calzado",18,46]].map(([k,l,a,z])=>`<div class="stp"><span>${l}</span><div class="ctl"><button data-fms="${k}|-1|${a}|${z}" aria-label="Menos">−</button><b>${f[k]}</b><button data-fms="${k}|1|${a}|${z}" aria-label="Más">+</button></div></div>`).join("")}</div>
+    <span class="pk-l">Talla de ropa</span><div class="chips">${["4 años","6 años","8 años","10 años","12 años","14 años","XS","S"].map(t=>`<button class="chip" data-fmt="${t}" aria-pressed="${f.talla===t}">${t}</button>`).join("")}</div>`:
+    `<span class="pk-l">Talla de ropa</span><div class="chips">${["XS","S","M","L","XL"].map(t=>`<button class="chip" data-fmt="${t}" aria-pressed="${f.talla===t}">${t}</button>`).join("")}</div>`}
+    <span class="pk-l">Vive en casa</span><div class="cards" style="--n:2"><button data-fmh="siempre" aria-pressed="${f.home!=="alterno"}">Siempre</button><button data-fmh="alterno" aria-pressed="${f.home==="alterno"}">Semanas alternas<small>No le damos tareas esos días</small></button></div>
+    <span class="pk-l">Color</span><div class="chips">${PAL.map(c=>`<button class="chip" data-fmc="${c}" aria-pressed="${f.c===c}" style="background:var(--${c});${f.c===c?"box-shadow:0 0 0 2.5px var(--ink)":""}" aria-label="${c}">${f.n?f.n[0]:"A"}</button>`).join("")}</div>
+    <div class="btns"><button class="btn pri" id="fm-save">Guardar</button><button class="btn" id="fm-cancel">Cancelar</button>${f.id&&MEM.length>1?`<button class="btn" id="fm-del">Quitar</button>`:""}</div></div>`;return}
+  box.innerHTML=`<div class="card"><div class="card-h"><h2>Quién vive en casa</h2><span class="small muted">${MEM.length} ${MEM.length===1?"persona":"personas"}</span></div>
+   ${MEM.map(m=>`<div class="li"><span style="display:flex;gap:12px;align-items:center">${av(m,40)}<span><span class="n">${m.n}</span><br><span class="m">${m.kid?m.age+" años · ":"Adulto · "}talla ${m.talla}${m.kid?" · pie "+m.pie:""}${m.home==="alterno"?" · semanas alternas":""}</span></span></span><button class="btn" style="padding:7px 12px" data-fmedit="${m.id}">Editar</button></div>`).join("")}
+   <div class="btns"><button class="btn pri" id="fm-new">+ Añadir miembro</button></div></div>
+   <div class="aid"><b>Para qué lo usamos</b><span class="small">Para repartir las tareas de casa, tener un armario por persona, avisarte cuando a los peques se les queda pequeña la ropa y calcular tus ayudas (cuántos sois en casa).</span></div>
+   <span class="aff">Solo hace falta el nombre. Puedes invitar a otro adulto para que vea y marque las tareas desde su móvil.</span>`;
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||!b.closest("#v-familia"))return;const d=b.dataset,keep=()=>{if($("#fm-n"))famEdit.n=$("#fm-n").value};
+  if(b.id==="fm-new"){famEdit={n:"",kid:1,age:8,pie:30,talla:"8 años",home:"siempre",c:PAL[MEM.length%PAL.length]};famRender();$("#fm-n").focus();return}
+  if(d.fmedit){famEdit={...memOf(d.fmedit)};famRender();return}
+  if(b.id==="fm-cancel"){famEdit=null;famRender();return}
+  if(d.fmk!=null){keep();famEdit.kid=+d.fmk;famEdit.talla=famEdit.kid?"8 años":"M";if(famEdit.kid&&!famEdit.age){famEdit.age=8;famEdit.pie=30}famRender();return}
+  if(d.fms){keep();const[k,dd,a,z]=d.fms.split("|");famEdit[k]=Math.min(+z,Math.max(+a,(famEdit[k]||0)+ +dd));famRender();return}
+  if(d.fmt){keep();famEdit.talla=d.fmt;famRender();return}
+  if(d.fmh){keep();famEdit.home=d.fmh;famRender();return}
+  if(d.fmc){keep();famEdit.c=d.fmc;famRender();return}
+  if(b.id==="fm-save"){keep();const f=famEdit;f.n=f.n.trim();if(!f.n){toast("Escribe su nombre");return}
+    if(f.id){Object.assign(memOf(f.id),f)}else{f.id="m"+Date.now();MEM.push(f);STARS[f.id]=0}
+    famEdit=null;memSave();save();tkSave();famRender();tkRender();arRender();toast(`${f.n} ya está en la familia`);return}
+  if(b.id==="fm-del"){const id=famEdit.id,n=famEdit.n,to=MEM.find(m=>!m.kid&&m.id!==id)||MEM.find(m=>m.id!==id);
+    MEM.splice(MEM.findIndex(m=>m.id===id),1);CH.forEach(c=>{if(c.who===id)c.who=to.id});if(tkFor===id)tkFor=to.id;if(arWho===id)arWho=to.id;if(tkWho===id)tkWho="todos";
+    famEdit=null;memSave();save();tkSave();famRender();tkRender();arRender();toast(`Sus tareas pasan a ${to.n}`);return}
+});
+
+/* ARMARIO: uno por miembro, como en Vitalis */
+const WCAT=[["top","Arriba","👕"],["bottom","Abajo","👖"],["dress","Vestidos","👗"],["coat","Abrigos","🧥"],["shoes","Calzado","👟"]];
+const WCOL={blanco:"#F2EFE8",negro:"#2A2A2A",marino:"#2E3D5C",vaquero:"#5B7DA8",gris:"#A3A3A3",beige:"#D9C5A7",rojo:"#B84A3E",verde:"#6F8C5F",rosa:"#EAB7BC",amarillo:"#E8C468"};
+const darkC=h=>{const n=parseInt(h.slice(1),16);return((n>>16)*.299+((n>>8)&255)*.587+(n&255)*.114)<140};
+const WD0=[
+ ["laura","Camisa blanca","top","blanco","M"],["laura","Jersey de punto","top","beige","M"],["laura","Camiseta negra","top","negro","M"],["laura","Vaqueros rectos","bottom","vaquero","38"],["laura","Pantalón negro","bottom","negro","38"],["laura","Vestido midi","dress","verde","M"],["laura","Abrigo largo","coat","gris","M"],["laura","Zapatillas blancas","shoes","blanco","38"],["laura","Botines","shoes","negro","38"],
+ ["noa","Sudadera rosa","top","rosa","8 años"],["noa","Camiseta de rayas","top","marino","8 años"],["noa","Camiseta amarilla","top","amarillo","6 años","pequeno"],["noa","Leggings","bottom","gris","8 años"],["noa","Falda vaquera","bottom","vaquero","8 años"],["noa","Pantalón de chándal","bottom","marino","6 años","pequeno"],["noa","Plumífero","coat","rojo","8 años"],["noa","Deportivas","shoes","blanco","30","pequeno"],["noa","Botas de agua","shoes","amarillo","31"],
+ ["leo","Sudadera gris","top","gris","12 años"],["leo","Camiseta verde","top","verde","12 años"],["leo","Polo blanco","top","blanco","12 años","lavar"],["leo","Vaqueros","bottom","vaquero","12 años"],["leo","Bermudas","bottom","beige","10 años","pequeno"],["leo","Chaqueta","coat","marino","12 años"],["leo","Deportivas","shoes","negro","37"]
+].map(([m,n,cat,col,talla,st],i)=>({id:"w"+i,m,n,cat,col,talla,st:st||"armario"}));
+let WD=S.get("wd",WD0),arWho=MEM[0].id,arSel=null,arNew=null,arLook=S.get("look",{});
+const wdSave=()=>{S.set("wd",WD);S.set("look",arLook)};
+function lookFor(m){
+  const ok=WD.filter(w=>w.m===m.id&&w.st==="armario"),by=c=>ok.filter(w=>w.cat===c),k=arLook[m.id]||{seed:0};
+  if(k.ids&&k.ids.every(id=>ok.some(w=>w.id===id)))return k.ids.map(id=>WD.find(w=>w.id===id));
+  const s=k.seed||0,pick=a=>a.length?a[s%a.length]:null,useDress=by("dress").length&&s%3===2;
+  return (useDress?[pick(by("dress"))]:[pick(by("top")),pick(by("bottom"))]).concat([pick(by("shoes"))]).filter(Boolean);
+}
+const tile=(w,sel)=>`<button class="wt ${w.st}" data-arsel="${w.id}" aria-pressed="${sel}" style="background:${WCOL[w.col]};color:${darkC(WCOL[w.col])?"#fff":"#0B0B0B"}"><span class="e">${WCAT.find(c=>c[0]===w.cat)[2]}</span><span class="nm">${w.n}</span>${w.st==="lavar"?'<span class="bdg">🧺 Cesto</span>':w.st==="pequeno"?'<span class="bdg">Pequeño</span>':""}</button>`;
+function arRender(){
+  const box=$("#ar-box");if(!box)return;if(!MEM.some(m=>m.id===arWho))arWho=MEM[0].id;
+  const m=memOf(arWho),mine=WD.filter(w=>w.m===m.id),cesto=WD.filter(w=>w.st==="lavar"),small=mine.filter(w=>w.st==="pequeno"),look=lookFor(m);
+  const lav=CH.find(c=>/lavadora/i.test(c.n));
+  const selW=arSel&&WD.find(w=>w.id===arSel&&w.m===m.id);
+  box.innerHTML=`<div class="chips">${MEM.map(x=>`<button class="chip" data-arwho="${x.id}" aria-pressed="${x.id===arWho}">${x.n}</button>`).join("")}<button class="chip" data-v="familia">+ Miembro</button></div>
+   <div class="card"><div class="card-h"><h2>Look de hoy</h2><span class="small muted">Talla ${m.talla}${m.kid?" · pie "+m.pie:""}</span></div>
+    ${look.length?`<div class="look">${look.map(w=>tile(w,false)).join("")}</div><div class="btns"><button class="btn pri" id="ar-worn">Me lo he puesto</button><button class="btn" id="ar-other">Otro</button></div><span class="small muted">Al ponértelo, la ropa va al cesto y, cuando hay bastante, la lavadora aparece en Tareas.</span>`:'<span class="small muted">Añade prendas y te proponemos qué ponerte cada día.</span>'}</div>
+   <div class="card"><div class="card-h"><h2>🧺 Cesto de la ropa</h2><span class="small muted">${cesto.length} ${cesto.length===1?"prenda":"prendas"} de toda la casa</span></div>
+    <span class="small">${cesto.length>=6?"Ya hay para una lavadora.":"Todavía no hay para una lavadora."}${lav?` Le toca a <b>${memOf(lav.who).n}</b>. Cuando la marque como hecha, la ropa vuelve sola al armario.`:""}</span>
+    ${lav?`<div class="btns"><button class="btn" data-v="tareas">Ver en Tareas</button></div>`:""}</div>
+   ${m.kid&&small.length?`<div class="aid" style="background:var(--warn-soft)"><b>A ${m.n} se le han quedado pequeñas ${small.length} ${small.length===1?"prenda":"prendas"}</b><span class="small">${small.map(w=>w.n.toLowerCase()).join(", ")}. Te enseñamos ofertas en su talla (${m.talla}${small.some(w=>w.cat==="shoes")?", pie "+m.pie:""}) con reembolso.</span><div class="btns"><button class="btn pri" data-v="ofertas">Ver ofertas en su talla</button><button class="btn" data-arpass="1">Pasar o vender</button></div></div>`:""}
+   ${WCAT.map(([k,l])=>{const it=mine.filter(w=>w.cat===k);return it.length?`<div class="card"><div class="card-h"><h2>${l}</h2><span class="small muted">${it.length}</span></div><div class="wg">${it.map(w=>tile(w,w.id===arSel)).join("")}</div>
+     ${selW&&selW.cat===k?`<div class="wsel"><b>${selW.n}</b><span class="small muted">Talla ${selW.talla}</span><div class="btns">${selW.st!=="armario"?`<button class="btn" data-arst="armario">En el armario</button>`:""}${selW.st!=="lavar"?`<button class="btn" data-arst="lavar">Al cesto</button>`:""}${selW.st!=="pequeno"?`<button class="btn" data-arst="pequeno">Se ha quedado pequeña</button>`:""}<button class="btn" data-arst="del">Quitar</button></div></div>`:""}</div>`:""}).join("")}
+   ${arNew?`<div class="card"><h2>Nueva prenda de ${m.n}</h2>
+     <div class="field"><span class="pk-l">Qué es</span><input id="ar-n" value="${arNew.n}" placeholder="Ej.: sudadera azul" autocomplete="off"></div>
+     <span class="pk-l">Tipo</span><div class="chips">${WCAT.map(([k,l])=>`<button class="chip" data-arcat="${k}" aria-pressed="${arNew.cat===k}">${l}</button>`).join("")}</div>
+     <span class="pk-l">Color</span><div class="chips">${Object.entries(WCOL).map(([k,h])=>`<button class="chip sw" data-arcol="${k}" aria-pressed="${arNew.col===k}" aria-label="${k}" style="background:${h};${arNew.col===k?"box-shadow:0 0 0 2.5px var(--ink)":""}"></button>`).join("")}</div>
+     <div class="btns"><button class="btn pri" id="ar-save">Guardar</button><button class="btn" id="ar-cancel">Cancelar</button></div><span class="small muted">En la app real bastará con hacerle una foto: reconocemos el tipo y el color.</span></div>`:
+     `<div class="btns"><button class="btn pri" id="ar-new">+ Añadir prenda</button></div>`}`;
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||!b.closest("#v-armario"))return;const d=b.dataset,m=memOf(arWho),keep=()=>{if($("#ar-n"))arNew.n=$("#ar-n").value};
+  if(d.arwho){arWho=d.arwho;arSel=null;arNew=null;arRender();return}
+  if(d.arsel){arSel=arSel===d.arsel?null:d.arsel;arRender();return}
+  if(d.arst){const w=WD.find(x=>x.id===arSel);if(d.arst==="del")WD.splice(WD.indexOf(w),1);else w.st=d.arst;arSel=null;delete arLook[m.id]?.ids;wdSave();arRender();renderHubTags();return}
+  if(b.id==="ar-other"){const k=arLook[m.id]||{seed:0};arLook[m.id]={seed:(k.seed||0)+1};wdSave();arRender();return}
+  if(b.id==="ar-worn"){const l=lookFor(m);l.filter(w=>w.cat!=="shoes"&&w.cat!=="coat").forEach(w=>w.st="lavar");arLook[m.id]={seed:((arLook[m.id]||{}).seed||0)+1};wdSave();arRender();renderHubTags();
+    const n=WD.filter(w=>w.st==="lavar").length,lav=CH.find(c=>/lavadora/i.test(c.n));
+    if(lav&&n>=6&&nextOf(lav)>0){lav.last=-lav.ev*(lav.u==="d"?1:7);tkSave();tkRender();toast(`Al cesto. Ya hay ${n} prendas: hemos puesto la lavadora en las tareas de hoy de ${memOf(lav.who).n}`)}else toast(`Al cesto · ${n} prendas esperando lavadora`);return}
+  if(d.arpass){toast("Las subiríamos a Vinted o Wallapop con foto y talla, o se las pasarías a otra familia");return}
+  if(b.id==="ar-new"){arNew={n:"",cat:"top",col:"marino"};arRender();$("#ar-n").focus();return}
+  if(b.id==="ar-cancel"){arNew=null;arRender();return}
+  if(d.arcat){keep();arNew.cat=d.arcat;arRender();return}
+  if(d.arcol){keep();arNew.col=d.arcol;arRender();return}
+  if(b.id==="ar-save"){keep();const n=arNew.n.trim();if(!n){toast("Escribe qué prenda es");return}WD.push({id:"w"+Date.now(),m:m.id,n:n[0].toUpperCase()+n.slice(1),cat:arNew.cat,col:arNew.col,talla:arNew.cat==="shoes"&&m.kid?String(m.pie):m.talla,st:"armario"});arNew=null;wdSave();arRender();toast("Prenda guardada");return}
+});
+
+renderAll();
+</script>
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
+</body>
+</html>

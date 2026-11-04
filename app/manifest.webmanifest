@@ -1,0 +1,12 @@
+{
+  "name": "Masvida",
+  "short_name": "Masvida",
+  "description": "Ahorro sin esfuerzo para familias",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FAFAF8",
+  "theme_color": "#0F0F0E",
+  "icons": [{ "src": "icons/icono.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

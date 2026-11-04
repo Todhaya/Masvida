@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Masvida revisa tus facturas, encuentra las ayudas que te tocan, organiza la casa y te devuelve dinero por lo que ya compras. Gratis.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Masvida · Lo que ahorras, lo vives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&display=swap">
+<style>
+/* Layout: una sola columna ancha, bandas de color pastel que alternan; el móvil de la app como pieza central del hero */
+:root{
+  --bg:#FAFAF8; --ink:#0F0F0E; --muted:#5E5D58; --line:#E4E3DE; --surface:#FFFFFF;
+  --peach:#FFD9C7; --lav:#E4DDFF; --mint:#CDEFDD; --sky:#D5E7FF; --butter:#FFEFB5; --p-ink:#0F0F0E;
+  --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111110; --ink:#F4F3EF; --muted:#A9A8A2; --line:#2B2A27; --surface:#1B1B19;
+  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F4F3EF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111110; --ink:#F4F3EF; --muted:#A9A8A2; --line:#2B2A27; --surface:#1B1B19;
+  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F4F3EF; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+.in{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.03em;line-height:1.02;margin:0;text-wrap:balance}
+h2{font-size:clamp(32px,5vw,52px);font-weight:800}
+h3{font-size:22px;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+header .in{display:flex;justify-content:space-between;align-items:center;padding-block:18px}
+.logo{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.04em}
+.logo b{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:20px;margin-right:6px;vertical-align:-4px}
+.btn{border:0;border-radius:999px;padding:14px 22px;font:700 16px var(--body);background:var(--ink);color:var(--bg);cursor:pointer;text-decoration:none;display:inline-flex}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+.hero .in{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-block:40px 72px}
+.hero h1{font-size:clamp(52px,9vw,104px);font-weight:800}
+.hero h1 em{font-style:normal;background:var(--peach);color:var(--p-ink);border-radius:.18em;padding:0 .12em}
+.hero .lead{font-size:20px;color:var(--muted);max-width:30em;margin-top:22px}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero small{display:block;margin-top:14px;color:var(--muted);font-size:14px}
+
+.phone{justify-self:center;width:min(320px,100%);background:var(--surface);border-radius:44px;padding:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.35),0 0 0 1px var(--line)}
+.scr{background:var(--bg);border-radius:32px;padding:18px 14px;display:flex;flex-direction:column;gap:10px}
+.scr .t{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:-.03em}
+.tile{border-radius:20px;padding:14px;color:var(--p-ink);display:flex;flex-direction:column;gap:2px}
+.tile .k{font-size:12px;opacity:.8}.tile .v{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.row{display:flex;justify-content:space-between;gap:8px;background:var(--surface);border-radius:16px;padding:11px 12px;font-size:14px}
+.row b{font-variant-numeric:tabular-nums}
+.pill{font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--mint);color:var(--p-ink)}
+
+.band{padding-block:72px}
+.band.lav{background:var(--lav)}.band.mint{background:var(--mint)}.band.ink{background:var(--ink);color:var(--bg)}
+.band.lav,.band.mint{color:var(--p-ink)}
+.sec-h{display:flex;flex-direction:column;gap:12px;max-width:40em;margin-bottom:36px}
+.sec-h p{font-size:19px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{background:var(--surface);color:var(--ink);border-radius:26px;padding:24px;display:flex;flex-direction:column;gap:10px;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--display);font-weight:800;font-size:40px;line-height:1}
+.steps p{color:var(--muted)}
+
+.mods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mod{border-radius:24px;padding:20px;color:var(--p-ink);display:flex;flex-direction:column;gap:6px;min-width:0}
+.mod p{font-size:15px;opacity:.85}
+.mod .f{font-size:13px;font-weight:700;margin-top:auto;padding-top:8px}
+
+.lv{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:8px}
+.lv div{border-radius:20px;padding:16px 14px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:flex;flex-direction:column;gap:4px}
+:root[data-theme="dark"] .lv div{background:rgba(0,0,0,.05);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lv div{background:rgba(0,0,0,.05);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}}
+.lv b{font-family:var(--display);font-size:34px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.lv span{font-size:14px;opacity:.75}
+.lv .n{font-weight:700;font-size:17px;opacity:1}
+.note{font-size:14px;opacity:.75;margin-top:18px;max-width:46em}
+
+.wait{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+form{display:flex;flex-direction:column;gap:12px;background:var(--surface);color:var(--ink);border-radius:28px;padding:24px}
+label{font-size:14px;font-weight:700}
+input[type=email],input[type=text]{width:100%;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:14px;font:inherit}
+.chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;color:var(--muted)}
+.chk input{margin-top:4px;width:18px;height:18px;flex:none}
+.ok{background:var(--mint);color:var(--p-ink);border-radius:14px;padding:12px 14px;font-size:15px}
+.err{color:#B3261E;font-size:14px}
+:root[data-theme="dark"] .err{color:#F2B8B5}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .err{color:#F2B8B5}}
+
+.faq{display:flex;flex-direction:column;max-width:760px}
+details{border-bottom:1px solid var(--line);padding-block:18px}
+summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.02em;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";font-weight:800}
+details[open] summary::after{content:"–"}
+details p{color:var(--muted);margin-top:10px;max-width:60ch}
+
+footer{border-top:1px solid var(--line)}
+footer .in{padding-block:32px;display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--muted)}
+footer nav{display:flex;gap:18px;flex-wrap:wrap}
+footer a{color:var(--ink)}
+
+@media (max-width:860px){
+  .hero .in,.wait{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .mods{grid-template-columns:1fr 1fr}
+  .lv{grid-template-columns:repeat(2,1fr)}
+  .lv div:last-child{grid-column:1/-1}
+}
+@media (max-width:480px){.mods{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.phone{animation:float 6s ease-in-out infinite}@keyframes float{50%{transform:translateY(-8px)}}}
+</style>
+
+</head>
+<body>
+<header><div class="in"><span class="logo"><b>+</b>Masvida</span><a class="btn ghost" href="#lista">Apúntate</a></div></header>
+
+<section class="hero"><div class="in">
+  <div>
+    <span class="eyebrow">Ahorro sin esfuerzo para familias</span>
+    <h1>Lo que ahorras, <em>lo vives</em></h1>
+    <p class="lead">Masvida revisa tus facturas, encuentra las ayudas que te tocan, organiza la casa y te devuelve dinero por lo que ya compras. Tú solo decides en qué gastar lo que te sobra.</p>
+    <div class="cta"><a class="btn" href="#lista">Quiero probarla</a><a class="btn ghost" href="#como">Cómo funciona</a></div>
+    <small>Gratis y sin tarjeta.</small>
+  </div>
+  <div class="phone" aria-hidden="true"><div class="scr">
+    <span class="eyebrow" style="font-size:11px">Este año</span><span class="t">Hola, Laura</span>
+    <div class="tile" style="background:var(--peach)"><span class="k">Llevas ahorrado</span><span class="v">412 €</span><span class="k">sin cambiar lo que compras</span></div>
+    <div class="row"><span>Luz: tarifa con horas valle</span><b>−13 €/mes</b></div>
+    <div class="row"><span>Bono social térmico</span><span class="pill">Te toca</span></div>
+    <div class="row"><span>Reembolso del súper</span><b>+4,20 €</b></div>
+    <div class="tile" style="background:var(--lav)"><span class="k">Escapada con lo ahorrado</span><span style="font-weight:700">Casa rural en el Pirineo · 240 €</span></div>
+  </div></div>
+</div></section>
+
+<section class="band lav" id="como"><div class="in">
+  <div class="sec-h"><span class="eyebrow" style="color:inherit;opacity:.7">Cómo funciona</span><h2>Tres minutos al principio. Después, nada.</h2></div>
+  <ol class="steps">
+    <li><h3>Cuéntanos cómo es tu casa</h3><p>Cuántos sois, dónde vivís y qué te interesa. Con eso calculamos tus ayudas y elegimos las ofertas que te sirven.</p></li>
+    <li><h3>Sube una factura</h3><p>Una foto de la luz, el gas, la fibra o el seguro. La leemos por ti y te decimos si pagas de más y qué tarifa te conviene.</p></li>
+    <li><h3>Compra como siempre</h3><p>En las tiendas asociadas te devolvemos parte de lo que gastas. Lo ves sumar cada semana y lo cobras cuando quieras.</p></li>
+  </ol>
+</div></section>
+
+<section class="band"><div class="in">
+  <div class="sec-h"><span class="eyebrow">Todo en una app</span><h2>Lo que hoy llevas en seis apps y en la cabeza</h2></div>
+  <div class="mods">
+    <div class="mod" style="background:var(--peach)"><h3>Facturas</h3><p>Luz, gas, fibra y móvil comparados con tu consumo real.</p><span class="f">Con tu consumo de Datadis</span></div>
+    <div class="mod" style="background:var(--mint)"><h3>Ayudas</h3><p>Bono social, ayudas por hijos, deducciones: las que te tocan según tu perfil.</p><span class="f">Catálogo por comunidad</span></div>
+    <div class="mod" style="background:var(--sky)"><h3>Ofertas</h3><p>Súper, moda, hogar y gasolina, con lo que te devolvemos al lado.</p><span class="f">Reembolso tienda a tienda</span></div>
+    <div class="mod" style="background:var(--butter)"><h3>Escapadas</h3><p>Hoteles, casas rurales, entradas y planes según cuándo y con quién vas.</p><span class="f">Filtra por fecha y destino</span></div>
+    <div class="mod" style="background:var(--lav)"><h3>Menú y compra</h3><p>El menú de la semana y la lista hecha, ordenada por tienda y pasillo.</p><span class="f">Con las ofertas de tu súper</span></div>
+    <div class="mod" style="background:var(--mint)"><h3>Tareas de casa</h3><p>Repartidas entre todos, con estrellas y premios para los peques.</p><span class="f">Por turnos o equilibradas</span></div>
+    <div class="mod" style="background:var(--peach)"><h3>Armario</h3><p>Uno por persona, con tallas y aviso cuando algo se queda pequeño.</p><span class="f">Y el cesto de la ropa común</span></div>
+    <div class="mod" style="background:var(--sky)"><h3>Papeles y fechas</h3><p>ITV, DNI, garantías, pedidos y devoluciones, con aviso antes de que caduquen.</p><span class="f">Reenvía el correo y listo</span></div>
+  </div>
+</div></section>
+
+<section class="band ink"><div class="in">
+  <div class="sec-h"><span class="eyebrow" style="color:inherit;opacity:.7">Invita y sube de nivel</span><h2>Cuantas más amigas, más te devolvemos</h2><p style="opacity:.8">Cada amiga que se une y hace su primer cambio de tarifa o compra os da 3 € a las dos, sin límite. Y sube tu porcentaje de reembolso para siempre.</p></div>
+  <div class="lv">
+    <div><span class="n">Ahorras</span><b>1 %</b><span>al empezar</span></div>
+    <div><span class="n">Respiras</span><b>1,5 %</b><span>1 amiga</span></div>
+    <div><span class="n">Disfrutas</span><b>2 %</b><span>3 amigas</span></div>
+    <div><span class="n">Vives</span><b>2,5 %</b><span>5 amigas</span></div>
+    <div><span class="n">Masvida</span><b>3 %</b><span>10 amigas</span></div>
+  </div>
+  <p class="note">Porcentaje sobre lo que compras en tiendas asociadas que permiten reembolso. Algunas tiendas, como Amazon, aparecen en Masvida como oferta pero sin reembolso.</p>
+</div></section>
+
+<section class="band mint" id="lista"><div class="in wait">
+  <div class="sec-h" style="margin:0"><span class="eyebrow" style="color:inherit;opacity:.7">Lista de espera</span><h2>Sé de las primeras en probarla</h2><p>Te avisamos en cuanto abramos la prueba con las primeras familias.</p></div>
+  <form id="f" novalidate>
+    <div><label for="em">Tu correo</label><input id="em" type="email" autocomplete="email" placeholder="tu@correo.com" required></div>
+    <div><label for="cp">Código postal</label><input id="cp" type="text" inputmode="numeric" maxlength="5" placeholder="Para saber qué ayudas hay en tu zona"></div>
+    <label class="chk" for="ok"><input id="ok" type="checkbox"> Acepto que Masvida guarde mi correo para avisarme del lanzamiento, según la política de privacidad. Puedo darme de baja cuando quiera.</label>
+    <span class="err" id="er" hidden></span>
+    <button class="btn" type="submit">Apuntarme</button>
+    <div class="ok" id="dn" hidden></div>
+  </form>
+</div></section>
+
+<section class="band"><div class="in">
+  <div class="sec-h"><span class="eyebrow">Preguntas</span><h2>Lo que nos preguntan</h2></div>
+  <div class="faq">
+    <details><summary>¿De verdad es gratis?</summary><p>Sí, toda la app. Ganamos una comisión cuando contratas una tarifa o compras en una tienda asociada desde Masvida, y compartimos parte contigo. El único extra de pago será «Mi dinero», que conecta tu banco, y es opcional.</p></details>
+    <details><summary>¿Pago más por comprar desde Masvida?</summary><p>No. El precio es el mismo que en la tienda. La comisión la paga la tienda, no tú.</p></details>
+    <details><summary>¿Qué hacéis con mis facturas y mis datos?</summary><p>Los usamos solo para calcular tu ahorro y tus ayudas. No los vendemos ni los cedemos a las tiendas. Puedes borrarlo todo desde la app.</p></details>
+    <details><summary>¿Me vais a llamar para venderme cosas?</summary><p>Nunca. Tú decides si cambias de tarifa y lo haces desde la app, sin llamadas.</p></details>
+    <details><summary>¿Cuándo puedo usarla?</summary><p>Empezamos con una prueba con pocas familias. Si te apuntas ahora, entras de las primeras.</p></details>
+  </div>
+</div></section>
+
+<footer><div class="in">
+  <nav><a href="/legal/aviso-legal.html">Aviso legal</a><a href="/legal/privacidad.html">Privacidad</a><a href="/legal/cookies.html">Cookies</a><a href="/legal/condiciones.html">Condiciones</a></nav>
+  <p>Masvida incluye enlaces de afiliación: si contratas o compras desde ellos, recibimos una comisión sin que tú pagues más.</p>
+  </div></footer>
+
+<script src="/config.js"></script>
+<script>
+document.getElementById("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const em = document.getElementById("em").value.trim(), cp = document.getElementById("cp").value.trim(),
+        ok = document.getElementById("ok").checked, er = document.getElementById("er"), dn = document.getElementById("dn");
+  er.hidden = true; dn.hidden = true;
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { er.textContent = "Escribe un correo válido, por ejemplo nombre@gmail.com."; er.hidden = false; return }
+  if (cp && !/^[0-9]{5}$/.test(cp)) { er.textContent = "El código postal tiene 5 números. Puedes dejarlo vacío."; er.hidden = false; return }
+  if (!ok) { er.textContent = "Marca la casilla para que podamos guardar tu correo."; er.hidden = false; return }
+  const C = window.MASVIDA || {};
+  if (!C.supabaseUrl || !C.supabaseAnonKey) { er.textContent = "La lista de espera abre muy pronto. Vuelve en unos días."; er.hidden = false; return }
+  const ref = new URLSearchParams(location.search).get("ref");
+  try {
+    const r = await fetch(C.supabaseUrl + "/rest/v1/lista_espera", { method: "POST",
+      headers: { apikey: C.supabaseAnonKey, Authorization: "Bearer " + C.supabaseAnonKey, "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ email: em.toLowerCase(), codigo_postal: cp || null, origen: ref ? "ref:" + ref.slice(0, 12) : "web" }) });
+    if (!r.ok && r.status !== 409) throw new Error(r.status);
+    dn.textContent = "Apuntada. Te escribiremos a " + em + " en cuanto abramos."; dn.hidden = false; e.target.reset();
+  } catch (x) { er.textContent = "No hemos podido guardarlo. Revisa tu conexión e inténtalo otra vez."; er.hidden = false }
+});
+</script>
+</body>
+</html>
+
