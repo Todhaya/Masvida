@@ -358,6 +358,25 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .opt2{border:0;background:var(--surface);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink)}
 .opt2 small{color:var(--muted);font-size:12.5px}.opt2[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
 .field input[type=date],.field input[type=time]{border:0;background:var(--bg);border-radius:14px;padding:12px 14px;font:inherit;width:100%;box-sizing:border-box;color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.kpis.k4{grid-template-columns:repeat(2,1fr)}
+.kpis>div,.kpis>button{border:0;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:2px;color:var(--p-ink);text-align:left;font:inherit}
+.kpis b{font-size:24px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.kpis span{font-size:12.5px;opacity:.8}
+.dr{display:grid;grid-template-columns:48px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}.dr:last-child{border-bottom:0}
+.dr .bd,.mr,.pr{display:flex;flex-direction:column;gap:5px;min-width:0}.dr .n,.mr .n,.pr .n{font-weight:700}
+.tk-w{color:var(--warn);font-weight:700}
+.mr,.pr{padding:12px 0;border-bottom:1px solid var(--line)}.mr:last-child,.pr:last-child{border-bottom:0}
+.mh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.hb{height:6px;border-radius:4px;background:var(--line);overflow:hidden}.hb i{display:block;height:100%;border-radius:4px}
+.stp4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.stp4 span{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted)}
+.stp4 i{height:4px;border-radius:2px;background:var(--line)}.stp4 .on i{background:var(--ink)}.stp4 .on{color:var(--ink);font-weight:700}
+.wl{display:flex;flex-direction:column;gap:10px}
+.wcard{border:0;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:4px;text-align:left;color:var(--p-ink);font:inherit;min-height:96px}
+.wcard b{font-size:18px}.wcard small{opacity:.8}
+.bcw{display:flex;flex-direction:column;gap:6px;background:#fff;color:#0B0B0B;border-radius:12px;padding:12px;margin-top:8px;align-items:center;font-variant-numeric:tabular-nums;letter-spacing:.12em;font-weight:700}
+.bc{width:100%;height:56px}
+.hf{border:0;background:transparent;display:grid;grid-template-columns:40px 1fr 14px;gap:12px;align-items:center;text-align:left;padding:10px 0;border-bottom:1px solid var(--line);font:inherit;color:var(--ink);width:100%}
+.hf:last-of-type{border-bottom:0}.hf i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--p-ink)}.hf i svg{width:20px;height:20px}
+.hf b{display:block;font-size:15px;line-height:1.3}.hf small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}.hf em{font-style:normal;color:var(--muted);font-size:20px}
 </style>
 </head>
 <body>
@@ -375,11 +394,12 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
       <button class="tile t-lav" data-v="ayudas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><span class="big" id="b-aids">0</span><span>ayudas que te pueden corresponder</span></button>
       <button class="tile t-mint" data-v="facturas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg></span><span class="big" id="b-bills">0/0</span><span>facturas revisadas</span></button>
       <button class="tile t-butter2" data-v="ofertas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg></span><span class="big" id="b-offers">0</span><span>ofertas para tu perfil</span></button>
-      <button class="tile t-sky2" data-v="docs"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><span class="big">28 d</span><span>para que renueve tu seguro de hogar</span></button>
+      <button class="tile t-sky2" data-v="docs"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><span class="big" id="b-docd">28 d</span><span id="b-docn">para que venza tu seguro</span></button>
       <button class="tile wide dark" style="background:var(--ink);color:var(--bg)" data-v="perfil"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:var(--bg)" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
     </div>
     <div class="wx"><div><span class="small muted">Hoy</span><b>14° · lluvia a las 18 h</b><span class="small muted">Datos de AEMET</span></div><div><span class="small muted">Farmacia de guardia</span><b>A 600 m</b><span class="small muted">Abierta hasta las 22 h</span></div></div>
-    <div class="card"><div class="card-h"><h2>Lo siguiente</h2></div><div id="next"></div></div>
+    <div id="home-dash" class="view"></div>
+    <div class="card"><div class="card-h"><h2>Ahorra un poco más</h2></div><div id="next"></div></div>
   </section>
 
   <section class="view" id="v-facturas" hidden>
@@ -448,10 +468,10 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   <section class="view" id="v-luz" hidden><div id="luz" class="view"></div></section>
   <section class="view" id="v-gasolina" hidden><div class="card"><div class="card-h"><h2>Cerca de ti</h2><span class="small muted">Precio con tus tarjetas</span></div><div id="fuel"></div></div><span class="aff">Precios oficiales del Ministerio, actualizados cada día. Los descuentos dependen de las condiciones de cada tarjeta.</span></section>
   <section class="view" id="v-reembolso" hidden><div id="reemb" class="view"></div></section>
-  <section class="view" id="v-docs" hidden><div class="card"><div id="docs"></div></div><div class="btns"><button class="btn pri" data-toast="Haz una foto o reenvía el correo a tu-buzon@masvida.app y leemos las fechas por ti">Añadir documento</button></div></section>
-  <section class="view" id="v-pedidos" hidden><div class="card"><div id="peds"></div></div><span class="aff">Reenvía tus correos de pedido a tu-buzon@masvida.app y aparecen aquí solos.</span></section>
-  <section class="view" id="v-wallet" hidden><div class="wal" id="wal"></div><div class="btns"><button class="btn" data-toast="Escanearías el código de barras de la tarjeta">Añadir tarjeta</button></div></section>
-  <section class="view" id="v-mant" hidden><div class="card"><div id="mant"></div></div></section>
+  <section class="view" id="v-docs" hidden><div id="docs-box" class="view"></div></section>
+  <section class="view" id="v-pedidos" hidden><div id="peds-box" class="view"></div></section>
+  <section class="view" id="v-wallet" hidden><div id="wal-box" class="view"></div></section>
+  <section class="view" id="v-mant" hidden><div id="mant-box" class="view"></div></section>
   <section class="view" id="v-cal" hidden><div id="cal-box" class="view"></div></section>
   <section class="view" id="v-tareas" hidden>
     <div class="seg4" id="tk-seg" style="grid-template-columns:repeat(3,1fr)"><button data-tk="hoy" aria-pressed="true">Hoy</button><button data-tk="reparto" aria-pressed="false">Reparto</button><button data-tk="premios" aria-pressed="false">Premios</button></div>
@@ -678,6 +698,7 @@ function renderLevels(){renderRefWin();
 
 /* INICIO */
 function renderHome(){
+  if(typeof homeDash==="function"&&typeof MTX!=="undefined")homeDash();
   const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null),tot=rev.reduce((s,[k])=>s+done[k],0);
   $("#b-save").textContent=eur(tot);$("#b-save-sub").textContent=rev.length?`Con ${rev.length} ${rev.length===1?"factura revisada":"facturas revisadas"} · sigue revisando`:"Revisa tu primera factura";
   $("#b-bills").textContent=rev.length+"/"+vb.length;$("#b-aids").textContent=myAids().length;$("#b-offers").textContent=OFF.filter(forYou).length;
@@ -724,9 +745,7 @@ let MANT=S.get("mant",[["Revisión de la caldera","Obligatoria · última en ene
 const CAL=[["Natación","Jueves 17:30","Jue","i"],["Fin de semana en la otra casa","Viernes a domingo · el menú se ajusta solo","Vie–Dom","i"],["Cumpleaños de la tía Ana","Te sugerimos ideas de regalo","Dom","u",1],["Reunión del cole","Martes 17:00","Mar","i"]];
 const li=([n,m,t,c])=>`<div class="li"><span><span class="n">${n}</span><br><span class="m">${m}</span></span><span class="pl pl-${c}">${t}</span></div>`;
 function renderHogar(){
-  $("#docs").innerHTML=DOCS.map(li).join("");$("#peds").innerHTML=PEDS.map(li).join("");
-  $("#wal").innerHTML=WAL.map(([n,m,c])=>`<div class="wc" style="background:var(--${c})">${n}<small>${m}</small></div>`).join("");
-  $("#mant").innerHTML=MANT.map((x,i)=>`<div class="chk ${x[2]?"done":""}"><button class="box ${x[2]?"on":""}" data-mant="${i}" aria-label="Hecho">✓</button><span><span class="lbl" style="font-weight:700">${x[0]}</span><br><span class="small muted">${x[1]}</span></span><span></span></div>`).join("");
+  docsRender();pedsRender();walRender();mantRender();
   renderMenu();renderEvento();tkRender();arRender();famRender();calRender();shRender();
 }
 let TASKS=S.get("tasks",[["Reservar la sala del parque","Laura",1],["Comprar decoración","Marc",1],["Mandar invitaciones","Laura",0],["Encargar la tarta","Ana",0]]);
@@ -874,7 +893,7 @@ function go(v){const top=PARENT[v]||v;document.querySelectorAll("section.view").
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
 function resetBill(){$("#step-res").hidden=true;$("#step-load").hidden=true;$("#step-up").hidden=false}
 function renderAll(form=true){if(!BILLS[cur]||(BILLS[cur].need&&!BILLS[cur].need(P)))cur="luz";renderTypes();renderAids();renderOffers();renderHome();renderLevels();renderLuz();renderFuel();renderReemb();renderHogar();renderDinero();renderEsc();renderVentajas();renderHubTags();if(form)renderForm()}
-function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs","2 pronto");t("pedidos","3");t("wallet","4");t("mant",MANT.filter(x=>!x[2]).length+" pend.");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
+function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet","4");t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.v)go(b.dataset.v);
@@ -1243,6 +1262,139 @@ document.addEventListener("click",e=>{
   if(d.shok){const v=SH.inv.find(x=>x.id===d.shok);SH.inv=SH.inv.filter(x=>x!==v);const m={id:"m"+Date.now(),n:v.n,kid:0,talla:"M",home:"siempre",c:PAL[MEM.length%PAL.length],acc:"gestiona",perm:v.perm};MEM.push(m);STARS[m.id]=0;SH.feed.unshift({w:m.id,t:"se ha unido a la casa",d:DAY0});SH.link=null;memSave();tkSave();shSave();renderAll(false);toast(`${v.n} ya ve la casa contigo`);return}
   if(d.shq){const m=memOf(d.shq);delete m.acc;delete m.perm;memSave();shRender();toast(`${m.n} ya no tiene acceso. Sigue en la familia`);return}
 });
+
+/* PANELES: documentos, mantenimiento, pedidos y wallet, y el resumen de Inicio */
+const ring=(pct,col,sz=46,txt="")=>{const r=sz/2-4,c=2*Math.PI*r,p=Math.max(0,Math.min(1,pct));return`<svg class="ring" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" aria-hidden="true"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="4"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${c*p} ${c}" transform="rotate(-90 ${sz/2} ${sz/2})"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="${sz*.26}" font-weight="800" fill="var(--ink)">${txt}</text></svg>`};
+const plazo=n=>n<0?`Venció hace ${-n} ${-n===1?"día":"días"}`:n===0?"Vence hoy":n<60?`Vence en ${n} ${n===1?"día":"días"}`:n<365?`Vence en ${Math.round(n/30)} meses`:`Vence en ${(n/365).toFixed(1).replace(".0","").replace(".",",")} años`;
+const fechaC=n=>{const d=dOff(n);return d.getDate()+" "+MES[d.getMonth()].slice(0,3)+(d.getFullYear()!==D0.getFullYear()?" "+d.getFullYear():"")};
+const urg=n=>n<=30?"u":n<=90?"p":"ok";
+const UCOL={u:"var(--warn)",p:"var(--ink)",ok:"var(--ok)"};
+
+/* Documentos y fechas */
+const DCAT={coche:"Coche",casa:"Casa",personas:"Personas",papeles:"Papeles"};
+const DOC0=[
+ {id:"d1",n:"Seguro del coche",cat:"coche",v:28,nota:"Se renueva solo. Cuando te llegue el precio nuevo, compáralo con el de este año antes de aceptar.",acc:["Ver la póliza","toast:Abrirías la póliza que guardaste en PDF"]},
+ {id:"d2",n:"ITV del coche",cat:"coche",v:14,nota:"Pide cita con tiempo: en noviembre se llena.",acc:["Pedir cita","toast:Te llevaríamos a la cita previa de ITV de tu comunidad"]},
+ {id:"d3",n:"Seguro de hogar",cat:"casa",v:58,nota:"Revisa que el capital asegurado siga siendo el de tu casa."},
+ {id:"d4",n:"Pasaporte de Noa",cat:"personas",who:"noa",v:120,nota:"Si viajáis fuera de la UE, muchos países piden 6 meses de validez.",acc:["Pedir cita","toast:Te llevaríamos a la cita previa del pasaporte"]},
+ {id:"d5",n:"Declaración de la renta",cat:"papeles",v:Math.max(1,offOf(new Date(D0.getFullYear()+(D0.getMonth()>5?1:0),3,1))),nota:"Te recordaremos tus deducciones por hijos y por alquiler."},
+ {id:"d6",n:"Garantía de la lavadora",cat:"casa",v:220,nota:"Factura guardada. Si falla antes, la reparación es gratis."},
+ {id:"d7",n:"DNI de Laura",cat:"personas",who:"laura",v:900,nota:"Te avisamos 3 meses antes."},
+ {id:"d8",n:"Tarjeta del transporte de Leo",cat:"personas",who:"leo",v:45,nota:"La tarifa joven se renueva cada año."}
+];
+let DOCX=S.get("docx",DOC0),docCat="todo",docNew=null;
+function docsRender(){
+  const box=$("#docs-box");if(!box)return;
+  const L=DOCX.filter(d=>docCat==="todo"||d.cat===docCat).sort((a,b)=>a.v-b.v);
+  const c30=DOCX.filter(d=>d.v<=30).length,c90=DOCX.filter(d=>d.v>30&&d.v<=90).length;
+  box.innerHTML=`<div class="kpis"><div style="background:var(--peach)"><b>${c30}</b><span>en 30 días</span></div><div style="background:var(--butter)"><b>${c90}</b><span>en 3 meses</span></div><div style="background:var(--mint)"><b>${DOCX.length-c30-c90}</b><span>al día</span></div></div>
+   <div class="chips"><button class="chip" data-dcat="todo" aria-pressed="${docCat==="todo"}">Todo</button>${Object.entries(DCAT).map(([k,l])=>`<button class="chip" data-dcat="${k}" aria-pressed="${docCat===k}">${l}</button>`).join("")}</div>
+   <div class="card">${L.map(d=>{const u=urg(d.v),m=d.who&&memOf(d.who);return`<div class="dr">${ring(1-Math.min(d.v,365)/365,UCOL[u],48,d.v<100?d.v+"d":"")}<span class="bd"><span class="n">${d.n}</span><span class="small ${u==="u"?"tk-w":"muted"}">${plazo(d.v)} · ${fechaC(d.v)}${m?" · "+m.n:""}</span><span class="small muted">${d.nota||""}</span>${d.acc?`<span class="btns"><button class="btn" style="padding:7px 12px" ${d.acc[1].startsWith("toast:")?`data-toast="${d.acc[1].slice(6)}"`:`data-v="${d.acc[1].slice(2)}"`}>${d.acc[0]}</button></span>`:""}</span></div>`}).join("")||'<span class="small muted">Nada en esta categoría.</span>'}</div>
+   ${docNew?`<div class="card"><h2>Nueva fecha</h2><div class="field"><span class="pk-l">Qué es</span><input id="dn-n" value="${docNew.n}" placeholder="Ej.: revisión de la caldera, carné de conducir" autocomplete="off"></div>
+     <span class="pk-l">Tipo</span><div class="chips">${Object.entries(DCAT).map(([k,l])=>`<button class="chip" data-dnc="${k}" aria-pressed="${docNew.cat===k}">${l}</button>`).join("")}</div>
+     <div class="field"><span class="pk-l">Vence el</span><input id="dn-d" type="date"></div>
+     <div class="btns"><button class="btn pri" id="dn-save">Guardar</button><button class="btn" id="dn-cancel">Cancelar</button></div></div>`:
+   `<div class="btns"><button class="btn pri" id="dn-new">+ Añadir fecha</button><button class="btn" data-toast="Harías una foto del documento o reenviarías el correo a tu buzón de Masvida y leeríamos la fecha por ti">Hacer foto del documento</button></div>`}
+   <span class="aff">Te avisamos 30 días antes y otra vez una semana antes. No damos consejo sobre seguros: solo te recordamos las fechas.</span>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-docs"))return;const d=b.dataset;
+  if(d.dcat){docCat=d.dcat;docsRender();return}
+  if(b.id==="dn-new"){docNew={n:"",cat:"casa"};docsRender();$("#dn-n").focus();return}
+  if(b.id==="dn-cancel"){docNew=null;docsRender();return}
+  if(d.dnc){docNew.n=$("#dn-n").value;docNew.cat=d.dnc;docsRender();return}
+  if(b.id==="dn-save"){const n=$("#dn-n").value.trim(),v=$("#dn-d").value;if(!n||!v){toast("Escribe qué es y cuándo vence");return}const[y,m,dd]=v.split("-").map(Number);DOCX.push({id:"d"+Date.now(),n,cat:docNew.cat,v:offOf(new Date(y,m-1,dd))});docNew=null;S.set("docx",DOCX);docsRender();renderHubTags();renderHome();toast("Guardado. Te avisaremos antes");return}
+});
+
+/* Mantenimiento: cada cosa con su frecuencia y su barra de "salud" */
+const MT0=[
+ {id:"m1",n:"Revisión de la caldera",z:"Calefacción",cada:365,last:-330,tip:"Hazla antes del frío. Pide el certificado y guárdalo en Documentos.",tk:1},
+ {id:"m2",n:"Purgar los radiadores",z:"Calefacción",cada:365,last:-370,tip:"Con la calefacción apagada y un trapo debajo de la llave.",tk:1},
+ {id:"m3",n:"Pilas del detector de humo",z:"Seguridad",cada:365,last:-200,tip:"Pulsa el botón de prueba cada mes."},
+ {id:"m4",n:"Filtro de la campana",z:"Cocina",cada:90,last:-95,tip:"Al lavavajillas, en programa intenso.",tk:1,buy:"Filtro de carbón para campana"},
+ {id:"m5",n:"Filtro y goma de la lavadora",z:"Ropa",cada:30,last:-18,tip:"Un lavado en vacío a 60 °C con vinagre quita el olor."},
+ {id:"m6",n:"Descalcificar la cafetera",z:"Cocina",cada:60,last:-58,tip:"Agua y vinagre a partes iguales, dos ciclos.",buy:"Descalcificador para cafetera"},
+ {id:"m7",n:"Presión de las ruedas",z:"Coche",cada:30,last:-40,tip:"En frío. La presión correcta está en la puerta del conductor."},
+ {id:"m8",n:"Filtros del aire acondicionado",z:"Climatización",cada:180,last:-60,tip:"Agua tibia y jabón, y secar a la sombra."}
+];
+let MTX=S.get("mtx",MT0),mtZ="todo";
+const mtSince=m=>-m.last,mtLeft=m=>m.cada-mtSince(m),mtHealth=m=>Math.max(0,1-mtSince(m)/m.cada);
+function mantRender(){
+  const box=$("#mant-box");if(!box)return;
+  const ZS=[...new Set(MTX.map(m=>m.z))],L=MTX.filter(m=>mtZ==="todo"||m.z===mtZ).sort((a,b)=>mtLeft(a)-mtLeft(b));
+  const now=MTX.filter(m=>mtLeft(m)<=0).length,soon=MTX.filter(m=>mtLeft(m)>0&&mtLeft(m)<=14).length,avg=Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100);
+  box.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:16px">${ring(avg/100,avg>66?"var(--ok)":avg>33?"var(--warn)":"var(--warn)",84,avg+"%")}<span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:18px">${avg} % de la casa al día</b><span class="small muted">${now} ${now===1?"cosa toca":"cosas tocan"} ya · ${soon} en las próximas dos semanas</span></span></div>
+   <div class="chips"><button class="chip" data-mtz="todo" aria-pressed="${mtZ==="todo"}">Todo</button>${ZS.map(z=>`<button class="chip" data-mtz="${z}" aria-pressed="${mtZ===z}">${z}</button>`).join("")}</div>
+   <div class="card">${L.map(m=>{const l=mtLeft(m),h=mtHealth(m);return`<div class="mr"><div class="mh"><span><span class="n">${m.n}</span><br><span class="small ${l<=0?"tk-w":"muted"}">${l<=0?(l===0?"Toca hoy":`Toca desde hace ${-l} días`):`Dentro de ${l} días`} · ${m.z} · cada ${m.cada>=365?"año":m.cada>=180?"6 meses":m.cada>=90?"3 meses":m.cada>=60?"2 meses":"mes"}</span></span><button class="box ${l>m.cada-2?"on":""}" data-mtdone="${m.id}" aria-label="Hecho: ${m.n}">✓</button></div>
+     <div class="hb"><i style="width:${h*100}%;background:${h>.5?"var(--ok)":h>.15?"var(--warn)":"var(--warn)"}"></i></div>
+     <span class="small muted">${m.tip}</span>
+     ${m.tk||m.buy?`<span class="btns">${m.tk?`<button class="btn" style="padding:7px 12px" data-mttk="${m.id}">Pasarla a Tareas</button>`:""}${m.buy?`<button class="btn" style="padding:7px 12px" data-v="ofertas">Comprar ${m.buy.toLowerCase()}</button>`:""}</span>`:""}</div>`}).join("")}</div>
+   <span class="aff">Las frecuencias son las habituales para una casa; ajústalas a tus aparatos. Al marcar algo como hecho, el contador vuelve a empezar.</span>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-mant"))return;const d=b.dataset;
+  if(d.mtz){mtZ=d.mtz;mantRender();return}
+  if(d.mtdone){const m=MTX.find(x=>x.id===d.mtdone);if(mtLeft(m)>m.cada-2){m.last=m.prev??-m.cada;}else{m.prev=m.last;m.last=0}S.set("mtx",MTX);mantRender();renderHubTags();renderHome();toast(m.last===0?`Hecho. Te avisamos dentro de ${m.cada>=365?"un año":m.cada+" días"}`:"Desmarcado");return}
+  if(d.mttk){const m=MTX.find(x=>x.id===d.mttk);if(!CH.some(c=>c.n===m.n)){CH.push({id:"c"+Date.now(),n:m.n,a:m.z,ev:m.cada>=365?12:Math.max(1,Math.round(m.cada/30)),u:"m",last:-999,who:"laura",st:4});tkSave();tkRender()}toast("Está en Tareas de hoy. Pásasela a quien quieras");return}
+});
+
+/* Pedidos: estado, entrega y plazo para devolver */
+const PST=["Preparando","Enviado","En reparto","Entregado"];
+const PD0=[
+ {id:"p1",n:"Zapatillas de deporte para Leo",t:"Tienda de deporte",tr:"SEUR",st:2,v:0,precio:54.9,cb:1},
+ {id:"p2",n:"Funda del móvil",t:"Tienda online grande",tr:"Correos",st:1,v:4,precio:12.99},
+ {id:"p3",n:"Abrigo de Noa (talla 8)",t:"Tienda de moda",tr:"GLS",st:0,v:6,precio:39.95,cb:1},
+ {id:"p4",n:"Aspiradora sin cable",t:"Tienda online grande",tr:"Entregado el " + fechaC(-9),st:3,v:-9,dev:5,precio:129}
+];
+let PDX=S.get("pdx",PD0);
+function pedsRender(){
+  const box=$("#peds-box");if(!box)return;
+  const act=PDX.filter(p=>p.st<3),dev=PDX.filter(p=>p.st===3&&p.dev>0),mes=PDX.reduce((s,p)=>s+p.precio,0);
+  const row=p=>`<div class="pr"><div class="mh"><span><span class="n">${p.n}</span><br><span class="small muted">${p.t} · ${p.tr}</span></span><span class="pl ${p.st===2?"pl-o":p.st===3?"pl-i":"pl-u"}">${p.st===3?(p.dev>0?`Devolver: ${p.dev} días`:"Entregado"):p.v===0?"Llega hoy":"Llega "+(p.v===1?"mañana":fechaC(p.v))}</span></div>
+    <div class="stp4">${PST.map((s,i)=>`<span class="${i<=p.st?"on":""}"><i></i>${s}</span>`).join("")}</div>
+    ${p.cb?`<span class="small" style="color:var(--ok)">Comprado desde Masvida · reembolso pendiente de confirmar</span>`:""}
+    ${p.st===3&&p.dev>0?`<span class="btns"><button class="btn" style="padding:7px 12px" data-toast="Te llevaríamos a la devolución de la tienda con el número de pedido ya copiado">Devolver</button><button class="btn" style="padding:7px 12px" data-pdok="${p.id}">Me lo quedo</button></span>`:""}</div>`;
+  box.innerHTML=`<div class="kpis"><div style="background:var(--sky)"><b>${act.length}</b><span>en camino</span></div><div style="background:var(--peach)"><b>${dev.length}</b><span>por devolver</span></div><div style="background:var(--mint)"><b>${eur(mes)}</b><span>este mes</span></div></div>
+   ${act.length?`<div class="card"><h2>En camino</h2>${act.sort((a,b)=>a.v-b.v).map(row).join("")}</div>`:""}
+   ${dev.length?`<div class="card"><h2>Plazo para devolver</h2>${dev.map(row).join("")}</div>`:""}
+   <span class="aff">Reenvía los correos de tus pedidos a tu buzón de Masvida y aparecen aquí solos, con el seguimiento de la empresa de transporte.</span>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-pedidos"))return;if(b.dataset.pdok){PDX.find(p=>p.id===b.dataset.pdok).dev=0;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome()}});
+
+/* Wallet: tarjetas con su código listo para la caja */
+const WL0=[{n:"Gasolinera",s:"Club · 5 cts/l de descuento",c:"peach",code:"7712 0458 9931"},{n:"Súper del barrio",s:"Tarjeta cliente · 3 % en tu cuenta",c:"mint",code:"2210 7781 0042"},{n:"Biblioteca",s:"Carné de Noa",c:"sky",code:"0042 7719"},{n:"Cine · sábado 18:30",s:"2 entradas · sala 4",c:"lav",code:"CN-88213"}];
+let wlOpen=null;
+const bars=code=>{let x=0,out="";for(const ch of code.replace(/\s/g,"")){const v=ch.charCodeAt(0);for(let k=0;k<3;k++){const w=1+((v>>k)&1)*2;out+=`<rect x="${x}" width="${w}" height="44" fill="currentColor"/>`;x+=w+1+((v>>(k+2))&1)}}return`<svg viewBox="0 0 ${x} 44" preserveAspectRatio="none" class="bc" aria-hidden="true">${out}</svg>`};
+function walRender(){
+  const box=$("#wal-box");if(!box)return;
+  box.innerHTML=`<div class="wl">${WL0.map((w,i)=>`<button class="wcard" style="background:var(--${w.c})" data-wl="${i}" aria-expanded="${wlOpen===i}"><b>${w.n}</b><small>${w.s}</small>${wlOpen===i?`<span class="bcw">${bars(w.code)}<span>${w.code}</span></span><small>Sube el brillo y enséñalo en caja</small>`:""}</button>`).join("")}</div>
+   <div class="btns"><button class="btn pri" data-toast="Escanearías el código de barras de la tarjeta con la cámara">Añadir tarjeta</button></div>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-wallet"))return;if(b.dataset.wl!=null){const i=+b.dataset.wl;wlOpen=wlOpen===i?null:i;walRender()}});
+
+/* INICIO: todo lo útil de hoy, ordenado por urgencia */
+function homeFeed(){
+  const it=[],add=(p,col,ic,t,s,v)=>it.push({p,col,ic,t,s,v});
+  DOCX.filter(d=>d.v<=30).forEach(d=>add(100-d.v,"peach","doc",`${d.n}: ${plazo(d.v).toLowerCase()}`,d.nota||"","docs"));
+  PDX.filter(p=>p.st<3&&p.v===0).forEach(p=>add(90,"sky","box",`Llega hoy: ${p.n}`,p.tr,"pedidos"));
+  PDX.filter(p=>p.st===3&&p.dev>0&&p.dev<=7).forEach(p=>add(85,"peach","box",`Te quedan ${p.dev} días para devolver ${p.n.toLowerCase()}`,"Si te lo quedas, márcalo y no te avisamos más","pedidos"));
+  evOn(0).forEach(e=>add(80,"mint","cal",`${e.h||"Hoy"} · ${e.t}`,[e.lleva?"Lleva "+memOf(e.lleva).n:"",e.note||""].filter(Boolean).join(" · "),"cal"));
+  const td=CH.filter(c=>nextOf(c)<=0&&!doneToday(c));if(td.length)add(70,"butter","task",`${td.length} tareas de casa para hoy`,td.slice(0,3).map(c=>c.n+" ("+memOf(c.who).n+")").join(", "),"tareas");
+  const mt=MTX.filter(m=>mtLeft(m)<=0);if(mt.length)add(60,"butter","tool",`Mantenimiento: ${mt[0].n.toLowerCase()}${mt.length>1?` y ${mt.length-1} más`:""}`,mt[0].tip,"mant");
+  const x=MW[TODAYI]&&MW[TODAYI][1];if(x&&x.r)add(50,"lav","food",`Cena: ${REC[x.r].n}`,x.ok?"Tienes todo en la lista de la compra":"Propuesta: acéptala o cámbiala","menu");
+  const cesto=WD.filter(w=>w.st==="lavar").length;if(cesto>=6)add(45,"sky","wash",`Hay ${cesto} prendas en el cesto`,"Ya hay para una lavadora","armario");
+  evOn(1).forEach(e=>add(40,"mint","cal",`Mañana ${e.h||""} · ${e.t}`,e.note||"","cal"));
+  return it.sort((a,b)=>b.p-a.p);
+}
+const HIC={doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',box:'<path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/>',food:'<path d="M4 10h16v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M2 10h20"/>',wash:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4"/>'};
+function homeDash(){
+  const box=$("#home-dash");if(!box)return;
+  const f=homeFeed(),done=CLOG.filter(l=>l.d===DAY0&&l.c).length,todo=CH.filter(c=>nextOf(c)<=0||doneToday(c)).length;
+  const nx=DOCX.slice().sort((a,b)=>a.v-b.v)[0];if(nx&&$("#b-docd")){$("#b-docd").textContent=nx.v+" d";$("#b-docn").textContent="para que venza: "+nx.n.toLowerCase()}
+  const d=D0;
+  box.innerHTML=`<div class="card"><div class="card-h"><h2>Hoy en casa</h2><span class="small muted">${DN[dowMon(d)]} ${d.getDate()} de ${MES[d.getMonth()]}</span></div>
+   ${f.slice(0,6).map(x=>`<button class="hf" data-v="${x.v}"><i style="background:var(--${x.col})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${HIC[x.ic]}</svg></i><span><b>${x.t}</b>${x.s?`<small>${x.s}</small>`:""}</span><em>›</em></button>`).join("")||'<span class="small muted">Todo en orden por hoy.</span>'}
+   ${f.length>6?`<span class="small muted">Y ${f.length-6} cosas más en sus apartados.</span>`:""}</div>
+   <div class="kpis k4"><button data-v="tareas" style="background:var(--butter)"><b>${done}/${todo}</b><span>tareas hechas hoy</span></button><button data-v="pedidos" style="background:var(--sky)"><b>${PDX.filter(p=>p.st<3).length}</b><span>pedidos en camino</span></button><button data-v="docs" style="background:var(--peach)"><b>${DOCX.filter(x=>x.v<=90).length}</b><span>fechas en 3 meses</span></button><button data-v="mant" style="background:var(--mint)"><b>${Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100)} %</b><span>casa al día</span></button></div>`;
+}
 
 renderAll();
 </script>
