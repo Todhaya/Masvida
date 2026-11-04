@@ -377,6 +377,13 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .hf{border:0;background:transparent;display:grid;grid-template-columns:40px 1fr 14px;gap:12px;align-items:center;text-align:left;padding:10px 0;border-bottom:1px solid var(--line);font:inherit;color:var(--ink);width:100%}
 .hf:last-of-type{border-bottom:0}.hf i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--p-ink)}.hf i svg{width:20px;height:20px}
 .hf b{display:block;font-size:15px;line-height:1.3}.hf small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}.hf em{font-style:normal;color:var(--muted);font-size:20px}
+.eqg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.eq{border:0;background:var(--bg);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink)}
+.eq small{font-size:12px;color:var(--muted)}.eq[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.eq[aria-pressed="true"] small{color:var(--bg);opacity:.7}
+.mta{display:flex;gap:6px;align-items:center}
+.wsel .chip{background:var(--surface)}.wsel .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+#mt-add{grid-template-columns:1fr auto}#mt-add input{grid-column:1/-1}#mt-add select{padding:12px 10px;border:0;background:var(--bg);border-radius:14px;padding:0 10px;font:inherit;color:var(--ink);min-width:0}
+.btn[disabled]{opacity:.45}
 </style>
 </head>
 <body>
@@ -1320,15 +1327,19 @@ let MTX=S.get("mtx",MT0),mtZ="todo";
 const mtSince=m=>-m.last,mtLeft=m=>m.cada-mtSince(m),mtHealth=m=>Math.max(0,1-mtSince(m)/m.cada);
 function mantRender(){
   const box=$("#mant-box");if(!box)return;
+  if(mtCfg){mtCfgRender(box);return}
+  if(!MTX.length){box.innerHTML=`<div class="hero"><span class="lab">Mantenimiento</span><span class="big" style="font-size:30px">Configura tu casa en un minuto</span><span class="lab">Marca lo que tienes (caldera, coche, lavadora…) y te recordamos cada cosa cuando toque.</span></div><div class="btns"><button class="btn pri" id="mc-start">Empezar</button></div>`;return}
   const ZS=[...new Set(MTX.map(m=>m.z))],L=MTX.filter(m=>mtZ==="todo"||m.z===mtZ).sort((a,b)=>mtLeft(a)-mtLeft(b));
   const now=MTX.filter(m=>mtLeft(m)<=0).length,soon=MTX.filter(m=>mtLeft(m)>0&&mtLeft(m)<=14).length,avg=Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100);
-  box.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:16px">${ring(avg/100,avg>66?"var(--ok)":avg>33?"var(--warn)":"var(--warn)",84,avg+"%")}<span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:18px">${avg} % de la casa al día</b><span class="small muted">${now} ${now===1?"cosa toca":"cosas tocan"} ya · ${soon} en las próximas dos semanas</span></span></div>
+  box.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:16px">${ring(avg/100,avg>66?"var(--ok)":avg>33?"var(--warn)":"var(--warn)",84,avg+"%")}<span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:18px">${avg} % de la casa al día</b><span class="small muted">${now} ${now===1?"cosa toca":"cosas tocan"} ya · ${soon} en las próximas dos semanas</span><button class="btn" id="mc-start" style="padding:7px 12px;align-self:flex-start;margin-top:6px">Configurar mi casa</button></span></div>
    <div class="chips"><button class="chip" data-mtz="todo" aria-pressed="${mtZ==="todo"}">Todo</button>${ZS.map(z=>`<button class="chip" data-mtz="${z}" aria-pressed="${mtZ===z}">${z}</button>`).join("")}</div>
-   <div class="card">${L.map(m=>{const l=mtLeft(m),h=mtHealth(m);return`<div class="mr"><div class="mh"><span><span class="n">${m.n}</span><br><span class="small ${l<=0?"tk-w":"muted"}">${l<=0?(l===0?"Toca hoy":`Toca desde hace ${-l} días`):`Dentro de ${l} días`} · ${m.z} · cada ${m.cada>=365?"año":m.cada>=180?"6 meses":m.cada>=90?"3 meses":m.cada>=60?"2 meses":"mes"}</span></span><button class="box ${l>m.cada-2?"on":""}" data-mtdone="${m.id}" aria-label="Hecho: ${m.n}">✓</button></div>
+   <div class="card">${L.map(m=>{const l=mtLeft(m),h=mtHealth(m);return`<div class="mr"><div class="mh"><span><span class="n">${m.n}</span><br><span class="small ${l<=0?"tk-w":"muted"}">${l<=0?(l===0?"Toca hoy":`Toca desde hace ${-l} días`):`Dentro de ${l} días`} · ${m.z} · cada ${m.cada>=365?"año":m.cada>=180?"6 meses":m.cada>=90?"3 meses":m.cada>=60?"2 meses":"mes"}</span></span><span class="mta"><button class="ibtn" data-meopen="${m.id}" aria-label="Editar ${m.n}">✎</button><button class="box ${l>m.cada-2?"on":""}" data-mtdone="${m.id}" aria-label="Hecho: ${m.n}">✓</button></span></div>
      <div class="hb"><i style="width:${h*100}%;background:${h>.5?"var(--ok)":h>.15?"var(--warn)":"var(--warn)"}"></i></div>
-     <span class="small muted">${m.tip}</span>
+     <span class="small muted">${m.tip}${m.who&&m.who!=="laura"?" · Se encarga "+memOf(m.who).n:""}</span>
+     ${mtEdit===m.id?mtEditHTML(m):""}
      ${m.tk||m.buy?`<span class="btns">${m.tk?`<button class="btn" style="padding:7px 12px" data-mttk="${m.id}">Pasarla a Tareas</button>`:""}${m.buy?`<button class="btn" style="padding:7px 12px" data-v="ofertas">Comprar ${m.buy.toLowerCase()}</button>`:""}</span>`:""}</div>`}).join("")}</div>
-   <span class="aff">Las frecuencias son las habituales para una casa; ajústalas a tus aparatos. Al marcar algo como hecho, el contador vuelve a empezar.</span>`;
+   <div class="card"><span class="pk-l">Añadir otra cosa</span><form class="addf" id="mt-add"><input id="mt-n" placeholder="Ej.: limpiar los canalones" autocomplete="off" aria-label="Qué"><select id="mt-f" aria-label="Cada cuánto">${FREQ.map(([d,l])=>`<option value="${d}" ${d===365?"selected":""}>${l}</option>`).join("")}</select><button class="btn pri" type="submit">Añadir</button></form></div>
+   <span class="aff">Las frecuencias son las habituales; tócalas con ✎ para ajustarlas a tus aparatos. Al marcar algo como hecho, el contador vuelve a empezar.</span>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-mant"))return;const d=b.dataset;
   if(d.mtz){mtZ=d.mtz;mantRender();return}
@@ -1395,6 +1406,60 @@ function homeDash(){
    ${f.length>6?`<span class="small muted">Y ${f.length-6} cosas más en sus apartados.</span>`:""}</div>
    <div class="kpis k4"><button data-v="tareas" style="background:var(--butter)"><b>${done}/${todo}</b><span>tareas hechas hoy</span></button><button data-v="pedidos" style="background:var(--sky)"><b>${PDX.filter(p=>p.st<3).length}</b><span>pedidos en camino</span></button><button data-v="docs" style="background:var(--peach)"><b>${DOCX.filter(x=>x.v<=90).length}</b><span>fechas en 3 meses</span></button><button data-v="mant" style="background:var(--mint)"><b>${Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100)} %</b><span>casa al día</span></button></div>`;
 }
+
+/* MANTENIMIENTO · configuración: qué hay en casa → cuándo se hizo por última vez → listo */
+const EQUIPOS=[
+ ["caldera","Caldera de gas","Calefacción",[["Revisión de la caldera",365,"Hazla antes del frío. Pide el certificado y guárdalo en Documentos.",1],["Purgar los radiadores",365,"Con la calefacción apagada y un trapo debajo de la llave.",1]]],
+ ["termo","Termo eléctrico","Agua caliente",[["Revisar el ánodo del termo",730,"Alarga la vida del termo y evita la cal.",0]]],
+ ["aire","Aire acondicionado","Climatización",[["Filtros del aire acondicionado",180,"Agua tibia y jabón, y secar a la sombra.",0]]],
+ ["campana","Campana extractora","Cocina",[["Filtro de la campana",90,"Al lavavajillas, en programa intenso.",1,"Filtro de carbón para campana"]]],
+ ["lavadora","Lavadora","Ropa",[["Filtro y goma de la lavadora",30,"Un lavado en vacío a 60 °C con vinagre quita el olor.",0]]],
+ ["lavavajillas","Lavavajillas","Cocina",[["Filtro del lavavajillas",30,"Sácalo y enjuágalo bajo el grifo.",0],["Sal y abrillantador",60,"Cuando se encienda el aviso o cada dos meses.",0,"Sal para lavavajillas"]]],
+ ["cafetera","Cafetera","Cocina",[["Descalcificar la cafetera",60,"Agua y vinagre a partes iguales, dos ciclos.",0,"Descalcificador para cafetera"]]],
+ ["humo","Detector de humo","Seguridad",[["Pilas del detector de humo",365,"Pulsa el botón de prueba cada mes.",0]]],
+ ["coche","Coche","Coche",[["Presión de las ruedas",30,"En frío. La presión correcta está en la puerta del conductor.",0],["Revisión del coche",365,"Aceite y filtros, o lo que diga el libro de mantenimiento.",0]]],
+ ["agua","Filtro de agua o descalcificador","Agua",[["Cambiar el filtro del agua",180,"Mira el modelo en la jarra o el grifo.",0,"Filtros de agua"]]],
+ ["chimenea","Chimenea o estufa de leña","Calefacción",[["Limpiar la chimenea",365,"Antes de empezar el invierno.",0]]],
+ ["piscina","Piscina","Exterior",[["Poner a punto la piscina",365,"Antes del verano: limpieza, cloro y depuradora.",0]]]
+];
+const ULTIMA=[["Hace poco",-7],["Hace unos meses",-120],["Hace más de un año",-400],["No lo sé",null]];
+const FREQ=[[30,"Cada mes"],[60,"2 meses"],[90,"3 meses"],[180,"6 meses"],[365,"Cada año"],[730,"2 años"]];
+let mtCfg=null,mtEdit=null; // mtCfg = {paso, eq:Set, last:{}}
+const eqDe=n=>EQUIPOS.find(e=>e[3].some(i=>i[0]===n));
+function mtCfgRender(box){
+  const c=mtCfg;
+  if(c.paso===1){box.innerHTML=`<div class="hero"><span class="lab">Paso 1 de 2</span><span class="big" style="font-size:30px">¿Qué tienes en casa?</span><span class="lab">Marca lo que tengas y te decimos qué hay que hacer y cada cuánto.</span></div>
+    <div class="card"><div class="eqg">${EQUIPOS.map(([k,l,z])=>`<button class="eq" data-mceq="${k}" aria-pressed="${c.eq.has(k)}"><b>${l}</b><small>${z}</small></button>`).join("")}</div>
+    <div class="btns"><button class="btn pri" id="mc-next" ${c.eq.size?"":"disabled"}>Siguiente (${c.eq.size})</button><button class="btn" id="mc-cancel">Cancelar</button></div></div>
+    <span class="aff">Si nos subes la factura del gas o el seguro de hogar, te marcamos la caldera y lo demás automáticamente.</span>`;return}
+  const items=EQUIPOS.filter(e=>c.eq.has(e[0])).flatMap(e=>e[3].map(i=>[e,i]));
+  box.innerHTML=`<div class="hero"><span class="lab">Paso 2 de 2</span><span class="big" style="font-size:30px">¿Cuándo lo hiciste por última vez?</span><span class="lab">Aproximado vale. Si no lo sabes, te lo recordamos ya.</span></div>
+   <div class="card">${items.map(([e,i])=>`<div class="mr"><span class="n">${i[0]}</span><span class="small muted">${e[1]} · ${FREQ.find(f=>f[0]===i[1])[1].toLowerCase()}</span><div class="chips wrap-chips">${ULTIMA.map(([l,v],k)=>`<button class="chip" data-mclast="${i[0]}|${k}" aria-pressed="${c.last[i[0]]===k}">${l}</button>`).join("")}</div></div>`).join("")}
+   <div class="btns"><button class="btn pri" id="mc-save">Guardar mi casa</button><button class="btn" id="mc-back">Atrás</button></div></div>`;
+}
+function mtEditHTML(m){const near=k=>{const s=-m.last;return ULTIMA.reduce((b,[l,v],i)=>v!=null&&Math.abs(-v-s)<Math.abs(-(ULTIMA[b][1]??0)-s)?i:b,0)};return`<div class="wsel">
+  <span class="pk-l">Cada cuánto</span><div class="chips wrap-chips">${FREQ.map(([d,l])=>`<button class="chip" data-mefreq="${d}" aria-pressed="${m.cada===d}">${l}</button>`).join("")}</div>
+  <span class="pk-l">Última vez</span><div class="chips wrap-chips"><button class="chip" data-melast="0">Hoy</button>${ULTIMA.slice(0,3).map(([l,v])=>`<button class="chip" data-melast="${v}">${l}</button>`).join("")}</div>
+  <span class="pk-l">Quién se encarga</span><div class="chips">${MEM.filter(x=>!x.kid).map(x=>`<button class="chip" data-mewho="${x.id}" aria-pressed="${(m.who||"laura")===x.id}">${x.n}</button>`).join("")}</div>
+  <div class="btns"><button class="btn" id="me-close">Listo</button><button class="btn" id="me-del">Quitar</button></div></div>`}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-mant"))return;const d=b.dataset;
+  if(b.id==="mc-start"){mtCfg={paso:1,eq:new Set(MTX.map(m=>(eqDe(m.n)||[])[0]).filter(Boolean)),last:{}};mtEdit=null;mantRender();window.scrollTo(0,0);return}
+  if(b.id==="mc-cancel"){mtCfg=null;mantRender();return}
+  if(d.mceq){mtCfg.eq.has(d.mceq)?mtCfg.eq.delete(d.mceq):mtCfg.eq.add(d.mceq);mantRender();return}
+  if(b.id==="mc-next"){mtCfg.paso=2;EQUIPOS.filter(x=>mtCfg.eq.has(x[0])).forEach(x=>x[3].forEach(i=>{const ex=MTX.find(m=>m.n===i[0]);if(mtCfg.last[i[0]]==null)mtCfg.last[i[0]]=ex?null:undefined}));mantRender();window.scrollTo(0,0);return}
+  if(b.id==="mc-back"){mtCfg.paso=1;mantRender();return}
+  if(d.mclast){const[n,k]=d.mclast.split("|");mtCfg.last[n]=+k;mantRender();return}
+  if(b.id==="mc-save"){const nw=[];EQUIPOS.filter(x=>mtCfg.eq.has(x[0])).forEach(([k,l,z,its])=>its.forEach(([n,cada,tip,tk,buy])=>{const ex=MTX.find(m=>m.n===n),sel=mtCfg.last[n];const last=sel!=null&&sel!==undefined?(ULTIMA[sel][1]??-cada):(ex?ex.last:-cada);nw.push({...(ex||{}),id:ex?ex.id:"m"+Date.now()+nw.length,n,z,cada:ex?ex.cada:cada,last,tip,tk,buy})}));
+    MTX.filter(m=>m.custom).forEach(m=>nw.push(m));MTX=nw;S.set("mtx",MTX);mtCfg=null;mantRender();renderHubTags();renderHome();toast(`Listo: ${MTX.length} cosas que te recordaremos`);return}
+  if(d.meopen){mtEdit=mtEdit===d.meopen?null:d.meopen;mantRender();return}
+  const m=MTX.find(x=>x.id===mtEdit);if(!m)return;
+  if(d.mefreq){m.cada=+d.mefreq;S.set("mtx",MTX);mantRender();return}
+  if(d.melast!=null){m.last=+d.melast;S.set("mtx",MTX);mantRender();renderHome();return}
+  if(d.mewho){m.who=d.mewho;S.set("mtx",MTX);mantRender();return}
+  if(b.id==="me-close"){mtEdit=null;mantRender();return}
+  if(b.id==="me-del"){MTX=MTX.filter(x=>x!==m);mtEdit=null;S.set("mtx",MTX);mantRender();renderHubTags();renderHome();toast(`Quitado: ${m.n}`);return}
+});
+document.addEventListener("submit",e=>{if(e.target.id!=="mt-add")return;e.preventDefault();const n=$("#mt-n").value.trim();if(!n)return;MTX.push({id:"m"+Date.now(),n:n[0].toUpperCase()+n.slice(1),z:"Otros",cada:+$("#mt-f").value,last:0,tip:"Añadido por ti.",custom:1});S.set("mtx",MTX);mtEdit=MTX.at(-1).id;mantRender();toast("Añadido. Ajusta cada cuánto toca")});
 
 renderAll();
 </script>

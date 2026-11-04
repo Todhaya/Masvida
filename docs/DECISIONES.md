@@ -17,3 +17,4 @@ Las decide Alba salvo las marcadas como técnicas. La más reciente prevalece.
 | 2026-11-04 | Calendario con vista semana y mes, filtro por persona, quién lleva o recoge, repeticiones y días en la otra casa. | Alba |
 | 2026-11-04 | **Inicio como panel:** «Hoy en casa» reúne lo urgente de todos los apartados (fechas que vencen, pedidos, plazos de devolución, planes, tareas, mantenimiento, cena, cesto) ordenado por urgencia, más cuatro indicadores. Documentos, mantenimiento, pedidos y wallet pasan a formato panel. | Alba |
 | 2026-11-04 | En seguros, Masvida **solo recuerda fechas**, sin comparar ni recomendar pólizas (requiere registro como mediadora). | Técnica, por normativa |
+| 2026-11-04 | **Mantenimiento configurable:** la usuaria marca qué tiene en casa (12 equipos con sus tareas y frecuencias habituales), dice cuándo lo hizo por última vez y puede editar frecuencia, fecha y quién se encarga, o añadir cosas propias. | Alba |
