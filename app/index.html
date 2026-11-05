@@ -388,6 +388,11 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .tim{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:24px}
 .tof .bd{display:flex;flex-direction:column;gap:3px;min-width:0}.tof small{font-size:12.5px;color:var(--muted)}
 .tpr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tpr s{color:var(--muted);font-size:13px}
+.vr{display:grid;grid-template-columns:28px 48px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.vr:last-child{border-bottom:0}.vr.off{opacity:.5}
+.vt{width:48px;height:60px;border-radius:12px;display:grid;place-items:center;font-size:22px}
+.vr .bd{display:flex;flex-direction:column;gap:4px;min-width:0}.vr small{font-size:12.5px;color:var(--muted)}.vp{font-size:18px;font-variant-numeric:tabular-nums}
+.chip.sm{padding:5px 10px;font-size:12px}.vr .chips{flex-wrap:wrap;overflow:visible}
+.ad{background:var(--bg);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px}.ad span{font-size:14px}
 </style>
 </head>
 <body>
@@ -488,6 +493,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
     <div class="seg4" id="tk-seg" style="grid-template-columns:repeat(3,1fr)"><button data-tk="hoy" aria-pressed="true">Hoy</button><button data-tk="reparto" aria-pressed="false">Reparto</button><button data-tk="premios" aria-pressed="false">Premios</button></div>
     <div id="tk-box" class="view"></div>
   </section>
+  <section class="view" id="v-vender" hidden><div id="vender-box" class="view"></div></section>
   <section class="view" id="v-talla" hidden><div id="talla-box" class="view"></div></section>
   <section class="view" id="v-armario" hidden><div id="ar-box" class="view"></div></section>
   <section class="view" id="v-familia" hidden><div id="share" class="view"></div><div id="fam" class="view"></div></section>
@@ -758,7 +764,7 @@ const CAL=[["Natación","Jueves 17:30","Jue","i"],["Fin de semana en la otra cas
 const li=([n,m,t,c])=>`<div class="li"><span><span class="n">${n}</span><br><span class="m">${m}</span></span><span class="pl pl-${c}">${t}</span></div>`;
 function renderHogar(){
   docsRender();pedsRender();walRender();mantRender();
-  renderMenu();renderEvento();tkRender();arRender();famRender();calRender();shRender();tallaRender();
+  renderMenu();renderEvento();tkRender();arRender();famRender();calRender();shRender();tallaRender();venderRender();venderRender();
 }
 let TASKS=S.get("tasks",[["Reservar la sala del parque","Laura",1],["Comprar decoración","Marc",1],["Mandar invitaciones","Laura",0],["Encargar la tarta","Ana",0]]);
 const EXP=[["Laura",90,"Sala del parque"],["Marc",50,"Decoración"],["Ana",0,"Todavía no ha pagado"]];
@@ -897,9 +903,9 @@ function renderMenu(){
 }
 /* NAVEGACIÓN */
 const TT={inicio:["Masvida · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],ofertas:["Elegidas para ti","Ofertas"],
- hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],talla:["Ofertas en su talla","Lo que le falta"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
-const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",familia:"perfil",eventos:"hogar",dinero:"perfil"};
-const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú",armario:"Armario"};
+ hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],talla:["Ofertas en su talla","Lo que le falta"],vender:["Segunda vida","Vender o pasar"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
+const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",vender:"talla",familia:"perfil",eventos:"hogar",dinero:"perfil"};
+const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú",armario:"Armario",talla:"Lo que le falta"};
 function go(v){const top=PARENT[v]||v;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
  $("#back").hidden=!PARENT[v];if(PARENT[v]){$("#back").dataset.v=PARENT[v];$("#back-l").textContent=LBL[PARENT[v]]}
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
@@ -909,6 +915,7 @@ function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=n
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.tawho){taWho=b.dataset.tawho;tallaRender()}
+  if(b.dataset.vemode){veModo=b.dataset.vemode;veSel=null;venderRender()}
   if(b.dataset.v)go(b.dataset.v);
   if(b.dataset.toast)toast(b.dataset.toast);
   if(b.dataset.type){cur=b.dataset.type;S.set("cur",cur);renderTypes();resetBill()}
@@ -1130,7 +1137,7 @@ function arRender(){
    <div class="card"><div class="card-h"><h2>🧺 Cesto de la ropa</h2><span class="small muted">${cesto.length} ${cesto.length===1?"prenda":"prendas"} de toda la casa</span></div>
     <span class="small">${cesto.length>=6?"Ya hay para una lavadora.":"Todavía no hay para una lavadora."}${lav?` Le toca a <b>${memOf(lav.who).n}</b>. Cuando la marque como hecha, la ropa vuelve sola al armario.`:""}</span>
     ${lav?`<div class="btns"><button class="btn" data-v="tareas">Ver en Tareas</button></div>`:""}</div>
-   ${m.kid&&small.length?`<div class="aid" style="background:var(--warn-soft)"><b>A ${m.n} se le han quedado pequeñas ${small.length} ${small.length===1?"prenda":"prendas"}</b><span class="small">${small.map(w=>w.n.toLowerCase()).join(", ")}. Te enseñamos ofertas en su talla (${m.talla}${small.some(w=>w.cat==="shoes")?", pie "+m.pie:""}) con reembolso.</span><div class="btns"><button class="btn pri" data-v="talla" data-tawho="${m.id}">Ver ofertas en su talla</button><button class="btn" data-arpass="1">Pasar o vender</button></div></div>`:""}
+   ${m.kid&&small.length?`<div class="aid" style="background:var(--warn-soft)"><b>A ${m.n} se le han quedado pequeñas ${small.length} ${small.length===1?"prenda":"prendas"}</b><span class="small">${small.map(w=>w.n.toLowerCase()).join(", ")}. Te enseñamos ofertas en su talla (${m.talla}${small.some(w=>w.cat==="shoes")?", pie "+m.pie:""}) con reembolso.</span><div class="btns"><button class="btn pri" data-v="talla" data-tawho="${m.id}">Ver ofertas en su talla</button><button class="btn" data-v="vender" data-tawho="${m.id}" data-vemode="vender">Pasar o vender</button></div></div>`:""}
    ${WCAT.map(([k,l])=>{const it=mine.filter(w=>w.cat===k);return it.length?`<div class="card"><div class="card-h"><h2>${l}</h2><span class="small muted">${it.length}</span></div><div class="wg">${it.map(w=>tile(w,w.id===arSel)).join("")}</div>
      ${selW&&selW.cat===k?`<div class="wsel"><b>${selW.n}</b><span class="small muted">Talla ${selW.talla}</span><div class="btns">${selW.st!=="armario"?`<button class="btn" data-arst="armario">En el armario</button>`:""}${selW.st!=="lavar"?`<button class="btn" data-arst="lavar">Al cesto</button>`:""}${selW.st!=="pequeno"?`<button class="btn" data-arst="pequeno">Se ha quedado pequeña</button>`:""}<button class="btn" data-arst="del">Quitar</button></div></div>`:""}</div>`:""}).join("")}
    ${arNew?`<div class="card"><h2>Nueva prenda de ${m.n}</h2>
@@ -1482,10 +1489,40 @@ function tallaRender(){
   box.innerHTML=`<div class="hero" style="background:var(--${m.c})"><span class="lab">Para ${m.n}</span><span class="big" style="font-size:30px">Talla ${m.talla}${m.kid?" · pie "+m.pie:""}</span><span class="lab">${small.length?`Le falta reponer ${small.length} ${small.length===1?"prenda":"prendas"}. Te enseñamos solo lo que hay en su talla.`:"No le falta nada ahora mismo."}</span></div>
    ${cats.map(c=>{const ws=small.filter(w=>w.cat===c),talla=c==="shoes"?"pie "+m.pie:"talla "+m.talla;return`<div class="card"><div class="card-h"><h2>${WCAT.find(x=>x[0]===c)[1]} · ${talla}</h2><span class="small muted">Para reponer: ${ws.map(w=>w.n.toLowerCase()).join(", ")}</span></div>
      ${(TOFF[c]||[]).map(([n,t,p,o,cb])=>`<div class="tof"><span class="tim" style="background:var(--${c==="shoes"?"sky":c==="bottom"?"lav":"peach"})">${WCAT.find(x=>x[0]===c)[2]}</span><span class="bd"><b>${n}</b><small>${t} · hay de su ${c==="shoes"?"número":"talla"}</small><span class="tpr"><b>${ec(p)}</b>${o?`<s>${ec(o)}</s>`:""}${cb?`<span class="pl pl-o">Te devolvemos ${ec(p*pct)}</span>`:`<span class="pl" style="background:var(--line);color:var(--ink)">Sin reembolso</span>`}</span></span><button class="btn" style="padding:8px 12px" data-toast="Te llevaríamos a la tienda con su talla ya elegida. Si compras, el reembolso aparece en tu saldo">Ver</button></div>`).join("")}</div>`}).join("")}
-   ${small.length?`<div class="card"><h2>O dale una segunda vida</h2><div class="li"><span><span class="n">Vende lo que se le ha quedado pequeño</span><br><span class="m">${small.map(w=>w.n).join(", ")} · lo subimos con foto y talla a una web de segunda mano</span></span><button class="btn" style="padding:7px 12px" data-toast="Prepararíamos el anuncio con la foto, la talla y un precio orientativo">Preparar</button></div>
-     <div class="li"><span><span class="n">Pásaselo a otra familia</span><br><span class="m">Avisamos a quien comparta la casa contigo o a una amiga con peques más pequeños</span></span><button class="btn" style="padding:7px 12px" data-toast="Enviarías la lista a quien elijas por WhatsApp">Avisar</button></div></div>`:""}
+   ${small.length?`<div class="card"><h2>O dale una segunda vida</h2><div class="li"><span><span class="n">Vende lo que se le ha quedado pequeño</span><br><span class="m">${small.map(w=>w.n).join(", ")} · lo subimos con foto y talla a una web de segunda mano</span></span><button class="btn" style="padding:7px 12px" data-v="vender" data-vemode="vender">Preparar</button></div>
+     <div class="li"><span><span class="n">Pásaselo a otra familia</span><br><span class="m">Avisamos a quien comparta la casa contigo o a una amiga con peques más pequeños</span></span><button class="btn" style="padding:7px 12px" data-v="vender" data-vemode="pasar">Avisar</button></div></div>`:""}
    <span class="aff">Precios de ejemplo. El reembolso es el ${String(+(pct*100).toFixed(1)).replace(".",",")} % de tu nivel y solo en tiendas que lo permiten. Si compras desde Masvida, la tienda nos paga una comisión; tú pagas lo mismo.</span>`;
 }
+
+/* SEGUNDA VIDA: preparar el anuncio de lo que se ha quedado pequeño */
+const ESTADO=[["nuevo","Como nuevo",.45],["bueno","Buen estado",.3],["usado","Usado",.15]];
+const PBASE={top:9,bottom:14,dress:18,coat:40,shoes:30};
+let veSel=null,veEst={},veModo="vender";
+function venderRender(){
+  const box=$("#vender-box");if(!box)return;
+  const m=memOf(taWho),small=WD.filter(w=>w.m===m.id&&w.st==="pequeno");
+  if(veSel==null)veSel=new Set(small.map(w=>w.id));
+  const pr=w=>Math.max(2,Math.round(PBASE[w.cat]*ESTADO.find(e=>e[0]===(veEst[w.id]||"bueno"))[2]));
+  const tot=small.filter(w=>veSel.has(w.id)).reduce((s,w)=>s+pr(w),0);
+  box.innerHTML=`<div class="seg4" style="grid-template-columns:1fr 1fr"><button data-vem="vender" aria-pressed="${veModo==="vender"}">Vender</button><button data-vem="pasar" aria-pressed="${veModo==="pasar"}">Pasar a otra familia</button></div>
+   ${veModo==="vender"?`<div class="hero" style="background:var(--mint)"><span class="lab">Podrías recuperar unos</span><span class="big">${tot} €</span><span class="lab">${veSel.size} ${veSel.size===1?"prenda":"prendas"} de ${m.n} · precio orientativo</span></div>`:
+   `<div class="hero" style="background:var(--lav)"><span class="lab">Que siga en la familia</span><span class="big" style="font-size:30px">${veSel.size} ${veSel.size===1?"prenda":"prendas"} para otro peque</span><span class="lab">Mandamos la lista con fotos y tallas a quien elijas.</span></div>`}
+   <div class="card">${small.map(w=>{const on=veSel.has(w.id);return`<div class="vr ${on?"":"off"}"><button class="box ${on?"on":""}" data-vesel="${w.id}" aria-label="${on?"Quitar":"Incluir"} ${w.n}">✓</button>
+     <span class="vt" style="background:${WCOL[w.col]};color:${darkC(WCOL[w.col])?"#fff":"#0B0B0B"}">${WCAT.find(c=>c[0]===w.cat)[2]}</span>
+     <span class="bd"><b>${w.n}</b><small>Talla ${w.talla}</small>${veModo==="vender"&&on?`<span class="chips">${ESTADO.map(([k,l])=>`<button class="chip sm" data-veest="${w.id}|${k}" aria-pressed="${(veEst[w.id]||"bueno")===k}">${l}</button>`).join("")}</span>`:""}</span>
+     ${veModo==="vender"?`<b class="vp">${on?pr(w)+" €":""}</b>`:""}</div>`}).join("")}</div>
+   ${veModo==="vender"?`<div class="card"><h2>Así queda el anuncio</h2><div class="ad"><b>Lote de ropa infantil${(()=>{const t=[...new Set(small.filter(w=>veSel.has(w.id)&&w.cat!=="shoes").map(w=>w.talla))];return t.length?" talla "+t.join(" y "):""})()}</b><span>${small.filter(w=>veSel.has(w.id)).map(w=>w.n.toLowerCase()).join(", ")}. ${small.filter(w=>veSel.has(w.id)&&w.cat==="shoes").map(w=>w.n+" del número "+w.talla+". ").join("")}Casa sin humo. Envío o entrega en mano.</span><span class="small muted">Fotos de tu armario · ${tot} € el lote o por separado</span></div>
+     <span class="pk-l">Publicar en</span><div class="btns"><button class="btn pri" data-toast="Abriríamos Vinted con las fotos, el título y el precio ya puestos">Vinted</button><button class="btn pri" data-toast="Abriríamos Wallapop con las fotos, el título y el precio ya puestos">Wallapop</button><button class="btn" data-vecopy="1">Copiar el texto</button></div></div>`:
+   `<div class="card"><h2>Mandar la lista a</h2>${MEM.filter(x=>x.acc&&x.acc!=="titular").map(x=>`<div class="li"><span class="n">${x.n}</span><button class="btn" style="padding:7px 12px" data-toast="Le llegaría la lista con fotos y tallas">Enviar</button></div>`).join("")}
+     <div class="btns"><a class="btn pri" href="https://wa.me/?text=${encodeURIComponent("Tengo ropa de "+m.n+" que se le ha quedado pequeña: "+small.filter(w=>veSel.has(w.id)).map(w=>w.n.toLowerCase()).join(", ")+". ¿Te sirve para tus peques?")}" target="_blank" rel="noopener">Enviar por WhatsApp</a></div></div>`}
+   <span class="aff">El precio es orientativo, según el tipo de prenda y su estado; tú decides el final. Masvida no cobra nada por la segunda mano.</span>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-vender"))return;const d=b.dataset;
+  if(d.vem){veModo=d.vem;venderRender();return}
+  if(d.vesel){veSel.has(d.vesel)?veSel.delete(d.vesel):veSel.add(d.vesel);venderRender();return}
+  if(d.veest){const[id,k]=d.veest.split("|");veEst[id]=k;venderRender();return}
+  if(d.vecopy){const t=$("#vender-box .ad").innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Texto copiado")).catch(()=>toast("Selecciona el texto del anuncio para copiarlo"));return}
+});
 
 renderAll();
 </script>
