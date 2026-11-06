@@ -13,6 +13,8 @@ Logo: letras en Plus Jakarta Sans ExtraBold (la tipografía de la web y la app, 
 | `viwai-icono.svg/.png` | Icono de app sobre fondo oscuro, 1024 px. |
 | `viwai-icono-lila.svg/.png` | Icono sobre fondo lila claro (favicon y app web). |
 | `viwai-logo-web.svg` | Para incrustar en páginas: toma el color del texto y la ola de la variable CSS `--wave`. |
+| `viwai-perfil-redes-lila.png/.svg` | Foto de perfil de Instagram y TikTok (1080 px, cuadrada a sangre; las redes la recortan en círculo). |
+| `viwai-perfil-redes-oscuro.png/.svg` | Alternativa sobre fondo oscuro. |
 
 ## Colores
 
