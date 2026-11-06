@@ -14,17 +14,20 @@
 <style>
 [hidden]{display:none!important}
 /* Escenas de color como en la web y los anuncios: cada apartado tiene su fondo pastel y las tarjetas van en blanco */
-body[data-sec]{--bg:var(--secbg);--surface:#FFFFFF;--sunk:#F4F2EE;transition:background .25s}
+body[data-sec]{--bg:#FAFAF8;--surface:#FFFFFF;--sunk:#F4F2EE;background:linear-gradient(180deg,var(--secbg) 0,var(--secbg) 40px,var(--bg) 300px) no-repeat,var(--bg)}
+body[data-sec] .card,body[data-sec] .aid,body[data-sec] .opt{box-shadow:0 1px 2px rgba(15,15,14,.04),0 8px 24px -18px rgba(30,20,60,.25)}
+.tabs button[aria-current="page"]{color:var(--accent)!important}
+.tabs button[aria-current="page"]::after{content:"";width:5px;height:5px;border-radius:50%;background:#F5B400;margin-top:1px}
 body[data-sec="peach"]{--secbg:#FFD9C7}body[data-sec="butter"]{--secbg:#FFEFB5}body[data-sec="lav"]{--secbg:#E4DDFF}
 body[data-sec="mint"]{--secbg:#CDEFDD}body[data-sec="sky"]{--secbg:#D5E7FF}body[data-sec="cream"]{--secbg:#FFF4C9}
-body[data-sec="lav"] .tile.wide:not(.dark),body[data-sec="lav"] .hero{background:#FFFFFF!important}
-body[data-sec] .type{background:#F7F5F1}body[data-sec] .avatar{background:#FFFFFF}body[data-sec] .demo{background:rgba(255,255,255,.7)}
 
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-sec]{--surface:#1B1B19;--sunk:#232321}
+body[data-sec] .type{background:#F7F5F1}body[data-sec] .avatar{background:#FFFFFF}
+
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-sec]{--bg:#0B0B0B;--surface:#181817;--sunk:#232321}
 :root:not([data-theme="light"]) body[data-sec="peach"]{--secbg:#3A2219}:root:not([data-theme="light"]) body[data-sec="butter"]{--secbg:#332B0E}:root:not([data-theme="light"]) body[data-sec="lav"]{--secbg:#241E3D}
 :root:not([data-theme="light"]) body[data-sec="mint"]{--secbg:#132E22}:root:not([data-theme="light"]) body[data-sec="sky"]{--secbg:#15243A}:root:not([data-theme="light"]) body[data-sec="cream"]{--secbg:#2E2810}
 :root:not([data-theme="light"]) body[data-sec] .demo,:root:not([data-theme="light"]) body[data-sec] .type,:root:not([data-theme="light"]) body[data-sec] .avatar,:root:not([data-theme="light"]) body[data-sec="lav"] .tile.wide:not(.dark),:root:not([data-theme="light"]) body[data-sec="lav"] .hero{background:#232321!important}}
-:root[data-theme="dark"] body[data-sec]{--surface:#1B1B19;--sunk:#232321}
+:root[data-theme="dark"] body[data-sec]{--bg:#0B0B0B;--surface:#181817;--sunk:#232321}
 :root[data-theme="dark"] body[data-sec="peach"]{--secbg:#3A2219}:root[data-theme="dark"] body[data-sec="butter"]{--secbg:#332B0E}:root[data-theme="dark"] body[data-sec="lav"]{--secbg:#241E3D}
 :root[data-theme="dark"] body[data-sec="mint"]{--secbg:#132E22}:root[data-theme="dark"] body[data-sec="sky"]{--secbg:#15243A}:root[data-theme="dark"] body[data-sec="cream"]{--secbg:#2E2810}
 :root[data-theme="dark"] body[data-sec] .demo,:root[data-theme="dark"] body[data-sec] .type,:root[data-theme="dark"] body[data-sec] .avatar,:root[data-theme="dark"] body[data-sec="lav"] .tile.wide:not(.dark),:root[data-theme="dark"] body[data-sec="lav"] .hero{background:#232321!important}
