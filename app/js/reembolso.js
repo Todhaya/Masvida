@@ -6,7 +6,7 @@
 //   Si no se sabe (null) o está prohibido (false), el reembolso es 0.
 // - La usuaria recibe el % de su nivel sobre el importe, con dos topes:
 //   la parte máxima de la comisión que permite la tienda (maxParteUsuaria)
-//   y MARGEN_MINIMO, la fracción de la comisión que siempre se queda Masvida.
+//   y MARGEN_MINIMO, la fracción de la comisión que siempre se queda Viwai.
 // - Se paga solo cuando la red confirma la comisión (estado "confirmada").
 
 export const NIVELES = [
@@ -14,10 +14,10 @@ export const NIVELES = [
   { min: 1, nombre: "Respiras", pct: 0.015 },
   { min: 3, nombre: "Disfrutas", pct: 0.02 },
   { min: 5, nombre: "Vives", pct: 0.025 },
-  { min: 10, nombre: "Masvida", pct: 0.03 },
+  { min: 10, nombre: "Viwai", pct: 0.03 },
 ];
 
-export const MARGEN_MINIMO = 0.3; // Masvida se queda al menos el 30 % de cada comisión
+export const MARGEN_MINIMO = 0.3; // Viwai se queda al menos el 30 % de cada comisión
 export const PREMIO_INVITACION = 3; // € para cada una, tras la primera acción de la invitada
 
 const redondea = (x) => Math.round(x * 100) / 100;

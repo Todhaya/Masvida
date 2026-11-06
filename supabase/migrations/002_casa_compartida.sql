@@ -1,4 +1,4 @@
--- Masvida · casa compartida y calendario
+-- Viwai · casa compartida y calendario
 -- Varias personas adultas gestionan el mismo hogar y ven lo mismo en tiempo real.
 -- Permisos: 'todo' (todo menos Mi dinero y facturas), 'organizacion' (calendario, tareas, menú, armario), 'calendario'.
 
@@ -43,7 +43,7 @@ create table if not exists eventos (
 alter table eventos enable row level security;
 create policy "eventos de mi hogar" on eventos for all using (hogar_id = mi_hogar()) with check (hogar_id = mi_hogar());
 
--- Invitar a otra persona adulta a gestionar la casa (distinto de invitar a una amiga a Masvida)
+-- Invitar a otra persona adulta a gestionar la casa (distinto de invitar a una amiga a Viwai)
 create table if not exists invitaciones_casa (
   codigo text primary key default upper(substr(encode(gen_random_bytes(5), 'hex'), 1, 8)),
   hogar_id uuid not null references hogares(id) on delete cascade,
@@ -67,7 +67,7 @@ begin
     raise exception 'La invitación no es válida o ha caducado. Pide un enlace nuevo.';
   end if;
   if exists (select 1 from cuentas where user_id = auth.uid()) then
-    raise exception 'Ya formas parte de una casa en Masvida.';
+    raise exception 'Ya formas parte de una casa en Viwai.';
   end if;
   insert into personas (hogar_id, nombre, es_peque) values (inv.hogar_id, inv.nombre, false) returning id into p;
   insert into cuentas (user_id, hogar_id, rol, permiso, persona_id) values (auth.uid(), inv.hogar_id, 'adulto', inv.permiso, p);

@@ -1,4 +1,4 @@
-// Masvida · /leer-factura — lee una factura (foto o PDF) con Claude y devuelve solo los datos necesarios para comparar.
+// Viwai · /leer-factura — lee una factura (foto o PDF) con Claude y devuelve solo los datos necesarios para comparar.
 // La IA solo extrae datos; la comparación de tarifas la hace el código (app/js/facturas.js), no la IA.
 // No se guardan ni se devuelven nombre del titular, DNI, dirección ni IBAN.
 // Secreto necesario: ANTHROPIC_API_KEY (en los secretos del proyecto de Supabase, nunca en el repositorio).

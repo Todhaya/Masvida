@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icono.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icono.svg">
-<title>Masvida</title>
+<title>Viwai</title>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
@@ -400,7 +400,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 
 <div class="app">
   <div class="top">
-    <div><button class="backb" id="back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span id="back-l">Ahorro</span></button><div class="eyebrow" id="eyebrow">Masvida · ahorro sin esfuerzo</div><h1 id="title">Lo que ahorras, lo vives</h1></div>
+    <div><button class="backb" id="back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span id="back-l">Ahorro</span></button><div class="eyebrow" id="eyebrow">Viwai · ahorro sin esfuerzo</div><h1 id="title">Lo que ahorras, lo vives</h1></div>
     <div style="display:flex;gap:8px;align-items:center"><span class="demo">Prototipo</span><button class="avatar" data-v="perfil" aria-label="Tu perfil">L</button></div>
   </div>
 
@@ -509,7 +509,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
     <div class="card" id="refwin"></div>
     <button class="hr" data-v="familia"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c3 0 6 1.8 6 5.5"/></svg></i><span><b>Tu familia y casa compartida</b><small>Quién vive en casa y quién la gestiona contigo</small></span><span class='tag' id='tag-familia'></span></button>
     <button class="hr" data-v="dinero"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i><span><b>Mi dinero</b><small>Conecta tu banco y te decimos dónde ahorrar más</small></span><span class="tag new">2,99 €/mes</span></button>
-    <div class="card"><div class="card-h"><h2>Tu reembolso sube</h2></div><p class="muted small" style="margin:0">Masvida es gratis y completa desde el primer día. Cada amiga que se une te sube de nivel, y cuanto más alto, más dinero te devolvemos en tus compras y reservas.</p><div id="levels"></div></div>
+    <div class="card"><div class="card-h"><h2>Tu reembolso sube</h2></div><p class="muted small" style="margin:0">Viwai es gratis y completa desde el primer día. Cada amiga que se une te sube de nivel, y cuanto más alto, más dinero te devolvemos en tus compras y reservas.</p><div id="levels"></div></div>
     <div class="card">
       <div class="card-h"><h2>Tu perfil</h2><span class="saved" id="saved"></span></div>
       <p class="muted small" style="margin:0">Con esto calculamos tus ayudas y elegimos tus ofertas. Lo puedes cambiar cuando quieras y no se comparte con nadie.</p>
@@ -676,8 +676,8 @@ const forYou=o=>fits(o)&&catOn(o.c);
 const cbNow=()=>[...LEVELS].reverse().find(l=>refs>=l.r).cb;
 
 /* NIVELES POR INVITACIONES: toda la app es gratis desde el primer día; invitar solo sube el reembolso */
-const INV="Te invito a Masvida: ahorro sin esfuerzo en facturas y compras, y te devuelven dinero. Lo que ahorras, lo vives. Gratis. Código LAURA-7K2";
-const INVURL="https://masvida.app/i/LAURA-7K2";
+const INV="Te invito a Viwai: ahorro sin esfuerzo en facturas y compras, y te devuelven dinero. Lo que ahorras, lo vives. Gratis. Código LAURA-7K2";
+const INVURL="https://viwai.app/i/LAURA-7K2";
 const E2=encodeURIComponent;
 const SV2=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 const SHARE=[["WhatsApp","https://wa.me/?text="+E2(INV+" "+INVURL),SV2('<path d="M4 20l1.3-3.8A8 8 0 1 1 8 19z"/>')],["Telegram","https://t.me/share/url?url="+E2(INVURL)+"&text="+E2(INV),SV2('<path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/>')],["Facebook","https://www.facebook.com/sharer/sharer.php?u="+E2(INVURL),SV2('<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/>')],["X","https://twitter.com/intent/tweet?text="+E2(INV)+"&url="+E2(INVURL),SV2('<path d="M4 4l16 16M20 4L4 20"/>')]];
@@ -687,13 +687,13 @@ const LEVELS=[
  {r:1,n:"Respiras",d:"Más reembolso en todas tus compras y reservas",cb:1.5},
  {r:3,n:"Disfrutas",d:"Más reembolso en todas tus compras y reservas",cb:2},
  {r:5,n:"Vives",d:"Más reembolso y ofertas antes que nadie",cb:2.5},
- {r:10,n:"Masvida",d:"El reembolso más alto y ofertas exclusivas",cb:3}
+ {r:10,n:"Viwai",d:"El reembolso más alto y ofertas exclusivas",cb:3}
 ]
 let refs=S.get("refs",0);
 function renderRefWin(){
   const per=3,earned=refs*per,nextMil=refs<10?10:Math.ceil((refs+1)/5)*5;
   $("#refwin").innerHTML=`<div class="card-h"><h2>Lo que ganas invitando</h2></div>
-   <div class="wx"><div style="background:var(--mint)"><span class="small">Has ganado</span><b>${eur(earned)}</b><span class="small">${refs} ${refs===1?"amiga":"amigas"} × 3 €</span></div><div style="background:var(--lav)"><span class="small">Próximo regalo</span><b>${nextMil} amigas</b><span class="small">${refs>=10?"10 € extra cada 5 amigas":"Llegas al nivel Masvida"}</span></div></div>
+   <div class="wx"><div style="background:var(--mint)"><span class="small">Has ganado</span><b>${eur(earned)}</b><span class="small">${refs} ${refs===1?"amiga":"amigas"} × 3 €</span></div><div style="background:var(--lav)"><span class="small">Próximo regalo</span><b>${nextMil} amigas</b><span class="small">${refs>=10?"10 € extra cada 5 amigas":"Llegas al nivel Viwai"}</span></div></div>
    <div class="li"><span><span class="n">Cada amiga, 3 € para las dos</span><br><span class="m">Cuando hace su primer cambio de tarifa, compra o reserva. Sin límite.</span></span></div>
    <div class="li"><span><span class="n">Reto de Navidad</span><br><span class="m">Invita a 3 amigas antes del 31 de diciembre y te damos 5 € extra</span></span><span class="pl pl-u">${Math.min(refs,3)}/3</span></div>`;
 }
@@ -730,7 +730,7 @@ let luzOn=S.get("luz",false);
 const KWH=[.18,.15,.14,.13,.13,.14,.22,.38,.31,.2,.18,.19,.24,.33,.28,.17,.16,.21,.35,.52,.61,.55,.41,.27];
 function renderLuz(){
   if(!luzOn){$("#luz").innerHTML=`<div class="hero"><span class="lab">Conecta tu luz una vez</span><span class="big" style="font-size:30px">Y vemos tu consumo hora a hora</span><span class="lab">Con Datadis, la plataforma oficial de las distribuidoras. Gratis y sin cambiar nada.</span></div>
-   <div class="card"><h2>Cómo funciona</h2><div class="li"><span><span class="n">1. Autorizas a Masvida en Datadis</span><br><span class="m">Con tu DNI y el código de tu contrato (CUPS), que sale en la factura</span></span></div><div class="li"><span><span class="n">2. Leemos tu consumo de cada hora</span><br><span class="m">Llega con un día de retraso</span></span></div><div class="li"><span><span class="n">3. Te decimos qué tarifa te conviene</span><br><span class="m">Y te avisamos si cambia algo</span></span></div>
+   <div class="card"><h2>Cómo funciona</h2><div class="li"><span><span class="n">1. Autorizas a Viwai en Datadis</span><br><span class="m">Con tu DNI y el código de tu contrato (CUPS), que sale en la factura</span></span></div><div class="li"><span><span class="n">2. Leemos tu consumo de cada hora</span><br><span class="m">Llega con un día de retraso</span></span></div><div class="li"><span><span class="n">3. Te decimos qué tarifa te conviene</span><br><span class="m">Y te avisamos si cambia algo</span></span></div>
    <div class="btns"><button class="btn pri" id="luz-on">Conectar mi luz</button></div></div>`;return}
   const mx=Math.max(...KWH),col=h=>(h<8)?"var(--mint)":((h>=10&&h<14)||(h>=18&&h<22))?"var(--peach)":"var(--butter)";
   const tot=KWH.reduce((a,b)=>a+b,0),val=KWH.slice(0,8).reduce((a,b)=>a+b,0),pun=KWH.filter((_,h)=>(h>=10&&h<14)||(h>=18&&h<22)).reduce((a,b)=>a+b,0),lla=tot-val-pun;
@@ -893,7 +893,7 @@ function renderMenu(){
      <div class="card"><span class="pk-l">¿Te hace falta?</span><div class="chips wrap-chips">${["Papel de cocina","Leche","Pan","Detergente"].filter(n=>!all.some(e=>e.n===n)).map(n=>`<button class="chip" data-shsugg="${n}">+ ${n}</button>`).join("")}</div>
       <span class="pk-l">Añadir algo más</span><form class="addf" id="sh-add"><input id="sh-n" placeholder="Ej.: papel de cocina" autocomplete="off" aria-label="Producto"><input id="sh-q" type="number" min="1" value="1" aria-label="Unidades"><button class="btn pri" type="submit">Añadir</button></form></div>
      ${home.length?`<details class="store"><summary><h3>Ya en casa<em>${home.length}</em></h3></summary>${home.map(e=>`<div class="li"><span>${e.n}</span><button class="btn" style="padding:7px 12px" data-shhome="${e.n}">Hay que comprar</button></div>`).join("")}</details>`:""}
-     <div class="aid"><b>Ahorra en esta compra</b><span class="small">Hay ofertas en tu súper en yogures, atún y pasta. Si compras online desde Masvida, te devolvemos el ${cbNow().toLocaleString("es-ES")} %.</span><div class="btns"><button class="btn" data-v="ofertas">Ver ofertas del súper</button></div></div>`;return}
+     <div class="aid"><b>Ahorra en esta compra</b><span class="small">Hay ofertas en tu súper en yogures, atún y pasta. Si compras online desde Viwai, te devolvemos el ${cbNow().toLocaleString("es-ES")} %.</span><div class="btns"><button class="btn" data-v="ofertas">Ver ofertas del súper</button></div></div>`;return}
   // recetas
   const q=norm(recQ),list=Object.entries(REC).filter(([k,r])=>!q||norm(r.n).includes(q)||r.ing.some(i=>norm(i[0]).includes(q)));
   if(recOpen){const r=REC[recOpen];$("#mn-box").innerHTML=`<button class="backb" data-mnrec="">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>'}<span>Recetas</span></button><div class="meal"><div class="ph" style="background:var(--${r.col})">${r.n[0]}</div><div class="bd"><span class="sl">${r.t} min · 4 raciones</span><span class="n">${r.n}</span></div></div><div class="recd"><h2>Ingredientes</h2><ul>${r.ing.map(i=>`<li>${i[0]} · ${fq({q:i[1],u:i[2]})} <span class="muted">(${i[3]})</span></li>`).join("")}</ul><h2>Pasos</h2><ol>${r.st.map(x=>`<li>${x}</li>`).join("")}</ol></div>`;return}
@@ -902,7 +902,7 @@ function renderMenu(){
    <div class="btns"><button class="btn pri" data-toast="Pegarías el texto de la receta o una foto y la leeríamos por ti">Añadir receta</button></div>`;
 }
 /* NAVEGACIÓN */
-const TT={inicio:["Masvida · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],ofertas:["Elegidas para ti","Ofertas"],
+const TT={inicio:["Viwai · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],ofertas:["Elegidas para ti","Ofertas"],
  hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],talla:["Ofertas en su talla","Lo que le falta"],vender:["Segunda vida","Vender o pasar"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
 const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",vender:"talla",familia:"perfil",eventos:"hogar",dinero:"perfil"};
 const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú",armario:"Armario",talla:"Lo que le falta"};
@@ -1031,7 +1031,7 @@ function tkRender(){
     ${RW.slice().sort((a,b)=>a.st-b.st).map(r=>`<div class="rw ${bal>=r.st?"ok":""}"><span class="ic">${r.ic}</span><span class="bd"><b>${r.n}</b><small>★ ${r.st}${r.off?" · "+r.off:""}</small></span><span class="acts">${r.off?`<button class="ibtn" data-v="ofertas" aria-label="Ver en Escapadas">↗</button>`:""}<button class="btn ${bal>=r.st?"pri":""}" style="padding:8px 14px" data-tkredeem="${r.id}" ${bal>=r.st?"":"disabled"}>${bal>=r.st?"Canjear":"Faltan "+(r.st-bal)}</button></span></div>`).join("")}
     ${tkRwNew?`<form class="addf" id="tk-rwf"><input id="tk-rwn" placeholder="Ej.: ir al cine" autocomplete="off" aria-label="Premio"><input id="tk-rws" type="number" min="1" value="20" aria-label="Estrellas"><button class="btn pri" type="submit">Añadir</button></form>`:`<div class="btns"><button class="btn" id="tk-rwnew">+ Nuevo premio</button></div>`}</div>
    <div class="card"><h2>Últimos canjes y estrellas</h2>${CLOG.filter(l=>l.w===m.id).slice(-5).reverse().map(l=>`<div class="li"><span><span class="n">${l.r?"Canjeado: "+l.r:CH.find(c=>c.id===l.c)?.n||"Tarea"}</span><br><span class="m">${l.d===DAY0?"Hoy":"Hace "+(DAY0-l.d)+" días"}</span></span><span style="font-weight:800">${l.r?"−":"+"}★ ${l.s}</span></div>`).join("")||'<span class="small muted">Todavía nada. Marca una tarea hecha y aparecerá aquí.</span>'}</div>
-   <span class="aff">Los premios con ↗ son planes de Escapadas: si los reservas desde Masvida, también te devolvemos parte del dinero.</span>`;
+   <span class="aff">Los premios con ↗ son planes de Escapadas: si los reservas desde Viwai, también te devolvemos parte del dinero.</span>`;
 }
 function tkForm(){const f=tkNew;return`<div class="card"><h2>Nueva tarea</h2>
   <div class="field"><span class="pk-l">Qué hay que hacer</span><input id="tk-n" value="${f.n}" placeholder="Ej.: regar las plantas" autocomplete="off"></div>
@@ -1267,7 +1267,7 @@ function shRender(){
      <span class="pk-l">Qué puede ver y cambiar</span>${Object.entries(PERM).map(([k,[l,s]])=>`<button class="opt2" data-shp="${k}" aria-pressed="${shNew.perm===k}"><b>${l}</b><small>${s}</small></button>`).join("")}
      <div class="btns"><button class="btn pri" id="sh-send">Crear invitación</button><button class="btn" id="sh-cancel">Cancelar</button></div></div>`:
     `<div class="btns"><button class="btn pri" id="sh-new">+ Invitar a gestionar la casa</button></div>`}
-   ${SH.link?`<div class="wsel"><b>Enlace para ${SH.link.n}</b><span class="code" style="font-size:15px">masvida.app/unirse/${SH.link.code}</span><span class="small muted">Caduca en 7 días y solo sirve una vez.</span><div class="btns"><button class="btn" data-shcopy="1">Copiar enlace</button><a class="btn" href="https://wa.me/?text=${encodeURIComponent("Te invito a gestionar nuestra casa en Masvida: https://masvida.app/unirse/"+SH.link.code)}" target="_blank" rel="noopener">Enviar por WhatsApp</a></div></div>`:""}
+   ${SH.link?`<div class="wsel"><b>Enlace para ${SH.link.n}</b><span class="code" style="font-size:15px">viwai.app/unirse/${SH.link.code}</span><span class="small muted">Caduca en 7 días y solo sirve una vez.</span><div class="btns"><button class="btn" data-shcopy="1">Copiar enlace</button><a class="btn" href="https://wa.me/?text=${encodeURIComponent("Te invito a gestionar nuestra casa en Viwai: https://viwai.app/unirse/"+SH.link.code)}" target="_blank" rel="noopener">Enviar por WhatsApp</a></div></div>`:""}
   </div>
   <div class="card"><h2>Últimos cambios en casa</h2>${feed.length?feed.map(f=>{const m=memOf(f.w);return`<div class="li"><span style="display:flex;gap:10px;align-items:center">${av(m,28)}<span><span class="n">${m.n}</span> <span class="m">${f.t}</span></span></span><span class="small muted">${f.d===DAY0?"Hoy":"Hace "+(DAY0-f.d)+" d"}</span></div>`}).join(""):'<span class="small muted">Cuando alguien marque una tarea o apunte un plan, lo verás aquí.</span>'}</div>
   <span class="aff">Mi dinero y tus facturas solo los ves tú. Los peques no necesitan cuenta: los gestionáis las personas adultas.</span>`;
@@ -1278,7 +1278,7 @@ document.addEventListener("click",e=>{
   if(b.id==="sh-cancel"){shNew=null;shRender();return}
   if(d.shp){shNew.n=$("#sh-n").value;shNew.perm=d.shp;shRender();return}
   if(b.id==="sh-send"){const n=$("#sh-n").value.trim();if(!n){toast("Escribe su nombre");return}const code=Math.random().toString(36).slice(2,8).toUpperCase();SH.inv.push({id:"i"+Date.now(),n,perm:shNew.perm,code});SH.link={n,code};shNew=null;shSave();shRender();return}
-  if(d.shcopy){const t="https://masvida.app/unirse/"+SH.link.code;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Enlace copiado")).catch(()=>toast(t));return}
+  if(d.shcopy){const t="https://viwai.app/unirse/"+SH.link.code;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Enlace copiado")).catch(()=>toast(t));return}
   if(d.shok){const v=SH.inv.find(x=>x.id===d.shok);SH.inv=SH.inv.filter(x=>x!==v);const m={id:"m"+Date.now(),n:v.n,kid:0,talla:"M",home:"siempre",c:PAL[MEM.length%PAL.length],acc:"gestiona",perm:v.perm};MEM.push(m);STARS[m.id]=0;SH.feed.unshift({w:m.id,t:"se ha unido a la casa",d:DAY0});SH.link=null;memSave();tkSave();shSave();renderAll(false);toast(`${v.n} ya ve la casa contigo`);return}
   if(d.shq){const m=memOf(d.shq);delete m.acc;delete m.perm;memSave();shRender();toast(`${m.n} ya no tiene acceso. Sigue en la familia`);return}
 });
@@ -1314,7 +1314,7 @@ function docsRender(){
      <span class="pk-l">Tipo</span><div class="chips">${Object.entries(DCAT).map(([k,l])=>`<button class="chip" data-dnc="${k}" aria-pressed="${docNew.cat===k}">${l}</button>`).join("")}</div>
      <div class="field"><span class="pk-l">Vence el</span><input id="dn-d" type="date"></div>
      <div class="btns"><button class="btn pri" id="dn-save">Guardar</button><button class="btn" id="dn-cancel">Cancelar</button></div></div>`:
-   `<div class="btns"><button class="btn pri" id="dn-new">+ Añadir fecha</button><button class="btn" data-toast="Harías una foto del documento o reenviarías el correo a tu buzón de Masvida y leeríamos la fecha por ti">Hacer foto del documento</button></div>`}
+   `<div class="btns"><button class="btn pri" id="dn-new">+ Añadir fecha</button><button class="btn" data-toast="Harías una foto del documento o reenviarías el correo a tu buzón de Viwai y leeríamos la fecha por ti">Hacer foto del documento</button></div>`}
    <span class="aff">Te avisamos 30 días antes y otra vez una semana antes. No damos consejo sobre seguros: solo te recordamos las fechas.</span>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-docs"))return;const d=b.dataset;
@@ -1374,12 +1374,12 @@ function pedsRender(){
   const act=PDX.filter(p=>p.st<3),dev=PDX.filter(p=>p.st===3&&p.dev>0),mes=PDX.reduce((s,p)=>s+p.precio,0);
   const row=p=>`<div class="pr"><div class="mh"><span><span class="n">${p.n}</span><br><span class="small muted">${p.t} · ${p.tr}</span></span><span class="pl ${p.st===2?"pl-o":p.st===3?"pl-i":"pl-u"}">${p.st===3?(p.dev>0?`Devolver: ${p.dev} días`:"Entregado"):p.v===0?"Llega hoy":"Llega "+(p.v===1?"mañana":fechaC(p.v))}</span></div>
     <div class="stp4">${PST.map((s,i)=>`<span class="${i<=p.st?"on":""}"><i></i>${s}</span>`).join("")}</div>
-    ${p.cb?`<span class="small" style="color:var(--ok)">Comprado desde Masvida · reembolso pendiente de confirmar</span>`:""}
+    ${p.cb?`<span class="small" style="color:var(--ok)">Comprado desde Viwai · reembolso pendiente de confirmar</span>`:""}
     ${p.st===3&&p.dev>0?`<span class="btns"><button class="btn" style="padding:7px 12px" data-toast="Te llevaríamos a la devolución de la tienda con el número de pedido ya copiado">Devolver</button><button class="btn" style="padding:7px 12px" data-pdok="${p.id}">Me lo quedo</button></span>`:""}</div>`;
   box.innerHTML=`<div class="kpis"><div style="background:var(--sky)"><b>${act.length}</b><span>en camino</span></div><div style="background:var(--peach)"><b>${dev.length}</b><span>por devolver</span></div><div style="background:var(--mint)"><b>${eur(mes)}</b><span>este mes</span></div></div>
    ${act.length?`<div class="card"><h2>En camino</h2>${act.sort((a,b)=>a.v-b.v).map(row).join("")}</div>`:""}
    ${dev.length?`<div class="card"><h2>Plazo para devolver</h2>${dev.map(row).join("")}</div>`:""}
-   <span class="aff">Reenvía los correos de tus pedidos a tu buzón de Masvida y aparecen aquí solos, con el seguimiento de la empresa de transporte.</span>`;
+   <span class="aff">Reenvía los correos de tus pedidos a tu buzón de Viwai y aparecen aquí solos, con el seguimiento de la empresa de transporte.</span>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-pedidos"))return;if(b.dataset.pdok){PDX.find(p=>p.id===b.dataset.pdok).dev=0;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome()}});
 
@@ -1491,7 +1491,7 @@ function tallaRender(){
      ${(TOFF[c]||[]).map(([n,t,p,o,cb])=>`<div class="tof"><span class="tim" style="background:var(--${c==="shoes"?"sky":c==="bottom"?"lav":"peach"})">${WCAT.find(x=>x[0]===c)[2]}</span><span class="bd"><b>${n}</b><small>${t} · hay de su ${c==="shoes"?"número":"talla"}</small><span class="tpr"><b>${ec(p)}</b>${o?`<s>${ec(o)}</s>`:""}${cb?`<span class="pl pl-o">Te devolvemos ${ec(p*pct)}</span>`:`<span class="pl" style="background:var(--line);color:var(--ink)">Sin reembolso</span>`}</span></span><button class="btn" style="padding:8px 12px" data-toast="Te llevaríamos a la tienda con su talla ya elegida. Si compras, el reembolso aparece en tu saldo">Ver</button></div>`).join("")}</div>`}).join("")}
    ${small.length?`<div class="card"><h2>O dale una segunda vida</h2><div class="li"><span><span class="n">Vende lo que se le ha quedado pequeño</span><br><span class="m">${small.map(w=>w.n).join(", ")} · lo subimos con foto y talla a una web de segunda mano</span></span><button class="btn" style="padding:7px 12px" data-v="vender" data-vemode="vender">Preparar</button></div>
      <div class="li"><span><span class="n">Pásaselo a otra familia</span><br><span class="m">Avisamos a quien comparta la casa contigo o a una amiga con peques más pequeños</span></span><button class="btn" style="padding:7px 12px" data-v="vender" data-vemode="pasar">Avisar</button></div></div>`:""}
-   <span class="aff">Precios de ejemplo. El reembolso es el ${String(+(pct*100).toFixed(1)).replace(".",",")} % de tu nivel y solo en tiendas que lo permiten. Si compras desde Masvida, la tienda nos paga una comisión; tú pagas lo mismo.</span>`;
+   <span class="aff">Precios de ejemplo. El reembolso es el ${String(+(pct*100).toFixed(1)).replace(".",",")} % de tu nivel y solo en tiendas que lo permiten. Si compras desde Viwai, la tienda nos paga una comisión; tú pagas lo mismo.</span>`;
 }
 
 /* SEGUNDA VIDA: preparar el anuncio de lo que se ha quedado pequeño */
@@ -1515,7 +1515,7 @@ function venderRender(){
      <span class="pk-l">Publicar en</span><div class="btns"><button class="btn pri" data-toast="Abriríamos Vinted con las fotos, el título y el precio ya puestos">Vinted</button><button class="btn pri" data-toast="Abriríamos Wallapop con las fotos, el título y el precio ya puestos">Wallapop</button><button class="btn" data-vecopy="1">Copiar el texto</button></div></div>`:
    `<div class="card"><h2>Mandar la lista a</h2>${MEM.filter(x=>x.acc&&x.acc!=="titular").map(x=>`<div class="li"><span class="n">${x.n}</span><button class="btn" style="padding:7px 12px" data-toast="Le llegaría la lista con fotos y tallas">Enviar</button></div>`).join("")}
      <div class="btns"><a class="btn pri" href="https://wa.me/?text=${encodeURIComponent("Tengo ropa de "+m.n+" que se le ha quedado pequeña: "+small.filter(w=>veSel.has(w.id)).map(w=>w.n.toLowerCase()).join(", ")+". ¿Te sirve para tus peques?")}" target="_blank" rel="noopener">Enviar por WhatsApp</a></div></div>`}
-   <span class="aff">El precio es orientativo, según el tipo de prenda y su estado; tú decides el final. Masvida no cobra nada por la segunda mano.</span>`;
+   <span class="aff">El precio es orientativo, según el tipo de prenda y su estado; tú decides el final. Viwai no cobra nada por la segunda mano.</span>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-vender"))return;const d=b.dataset;
   if(d.vem){veModo=d.vem;venderRender();return}

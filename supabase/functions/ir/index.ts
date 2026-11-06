@@ -1,4 +1,4 @@
-// Masvida · /ir — redirige a una tienda con el enlace de afiliación y apunta el clic.
+// Viwai · /ir — redirige a una tienda con el enlace de afiliación y apunta el clic.
 // Uso: GET /functions/v1/ir?t=<id de tienda>&u=<url de destino opcional, codificada>
 // El id del clic viaja a la red como subid (clickref en Awin, epi en Tradedoubler) para atribuir la comisión al hogar.
 // Las plantillas de enlace y los ids de afiliada se guardan como secretos del proyecto, nunca en el repositorio:

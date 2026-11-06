@@ -16,7 +16,7 @@ i = s.index("<style>")
 s = head + s[:i].replace('<meta name="claude:viewport-fit-sides" content="cover">', "") + s[i:]
 j = s.index("</style>") + len("</style>")
 s = s[:j] + "\n</head>\n<body>\n" + s[j:]
-s = s.replace("laura@masvida.app", "tu-buzon@masvida.app")
+s = s.replace("laura@viwai.app", "tu-buzon@viwai.app")
 s = s.rstrip() + '\n<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>\n</body>\n</html>\n'
 open("app/index.html", "w", encoding="utf-8").write(s)
 print("app/index.html actualizado")

@@ -10,7 +10,7 @@ test("niveles por amigas", () => {
   assert.equal(nivelPorAmigas(0).nombre, "Ahorras");
   assert.equal(nivelPorAmigas(1).nombre, "Respiras");
   assert.equal(nivelPorAmigas(4).nombre, "Disfrutas");
-  assert.equal(nivelPorAmigas(10).nombre, "Masvida");
+  assert.equal(nivelPorAmigas(10).nombre, "Viwai");
   assert.equal(nivelPorAmigas(-3).nombre, "Ahorras");
   assert.equal(siguienteNivel(10), null);
   assert.equal(siguienteNivel(3).nombre, "Vives");
@@ -31,7 +31,7 @@ test("Lidl: como mucho la mitad de la comisión", () => {
   assert.equal(reembolsoDe(T.lidl, 100, 0), 1); // 1 % de 100
 });
 
-test("Masvida siempre se queda al menos el margen mínimo", () => {
+test("Viwai siempre se queda al menos el margen mínimo", () => {
   for (const t of cat.tiendas.filter((x) => x.cashback === true)) {
     for (const imp of [10, 100, 1000]) {
       const c = comisionDe(t, imp), r = reembolsoDe(t, imp, 50);

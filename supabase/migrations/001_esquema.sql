@@ -1,4 +1,4 @@
--- Masvida · esquema inicial (Supabase / Postgres)
+-- Viwai · esquema inicial (Supabase / Postgres)
 -- Principio: cada dato pertenece a un hogar; solo los adultos con cuenta en ese hogar lo ven (RLS).
 -- Las comisiones y los movimientos de dinero solo los escribe el servidor (service role).
 
