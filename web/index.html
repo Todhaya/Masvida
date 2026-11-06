@@ -211,7 +211,7 @@ document.getElementById("f").addEventListener("submit", async e => {
   const ref = new URLSearchParams(location.search).get("ref");
   try {
     const r = await fetch(C.supabaseUrl + "/rest/v1/lista_espera", { method: "POST",
-      headers: { apikey: C.supabaseAnonKey, Authorization: "Bearer " + C.supabaseAnonKey, "Content-Type": "application/json", Prefer: "return=minimal" },
+      headers: { apikey: C.supabaseAnonKey, "Content-Type": "application/json", Prefer: "return=minimal" },
       body: JSON.stringify({ email: em.toLowerCase(), codigo_postal: cp || null, origen: ref ? "ref:" + ref.slice(0, 12) : "web" }) });
     if (!r.ok && r.status !== 409) throw new Error(r.status);
     dn.textContent = "Apuntada. Te escribiremos a " + em + " en cuanto abramos."; dn.hidden = false; e.target.reset();
