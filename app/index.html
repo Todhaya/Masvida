@@ -790,7 +790,7 @@ function renderFuel(){
 const REEMB=[["Pienso para gato · Mascotas","0,76 €","Disponible"],["Sérum de vitamina C","0,36 €","Disponible"],["Escapada 2 noches · Viajes","3,56 €","Pendiente"],["Cambio de tarifa de luz","8,00 €","Disponible"],["Zapatillas de running","0,90 €","Disponible"],["Fibra y móvil","2,54 €","Pendiente"]];
 function renderReemb(){
   $("#reemb").innerHTML=`<div class="hero"><span class="lab">Puedes retirar</span><span class="big">10,02 €</span><span class="lab">Y 6,10 € más en camino (se confirman cuando la tienda valida la compra)</span></div>
-   <div class="btns"><button class="btn pri" data-toast="Te lo enviaríamos por Bizum o transferencia en 48 h">Retirar a mi cuenta</button><button class="btn" data-v="perfil">Subir mi reembolso</button></div>
+   <div class="btns"><button class="btn pri" data-toast="Te lo enviaríamos por Bizum o transferencia en 48 h. Se puede retirar a partir de 10 €">Retirar a mi cuenta</button><button class="btn" data-v="perfil">Subir mi reembolso</button></div>
    <div class="card"><h2>Movimientos</h2>${REEMB.map(([n,v,st])=>`<div class="li"><span><span class="n">${n}</span><br><span class="m">${st}</span></span><span style="font-weight:800">+${v}</span></div>`).join("")}</div>
    <span class="aff">Te devolvemos una parte de la comisión que nos pagan las tiendas. Se puede retirar a partir de 10 €.</span>`;
 }

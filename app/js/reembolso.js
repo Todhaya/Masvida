@@ -64,3 +64,7 @@ export function saldo(movimientos) {
   }
   return { disponible: redondea(disponible), pendiente: redondea(pendiente) };
 }
+
+// Retirada: solo a partir de RETIRADA_MINIMA € de saldo confirmado (condiciones de uso).
+export const RETIRADA_MINIMA = 10;
+export const puedeRetirar = movimientos => saldo(movimientos).disponible >= RETIRADA_MINIMA;

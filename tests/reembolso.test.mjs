@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { nivelPorAmigas, siguienteNivel, comisionDe, reembolsoDe, saldo, MARGEN_MINIMO } from "../app/js/reembolso.js";
+import { nivelPorAmigas, siguienteNivel, comisionDe, reembolsoDe, saldo, MARGEN_MINIMO, puedeRetirar, RETIRADA_MINIMA } from "../app/js/reembolso.js";
 
 const cat = JSON.parse(readFileSync(new URL("../data/tiendas.json", import.meta.url)));
 const T = Object.fromEntries(cat.tiendas.map((t) => [t.id, t]));
@@ -54,4 +54,10 @@ test("saldo: solo lo confirmado está disponible", () => {
     { tipo: "retirada", importe: 5, estado: "confirmada" },
   ]);
   assert.deepEqual(s, { disponible: 0.5, pendiente: 1.2 });
+});
+
+test("retirada: solo con 10 € o más de saldo confirmado", () => {
+  assert.equal(RETIRADA_MINIMA, 10);
+  assert.equal(puedeRetirar([{ tipo: "reembolso", importe: 9.99, estado: "confirmada" }, { tipo: "reembolso", importe: 5, estado: "pendiente" }]), false);
+  assert.equal(puedeRetirar([{ tipo: "reembolso", importe: 7, estado: "confirmada" }, { tipo: "premio", importe: 3, estado: "confirmada" }]), true);
 });
