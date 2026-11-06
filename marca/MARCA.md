@@ -1,6 +1,6 @@
 # Marca Viwai
 
-Logo: la «w» es una ola lila y el punto de la última «i» es una moneda dorada. Las letras están dibujadas como formas, así que no dependen de ninguna tipografía.
+Logo: letras en Plus Jakarta Sans ExtraBold (la tipografía de la web y la app, licencia OFL) convertidas a formas, con la «w» como ola lila y el punto de la última «i» como moneda dorada. No dependen de tener la fuente instalada.
 
 ## Archivos
 
@@ -12,6 +12,7 @@ Logo: la «w» es una ola lila y el punto de la última «i» es una moneda dora
 | `viwai-logo-negro.svg/.png/.jpg` | Blanco y negro (OEPM sin color, impresión a una tinta). La moneda va maciza para que no se confunda con ®. |
 | `viwai-icono.svg/.png` | Icono de app sobre fondo oscuro, 1024 px. |
 | `viwai-icono-lila.svg/.png` | Icono sobre fondo lila claro (favicon y app web). |
+| `viwai-logo-web.svg` | Para incrustar en páginas: toma el color del texto y la ola de la variable CSS `--wave`. |
 
 ## Colores
 
