@@ -6,7 +6,7 @@ Decidido por Alba el 6 de noviembre de 2026. Pendiente de implementar.
 Tras registrarse, la persona configura el perfil antes de entrar. Se le explica desde la primera pantalla para qué sirve: **«Con estas preguntas buscamos las ayudas, bonos y deducciones que te pueden tocar.»** Cada pantalla recuerda en una línea qué ayuda depende de esa respuesta.
 
 Pantallas (una pregunta por pantalla, barra de progreso, «Atrás»):
-1. **¿Quién vive en casa?** Adultos y peques con su edad. *«Para ayudas por hijos, familia numerosa o monoparental.»*
+1. **¿Quién vive en casa?** Primera opción «Solo yo»; si no, adultos y peques con su edad (vale también para pareja o piso compartido). *«Para ayudas por hijos, familia numerosa o monoparental.»*
 2. **¿Dónde vivís?** Código postal. *«Cada comunidad y ayuntamiento tiene sus propias ayudas.»*
 3. **Ingresos de la casa, en tramos** (opcional, «Prefiero no decirlo»). *«Muchas ayudas dependen de los ingresos. No lo compartimos con nadie.»*
 4. **Situaciones que dan derecho a ayudas** (marcar las que apliquen): familia numerosa o monoparental, discapacidad, desempleo, alquiler, hipoteca, estudiantes en casa. *«Solo para saber qué te corresponde.»*
@@ -58,3 +58,6 @@ La primera vez que se entra en un apartado: una tarjeta arriba con «Para qué s
 - **Mantenimiento** · Cuidar la casa a tiempo para evitar averías caras. · 1) Marca qué tienes en casa. 2) Dinos cuándo lo hiciste por última vez. 3) Te avisamos cuando toque.
 - **Familia** · Quién vive en casa y quién la gestiona contigo. · 1) Añade miembros con su talla y edad. 2) Invita a otra persona adulta con su permiso.
 - **Mi dinero** (de pago, más adelante) · Ver en qué se va el dinero, conectando tu banco. · 1) Conecta tu banco. 2) Revisa gastos por categoría y suscripciones.
+
+## Casas de una persona
+Si marca «Solo yo», el armario de peques y el reparto de tareas quedan ocultos (se pueden activar desde «Tú»), y los textos no hablan de peques ni de familia. La casa compartida sirve también para compañeros de piso.
