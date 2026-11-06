@@ -15,3 +15,8 @@ Solo a quien haya dado permiso (push activado o casilla de correo). Máximo 1 ca
 | Octubre | Halloween · Cambio de hora | Disfraces y decoración · revisa la tarifa de la luz antes del invierno |
 | Noviembre | Black Friday (último viernes) y Cyber Monday | Chollos comprobados y cómo evitar falsos descuentos |
 | Diciembre | Navidad | Lista de regalos por persona, ideas por edad y talla |
+
+## Rebajas y bajadas de precio
+- **Aviso push y correo al empezar cada temporada de rebajas** (enero y julio, Black Friday, rebajas de tiendas concretas) y cuando baja algo que la persona ha guardado o que encaja con su perfil (su talla, su súper, sus categorías).
+- **Apartado «Todo lo rebajado»** en Ofertas: todos los productos con descuento de las tiendas asociadas, con filtros por categoría, tienda, talla y porcentaje, y el reembolso al lado. Arriba, «Rebajado para ti» con lo que encaja con su casa.
+- **Descuentos reales:** el porcentaje se calcula sobre el precio más bajo de los 30 días anteriores (lo que exige la ley para anunciar una rebaja). Para eso guardamos a diario el precio de cada producto de los catálogos de afiliación. Si no hay historial suficiente, no se muestra porcentaje.
