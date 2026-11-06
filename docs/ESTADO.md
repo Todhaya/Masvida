@@ -18,7 +18,8 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 5. Altas en redes de afiliación (Awin, Tradedoubler, Amazon, Temu, Civitatis). Antes de activar enlaces: alta censal en Hacienda (037), domiciliación y añadir NIF y domicilio a las páginas legales.
 
 ## Siguiente trabajo técnico (por orden)
-1. App conectada a Supabase: inicio de sesión con enlace mágico y Google, hogar, miembros y módulos guardados.
-2. Panel para Alba (lista de espera, uso, comisiones, pagos y neto).
-3. Vídeos de gasolina, casa compartida y escapadas (motor en `marketing/motor/`; no usar en anuncios las fotos de auriculares ni del juego de construcción por parecido con marcas).
-4. Importación diaria de comisiones de las redes.
+1. Bienvenida, perfil obligatorio y tutoriales (`docs/specs/BIENVENIDA_Y_TUTORIAL.md`), en el prototipo y en la app.
+2. App conectada a Supabase: inicio de sesión con enlace mágico y Google, hogar, miembros y módulos guardados.
+3. Panel para Alba (lista de espera, uso, comisiones, pagos y neto).
+4. Vídeos de gasolina, casa compartida y escapadas (motor en `marketing/motor/`; no usar en anuncios las fotos de auriculares ni del juego de construcción por parecido con marcas).
+5. Importación diaria de comisiones de las redes.
