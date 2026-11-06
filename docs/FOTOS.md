@@ -2,7 +2,7 @@
 
 Lista exacta de las fotos que necesitan la app, la web y los anuncios. **Cualquier sesión puede ejecutarla:** buscar cada foto, descargarla, optimizarla y guardarla con el nombre exacto. La app ya está preparada: si el archivo existe, lo muestra; si no, enseña la letra o el icono de color como ahora.
 
-**Total: 77 fotos.** Prioridad si hay que hacerlo por partes: 1 (perfiles) → 2 (recetas) → 6 (ambiente) → 5 → 3 → 4.
+**Total: 88 fotos.** Prioridad si hay que hacerlo por partes: 1 (perfiles) → 2 (recetas) → 6 (ambiente) → 5 → 3 → 4.
 
 ## Reglas
 
@@ -42,20 +42,6 @@ Plato terminado visto desde arriba o en ángulo, en mesa de casa (no de restaura
 | `receta-paella.jpg` | Paella |
 | `receta-fruta-y-yogur.jpg` | Fruta y yogur |
 | `receta-sandwiches-y-crudites.jpg` | Sándwiches y crudités |
-| `receta-laura.jpg` | Laura |
-| `receta-noa.jpg` | Noa |
-| `receta-leo.jpg` | Leo |
-| `receta-poner-una-lavadora.jpg` | Poner una lavadora |
-| `receta-tender-y-recoger-la-ropa.jpg` | Tender y recoger la ropa |
-| `receta-sacar-la-basura-y-el-reciclaje.jpg` | Sacar la basura y el reciclaje |
-| `receta-poner-y-quitar-la-mesa.jpg` | Poner y quitar la mesa |
-| `receta-dar-de-comer-a-los-gatos.jpg` | Dar de comer a los gatos |
-| `receta-fregar-el-suelo.jpg` | Fregar el suelo |
-| `receta-limpiar-el-bano.jpg` | Limpiar el baño |
-| `receta-ordenar-la-habitacion.jpg` | Ordenar la habitación |
-| `receta-cambiar-sabanas.jpg` | Cambiar sábanas |
-| `receta-limpiar-el-arenero.jpg` | Limpiar el arenero |
-| `receta-limpiar-la-nevera.jpg` | Limpiar la nevera |
 
 ## 3. Prendas del armario (app) · `app/img/fotos/`
 
@@ -63,6 +49,31 @@ La prenda sola, doblada o colgada, sobre fondo liso claro. Tallas de niño cuand
 
 | Archivo | Prenda |
 | --- | --- |
+| `prenda-abrigo-largo.jpg` | Abrigo largo |
+| `prenda-bermudas.jpg` | Bermudas (talla infantil) |
+| `prenda-botas-de-agua.jpg` | Botas de agua (talla infantil) |
+| `prenda-botines.jpg` | Botines |
+| `prenda-camisa-blanca.jpg` | Camisa blanca |
+| `prenda-camiseta-amarilla.jpg` | Camiseta amarilla (talla infantil) |
+| `prenda-camiseta-de-rayas.jpg` | Camiseta de rayas (talla infantil) |
+| `prenda-camiseta-negra.jpg` | Camiseta negra |
+| `prenda-camiseta-verde.jpg` | Camiseta verde (talla infantil) |
+| `prenda-chaqueta.jpg` | Chaqueta (talla infantil) |
+| `prenda-deportivas.jpg` | Deportivas (talla infantil) |
+| `prenda-falda-vaquera.jpg` | Falda vaquera (talla infantil) |
+| `prenda-jersey-de-punto.jpg` | Jersey de punto |
+| `prenda-leggings.jpg` | Leggings (talla infantil) |
+| `prenda-pantalon-de-chandal.jpg` | Pantalón de chándal (talla infantil) |
+| `prenda-pantalon-negro.jpg` | Pantalón negro |
+| `prenda-plumifero.jpg` | Plumífero (talla infantil) |
+| `prenda-polo-blanco.jpg` | Polo blanco (talla infantil) |
+| `prenda-sudadera-gris.jpg` | Sudadera gris (talla infantil) |
+| `prenda-sudadera-rosa.jpg` | Sudadera rosa (talla infantil) |
+| `prenda-vaqueros.jpg` | Vaqueros (talla infantil) |
+| `prenda-vaqueros-rectos.jpg` | Vaqueros rectos |
+| `prenda-vestido-midi.jpg` | Vestido midi |
+| `prenda-zapatillas-blancas.jpg` | Zapatillas blancas |
+| `prenda-febrero.jpg` | febrero |
 
 ## 4. Productos de las ofertas (app) · `app/img/fotos/`
 
