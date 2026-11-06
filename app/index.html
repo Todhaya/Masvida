@@ -586,7 +586,7 @@ const yr=(b,p)=>b.u==="m"?(b.now-p)*12:(b.now-p);
 const visibleBills=()=>Object.entries(BILLS).filter(([k,b])=>!b.need||b.need(P));
 function renderTypes(){
   const groups={};visibleBills().forEach(([k,b])=>(groups[b.g]=groups[b.g]||[]).push([k,b]));
-  $("#types").innerHTML=Object.entries(groups).map(([g,list])=>`<div class="group-t">${g}</div><div class="types" style="margin-top:6px">${list.map(([k,b])=>`<button class="type ${done[k]!=null?"done":""}" data-type="${k}" aria-pressed="${k===cur}"><span class="ic" style="background:var(--${({sage:"mint",lilac:"lav",butter:"butter",sky:"sky"})[b.c]})!important;color:var(--p-ink)!important">${b.ic}</span>${b.n}<span class="st">${done[k]!=null?"Ahorro: "+eur(done[k]):"Sin revisar"}</span></button>`).join("")}</div>`).join("");
+  $("#types").innerHTML=Object.entries(groups).map(([g,list])=>`<div class="group-t">${g}</div><div class="types" style="margin-top:6px">${list.map(([k,b])=>`<button class="type ${done[k]!=null?"done":""}" data-type="${k}" aria-pressed="${k===cur}"><span class="ic" style="background:var(--${({sage:"mint",lilac:"lav",butter:"butter",sky:"sky"})[b.c]})!important;color:var(--p-ink)!important">${b.ic}</span>${b.n}<span class="st">${done[k]!=null?(b.ins?"Aviso guardado":"Ahorro: "+eur(done[k])):(b.ins?"Sin fecha":"Sin revisar")}</span></button>`).join("")}</div>`).join("");
   const b=BILLS[cur];$("#up-title").textContent=b.ins?`Sube tu póliza de ${b.n.toLowerCase()}`:`Sube tu factura de ${b.n.toLowerCase()}`;
 }
 function analyse(){
@@ -595,14 +595,25 @@ function analyse(){
   const m=["Buscando lo que pagas","Comparando con el mercado","Calculando tu ahorro"];let i=0;const t=setInterval(()=>{i++;if(m[i])$("#load-msg").textContent=m[i]},450);
   setTimeout(()=>{clearInterval(t);result()},1500);
 }
+function resultSeguro(){
+  const b=BILLS[cur];done[cur]=0;S.set("done",done);
+  $("#step-load").hidden=true;const r=$("#step-res");r.hidden=false;
+  r.innerHTML=`<div class="hero"><span class="lab">Seguro de ${b.n.toLowerCase()}: guardado</span><span class="big">Te avisamos</span><span class="lab">Hemos leído: ${b.read}</span></div>
+   <div class="card"><h2>Qué hacemos con tu póliza</h2><p class="small" style="margin:0">Guardamos la fecha de renovación y te avisamos 30 días antes, con tiempo para pedir precio a otras aseguradoras si quieres. La tienes también en Papeles y fechas.</p>
+   <div class="btns"><button class="btn pri" data-toast="Aviso creado: 30 días antes de la renovación">Avisarme antes de renovar</button></div>
+   <span class="aff">Viwai no vende, compara ni recomienda seguros. Solo te recordamos las fechas.</span></div>
+   <div class="btns"><button class="btn" id="again">Revisar otra</button></div>`;
+  renderTypes();renderHome();window.scrollTo(0,0);
+}
 function result(){
+  if(BILLS[cur].ins)return resultSeguro();
   const b=BILLS[cur],best=b.opts[0],sv=yr(b,best[1]);done[cur]=sv;S.set("done",done);
   const unit=b.u==="m"?"€/mes":"€/año";
   $("#step-load").hidden=true;const r=$("#step-res");r.hidden=false;
   r.innerHTML=`<div class="hero"><span class="lab">${b.n}: pagas de más</span><span class="big">${eur(sv)}/año</span><span class="lab">Hemos leído: ${b.read}</span></div>
    <div class="cmp"><div><span class="small muted">Pagas ahora</span><span class="big">${b.now} ${unit}</span></div><div><span class="small muted">Podrías pagar</span><span class="big">${best[1]} ${unit}</span></div></div>
    <div class="card"><h2>Tus opciones</h2>${b.opts.map((o,i)=>`<div class="opt ${i?"":"best"}"><span class="n">${o[0]}</span><span class="p">${o[1]} ${unit}</span><span class="m">${o[2]} · ahorras ${eur(yr(b,o[1]))} al año</span>${i?"":`<div class="btns"><button class="btn pri" data-toast="${b.ins?"Te contactaría la correduría asociada":"Cambio solicitado: la nueva compañía gestiona la baja"}">${b.ins?"Pedir esta póliza":"Cambiar con un clic"}</button></div>`}</div>`).join("")}
-   <span class="aff">${b.ins?"Los seguros se ofrecen a través de una correduría registrada, que nos paga una comisión.":"Enlace de afiliación: si cambias desde aquí, la compañía nos paga por la recomendación. Tu precio es el mismo."}</span></div>
+   <span class="aff">Enlace de afiliación: si cambias desde aquí, la compañía nos paga por la recomendación. Tu precio es el mismo.</span></div>
    <div class="btns"><button class="btn" id="again">Revisar otra</button><button class="btn dark" data-toast="Copiado: «Pagaba ${eur(sv)} de más al año en ${b.n.toLowerCase()} y no lo sabía»">Compartir mi ahorro</button></div>`;
   renderTypes();renderHome();window.scrollTo(0,0);
 }

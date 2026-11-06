@@ -27,3 +27,4 @@ Supabase: Postgres + Auth (enlace mágico por correo) + Storage (facturas, priva
 3. **Comisiones:** importación diaria desde las redes, saldo y retiradas, premios por invitación.
 4. **Panel para Alba:** familias activas, clics, comisiones por tienda, reembolso pendiente.
 5. **Tiendas de apps y Mi dinero.**
+6. **Ahorro extra en compras:** avisos de bajada de precio con los catálogos de las redes y códigos exclusivos negociados cuando haya volumen.

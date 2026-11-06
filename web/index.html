@@ -53,6 +53,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 .mods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
 .mod{border-radius:26px;padding:22px;color:var(--p-ink);display:flex;flex-direction:column;gap:6px;min-width:0}
 .mod p{font-size:15px;opacity:.85}
+.vals{grid-template-columns:repeat(3,1fr)}
 .mod .f{font-size:13px;font-weight:800;margin-top:auto;padding-top:8px}
 
 .lv{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:40px}
@@ -94,6 +95,7 @@ footer a{color:var(--brand-strong)}
   .scene .in{grid-template-columns:1fr;gap:48px}
   .scene.flip .in>.txt{order:0}
   .mods{grid-template-columns:1fr 1fr}
+  .vals{grid-template-columns:1fr}
   .lv{grid-template-columns:repeat(2,1fr)}.lv div:last-child{grid-column:1/-1}
 }
 @media (max-width:480px){
@@ -107,6 +109,14 @@ footer a{color:var(--brand-strong)}
 <section class="scene lav"><div class="in">
   <div class="txt"><span class="eye">Ahorro sin esfuerzo para familias</span><h1 class="big">Lo que ahorras, lo vives.</h1><p class="sub">Viwai revisa tus facturas, encuentra tus ayudas, organiza la casa y te devuelve dinero por lo que ya compras.</p><div class="cta"><a class="btn lila" href="#lista">Quiero probarla</a><a class="btn ghost" href="#facturas">Ver cómo funciona</a></div><small>Gratis y sin tarjeta.</small></div>
   <div class="phone"><img src="img/reembolso.jpg" alt="Pantalla de Viwai con el reembolso acumulado" loading="lazy" width="390" height="844"></div>
+</div></section>
+<section class="band" id="valor"><div class="in">
+  <span class="eye">Por qué desde Viwai</span><h2>El mismo precio. Y una parte vuelve a ti.</h2>
+  <div class="mods vals">
+    <div class="mod cream"><h3>Hasta un 3 % de vuelta</h3><p>Compras en la tienda al mismo precio y con sus rebajas, y te devolvemos una parte de lo que gastas.</p><span class="f">En las tiendas que lo permiten</span></div>
+    <div class="mod peach"><h3>Te decimos si pagas de más</h3><p>Miramos tus facturas de luz, gas y fibra con tu consumo real. Es donde más se ahorra al año.</p><span class="f">Y las ayudas que te tocan</span></div>
+    <div class="mod mint"><h3>Ofertas que te sirven</h3><p>En la talla de cada peque, en tu súper y en lo que de verdad usas. Sin buscar en diez webs.</p><span class="f">Elegidas para tu casa</span></div>
+  </div>
 </div></section>
 <section class="scene peach flip" id="facturas"><div class="in">
   <div class="txt"><span class="eye">Facturas</span><h2 class="big">¿Pagas de más en la luz?</h2><p class="sub">Haz una foto de la factura. Te decimos si te conviene otra tarifa, con tu consumo real.</p></div>
