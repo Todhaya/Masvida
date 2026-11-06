@@ -13,15 +13,16 @@
 :root{
   --bg:#FAFAF8; --ink:#0F0F0E; --muted:#5E5D58; --line:#E4E3DE; --surface:#FFFFFF;
   --peach:#FFD9C7; --lav:#E4DDFF; --mint:#CDEFDD; --sky:#D5E7FF; --butter:#FFEFB5; --p-ink:#0F0F0E;
+  --brand:#7B5CFF; --brand-strong:#5B3FE0; --on-brand:#FFFFFF; --gold:#F5B400; --cream:#FFF4C9;
   --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
   --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111110; --ink:#F4F3EF; --muted:#A9A8A2; --line:#2B2A27; --surface:#1B1B19;
-  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F4F3EF; color-scheme:dark}}
+  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F4F3EF; --brand:#B9A8FF; --brand-strong:#B9A8FF; --on-brand:#0F0F0E; --cream:#4F4416; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111110; --ink:#F4F3EF; --muted:#A9A8A2; --line:#2B2A27; --surface:#1B1B19;
-  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F4F3EF; color-scheme:dark}
+  --peach:#5A3426; --lav:#3A3160; --mint:#1F4A36; --sky:#21395C; --butter:#4F4416; --p-ink:#F4F3EF; --brand:#B9A8FF; --brand-strong:#B9A8FF; --on-brand:#0F0F0E; --cream:#4F4416; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
 .in{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -29,17 +30,17 @@ h1,h2,h3{font-family:var(--display);letter-spacing:-.03em;line-height:1.02;margi
 h2{font-size:clamp(32px,5vw,52px);font-weight:800}
 h3{font-size:22px;font-weight:600}
 p{margin:0}
-.eyebrow{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-strong)}
 header .in{display:flex;justify-content:space-between;align-items:center;padding-block:18px}
 .logo{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:-.04em}
 .logo b{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:20px;margin-right:6px;vertical-align:-4px}
-.btn{border:0;border-radius:999px;padding:14px 22px;font:700 16px var(--body);background:var(--ink);color:var(--bg);cursor:pointer;text-decoration:none;display:inline-flex}
-.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
-.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.btn{border:0;border-radius:999px;padding:14px 22px;font:700 16px var(--body);background:var(--brand-strong);color:var(--on-brand);cursor:pointer;text-decoration:none;display:inline-flex}
+.btn.ghost{background:transparent;color:var(--brand-strong);box-shadow:inset 0 0 0 1.5px var(--brand-strong)}
+.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
 
 .hero .in{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-block:40px 72px}
 .hero h1{font-size:clamp(52px,9vw,104px);font-weight:800}
-.hero h1 em{font-style:normal;background:var(--peach);color:var(--p-ink);border-radius:.18em;padding:0 .12em}
+.hero h1 em{font-style:normal;background:var(--lav);color:var(--p-ink);border-radius:.18em;padding:0 .12em}
 .hero .lead{font-size:20px;color:var(--muted);max-width:30em;margin-top:22px}
 .hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
 .hero small{display:block;margin-top:14px;color:var(--muted);font-size:14px}
@@ -55,7 +56,8 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 
 .band{padding-block:72px}
 .band.lav{background:var(--lav)}.band.mint{background:var(--mint)}.band.ink{background:var(--ink);color:var(--bg)}
-.band.lav,.band.mint{color:var(--p-ink)}
+.band.cream{background:var(--cream)}
+.band.lav,.band.mint,.band.cream{color:var(--p-ink)}
 .sec-h{display:flex;flex-direction:column;gap:12px;max-width:40em;margin-bottom:36px}
 .sec-h p{font-size:19px}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;list-style:none;margin:0;padding:0;counter-reset:s}
@@ -72,7 +74,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 .lv div{border-radius:20px;padding:16px 14px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:flex;flex-direction:column;gap:4px}
 :root[data-theme="dark"] .lv div{background:rgba(0,0,0,.05);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lv div{background:rgba(0,0,0,.05);box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}}
-.lv b{font-family:var(--display);font-size:34px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.lv b{color:var(--gold);font-family:var(--display);font-size:34px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .lv span{font-size:14px;opacity:.75}
 .lv .n{font-weight:700;font-size:17px;opacity:1}
 .note{font-size:14px;opacity:.75;margin-top:18px;max-width:46em}
@@ -80,6 +82,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 .wait{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
 form{display:flex;flex-direction:column;gap:12px;background:var(--surface);color:var(--ink);border-radius:28px;padding:24px}
 label{font-size:14px;font-weight:700}
+input[type=email]:focus,input[type=text]:focus{border-color:var(--brand)}
 input[type=email],input[type=text]{width:100%;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:14px;font:inherit}
 .chk{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;color:var(--muted)}
 .chk input{margin-top:4px;width:18px;height:18px;flex:none}
@@ -91,14 +94,14 @@ input[type=email],input[type=text]{width:100%;border:1.5px solid var(--line);bac
 .faq{display:flex;flex-direction:column;max-width:760px}
 details{border-bottom:1px solid var(--line);padding-block:18px}
 summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.02em;list-style:none;display:flex;justify-content:space-between;gap:12px}
-summary::after{content:"+";font-weight:800}
+summary::after{content:"+";font-weight:800;color:var(--brand-strong)}
 details[open] summary::after{content:"–"}
 details p{color:var(--muted);margin-top:10px;max-width:60ch}
 
 footer{border-top:1px solid var(--line)}
 footer .in{padding-block:32px;display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--muted)}
 footer nav{display:flex;gap:18px;flex-wrap:wrap}
-footer a{color:var(--ink)}
+footer a{color:var(--brand-strong)}
 
 @media (max-width:860px){
   .hero .in,.wait{grid-template-columns:1fr}
@@ -125,7 +128,7 @@ footer a{color:var(--ink)}
   </div>
   <div class="phone" aria-hidden="true"><div class="scr">
     <span class="eyebrow" style="font-size:11px">Este año</span><span class="t">Hola, Laura</span>
-    <div class="tile" style="background:var(--peach)"><span class="k">Llevas ahorrado</span><span class="v">412 €</span><span class="k">sin cambiar lo que compras</span></div>
+    <div class="tile" style="background:var(--cream)"><span class="k">Llevas ahorrado</span><span class="v">412 €</span><span class="k">sin cambiar lo que compras</span></div>
     <div class="row"><span>Luz: tarifa con horas valle</span><b>−13 €/mes</b></div>
     <div class="row"><span>Bono social térmico</span><span class="pill">Te toca</span></div>
     <div class="row"><span>Reembolso del súper</span><b>+4,20 €</b></div>
@@ -133,7 +136,7 @@ footer a{color:var(--ink)}
   </div></div>
 </div></section>
 
-<section class="band lav" id="como"><div class="in">
+<section class="band cream" id="como"><div class="in">
   <div class="sec-h"><span class="eyebrow" style="color:inherit;opacity:.7">Cómo funciona</span><h2>Tres minutos al principio. Después, nada.</h2></div>
   <ol class="steps">
     <li><h3>Cuéntanos cómo es tu casa</h3><p>Cuántos sois, dónde vivís y qué te interesa. Con eso calculamos tus ayudas y elegimos las ofertas que te sirven.</p></li>
@@ -168,7 +171,7 @@ footer a{color:var(--ink)}
   <p class="note">Porcentaje sobre lo que compras en tiendas asociadas que permiten reembolso. Algunas tiendas, como Amazon, aparecen en Viwai como oferta pero sin reembolso.</p>
 </div></section>
 
-<section class="band mint" id="lista"><div class="in wait">
+<section class="band lav" id="lista"><div class="in wait">
   <div class="sec-h" style="margin:0"><span class="eyebrow" style="color:inherit;opacity:.7">Lista de espera</span><h2>Sé de las primeras en probarla</h2><p>Te avisamos en cuanto abramos la prueba con las primeras familias.</p></div>
   <form id="f" novalidate>
     <div><label for="em">Tu correo</label><input id="em" type="email" autocomplete="email" placeholder="tu@correo.com" required></div>
