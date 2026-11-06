@@ -215,7 +215,7 @@ document.getElementById("f").addEventListener("submit", async e => {
       body: JSON.stringify({ email: em.toLowerCase(), codigo_postal: cp || null, origen: ref ? "ref:" + ref.slice(0, 12) : "web" }) });
     if (!r.ok && r.status !== 409) throw new Error(r.status);
     dn.textContent = "Apuntada. Te escribiremos a " + em + " en cuanto abramos."; dn.hidden = false; e.target.reset();
-  } catch (x) { er.textContent = "No hemos podido guardarlo. Revisa tu conexión e inténtalo otra vez. (" + (x && x.message ? x.message : "sin respuesta") + ")"; er.hidden = false }
+  } catch (x) { er.textContent = "No hemos podido guardarlo. Revisa tu conexión e inténtalo otra vez."; console.error("lista_espera", x); er.hidden = false }
 });
 </script>
 </body>
