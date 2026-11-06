@@ -3,7 +3,7 @@
 Decidido por Alba el 6 de noviembre de 2026. Pendiente de implementar.
 
 ## 1. Primera entrada: el perfil busca tus ayudas (obligatorio, 2–3 minutos)
-Tras registrarse, la persona configura el perfil antes de entrar. Se le explica desde la primera pantalla para qué sirve: **«Con estas preguntas buscamos las ayudas, bonos y deducciones que te pueden tocar. Lo demás de Viwai funciona igual para todos y lo vas ajustando sobre la marcha.»** Cada pantalla recuerda en una línea qué ayuda depende de esa respuesta.
+Tras registrarse, la persona configura el perfil antes de entrar. Se le explica desde la primera pantalla para qué sirve: **«Con estas preguntas buscamos las ayudas, bonos y deducciones que te pueden tocar.»** Cada pantalla recuerda en una línea qué ayuda depende de esa respuesta.
 
 Pantallas (una pregunta por pantalla, barra de progreso, «Atrás»):
 1. **¿Quién vive en casa?** Adultos y peques con su edad. *«Para ayudas por hijos, familia numerosa o monoparental.»*
