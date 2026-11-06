@@ -12,6 +12,15 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 [hidden]{display:none!important}
+/* Escenas de color como en la web y los anuncios: cada apartado tiene su fondo pastel y las tarjetas van en blanco */
+@media (prefers-color-scheme: light){
+body[data-sec]{--bg:var(--secbg);--surface:#FFFFFF;--sunk:#F4F2EE;transition:background .25s}
+body[data-sec="peach"]{--secbg:#FFD9C7}body[data-sec="butter"]{--secbg:#FFEFB5}body[data-sec="lav"]{--secbg:#E4DDFF}
+body[data-sec="mint"]{--secbg:#CDEFDD}body[data-sec="sky"]{--secbg:#D5E7FF}body[data-sec="cream"]{--secbg:#FFF4C9}
+body[data-sec="lav"] .tile.wide,body[data-sec="lav"] .hero{background:#FFFFFF!important}
+body[data-sec] .type{background:#F7F5F1}body[data-sec] .avatar{background:#FFFFFF}body[data-sec] .demo{background:rgba(255,255,255,.7)}
+}
+
 .fi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;z-index:0}
 .tav,.avatar,.th,.ph,.of .img,.wt{position:relative;overflow:hidden}
 .of .img>span,.esc .ph>span,.wt>span{position:relative;z-index:1}
@@ -924,7 +933,8 @@ const TT={inicio:["Viwai · ahorro sin esfuerzo","Lo que ahorras, lo vives"],aho
  hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],talla:["Ofertas en su talla","Lo que le falta"],vender:["Segunda vida","Vender o pasar"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
 const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",vender:"talla",familia:"perfil",eventos:"hogar",dinero:"perfil"};
 const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú",armario:"Armario",talla:"Lo que le falta"};
-function go(v){const top=PARENT[v]||v;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+const SEC={facturas:"peach",luz:"peach",ayudas:"butter",gasolina:"sky",reembolso:"lav",ahorro:"lav",dinero:"lav",ofertas:"cream",perfil:"lav",armario:"mint",talla:"mint",vender:"mint",familia:"mint",cal:"sky",tareas:"sky",eventos:"sky",hogar:"sky",menu:"cream",docs:"butter",pedidos:"butter",wallet:"butter",mant:"butter"};
+function go(v){const top=PARENT[v]||v;if(SEC[v])document.body.dataset.sec=SEC[v];else delete document.body.dataset.sec;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
  $("#back").hidden=!PARENT[v];if(PARENT[v]){$("#back").dataset.v=PARENT[v];$("#back-l").textContent=LBL[PARENT[v]]}
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
 function resetBill(){$("#step-res").hidden=true;$("#step-load").hidden=true;$("#step-up").hidden=false}
