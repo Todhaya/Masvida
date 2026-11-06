@@ -446,7 +446,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
     <label class="search" for="q"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Busca: champú, pienso, auriculares…" autocomplete="off"><button class="x" id="qx" aria-label="Borrar búsqueda" hidden>×</button></label>
     <div class="chips" id="cats"></div>
     <div id="offers" class="view" style="gap:18px"></div>
-    <span class="aff">Todas las ofertas llevan enlace de afiliación: la tienda nos paga una comisión, a ti te cuesta lo mismo y te devolvemos una parte.</span>
+    <span class="aff">Así nos mantenemos: la tienda nos paga por recomendarla (enlace de afiliación). A ti te cuesta lo mismo y te devolvemos una parte.</span>
     </div>
     <div id="o-escapadas" class="view" hidden>
       <div class="card" id="esc-form"></div>
@@ -602,7 +602,7 @@ function result(){
   r.innerHTML=`<div class="hero"><span class="lab">${b.n}: pagas de más</span><span class="big">${eur(sv)}/año</span><span class="lab">Hemos leído: ${b.read}</span></div>
    <div class="cmp"><div><span class="small muted">Pagas ahora</span><span class="big">${b.now} ${unit}</span></div><div><span class="small muted">Podrías pagar</span><span class="big">${best[1]} ${unit}</span></div></div>
    <div class="card"><h2>Tus opciones</h2>${b.opts.map((o,i)=>`<div class="opt ${i?"":"best"}"><span class="n">${o[0]}</span><span class="p">${o[1]} ${unit}</span><span class="m">${o[2]} · ahorras ${eur(yr(b,o[1]))} al año</span>${i?"":`<div class="btns"><button class="btn pri" data-toast="${b.ins?"Te contactaría la correduría asociada":"Cambio solicitado: la nueva compañía gestiona la baja"}">${b.ins?"Pedir esta póliza":"Cambiar con un clic"}</button></div>`}</div>`).join("")}
-   <span class="aff">${b.ins?"Los seguros se ofrecen a través de una correduría registrada, que nos paga una comisión.":"Enlace de afiliación: si cambias, la compañía nos paga una comisión. Tu precio es el mismo."}</span></div>
+   <span class="aff">${b.ins?"Los seguros se ofrecen a través de una correduría registrada, que nos paga una comisión.":"Enlace de afiliación: si cambias desde aquí, la compañía nos paga por la recomendación. Tu precio es el mismo."}</span></div>
    <div class="btns"><button class="btn" id="again">Revisar otra</button><button class="btn dark" data-toast="Copiado: «Pagaba ${eur(sv)} de más al año en ${b.n.toLowerCase()} y no lo sabía»">Compartir mi ahorro</button></div>`;
   renderTypes();renderHome();window.scrollTo(0,0);
 }
@@ -1492,7 +1492,7 @@ function tallaRender(){
      ${(TOFF[c]||[]).map(([n,t,p,o,cb])=>`<div class="tof"><span class="tim" style="background:var(--${c==="shoes"?"sky":c==="bottom"?"lav":"peach"})">${WCAT.find(x=>x[0]===c)[2]}</span><span class="bd"><b>${n}</b><small>${t} · hay de su ${c==="shoes"?"número":"talla"}</small><span class="tpr"><b>${ec(p)}</b>${o?`<s>${ec(o)}</s>`:""}${cb?`<span class="pl pl-o">Te devolvemos ${ec(p*pct)}</span>`:`<span class="pl" style="background:var(--line);color:var(--ink)">Sin reembolso</span>`}</span></span><button class="btn" style="padding:8px 12px" data-toast="Te llevaríamos a la tienda con su talla ya elegida. Si compras, el reembolso aparece en tu saldo">Ver</button></div>`).join("")}</div>`}).join("")}
    ${small.length?`<div class="card"><h2>O dale una segunda vida</h2><div class="li"><span><span class="n">Vende lo que se le ha quedado pequeño</span><br><span class="m">${small.map(w=>w.n).join(", ")} · lo subimos con foto y talla a una web de segunda mano</span></span><button class="btn" style="padding:7px 12px" data-v="vender" data-vemode="vender">Preparar</button></div>
      <div class="li"><span><span class="n">Pásaselo a otra familia</span><br><span class="m">Avisamos a quien comparta la casa contigo o a una amiga con peques más pequeños</span></span><button class="btn" style="padding:7px 12px" data-v="vender" data-vemode="pasar">Avisar</button></div></div>`:""}
-   <span class="aff">Precios de ejemplo. El reembolso es el ${String(+(pct*100).toFixed(1)).replace(".",",")} % de tu nivel y solo en tiendas que lo permiten. Si compras desde Viwai, la tienda nos paga una comisión; tú pagas lo mismo.</span>`;
+   <span class="aff">Precios de ejemplo. El reembolso es el ${String(+(pct*100).toFixed(1)).replace(".",",")} % de tu nivel y solo en tiendas que lo permiten. Si compras desde Viwai, la tienda nos paga por recomendarla y una parte vuelve a ti; tú pagas lo mismo.</span>`;
 }
 
 /* SEGUNDA VIDA: preparar el anuncio de lo que se ha quedado pequeño */
