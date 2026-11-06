@@ -1,0 +1,3 @@
+{"hook":{"bg":"#FFD9C7","eye":"Facturas","lines":["¿Pagas de más","en la luz?"],"foto":"ambiente-factura-movil.jpg","fotoTop":820},
+"prob":{"bg":"#FFEFB5","lines":["Comparar","tarifas","da pereza."],"sub":"Y cada mes pagas un poco más sin darte cuenta."},
+"app":{"bg":"#E4DDFF","shots":[{"img":"f1.jpg","cap":"Elige qué quieres revisar.","tap":"f1tap","d":3.2},{"img":"f2.jpg","cap":"Sube una foto de la factura. La leemos por ti.","tap":"f2tap","d":3.4},{"img":"f3.jpg","cap":"Te decimos cuánto pagas de más. Y cambias en un clic.","tap":"f3tap","d":4.4}]}}
