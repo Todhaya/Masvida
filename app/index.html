@@ -7,19 +7,27 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icono.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icono.svg">
+<meta charset="utf-8">
 <title>Viwai</title>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 [hidden]{display:none!important}
 /* Escenas de color como en la web y los anuncios: cada apartado tiene su fondo pastel y las tarjetas van en blanco */
-@media (prefers-color-scheme: light){
 body[data-sec]{--bg:var(--secbg);--surface:#FFFFFF;--sunk:#F4F2EE;transition:background .25s}
 body[data-sec="peach"]{--secbg:#FFD9C7}body[data-sec="butter"]{--secbg:#FFEFB5}body[data-sec="lav"]{--secbg:#E4DDFF}
 body[data-sec="mint"]{--secbg:#CDEFDD}body[data-sec="sky"]{--secbg:#D5E7FF}body[data-sec="cream"]{--secbg:#FFF4C9}
-body[data-sec="lav"] .tile.wide,body[data-sec="lav"] .hero{background:#FFFFFF!important}
+body[data-sec="lav"] .tile.wide:not(.dark),body[data-sec="lav"] .hero{background:#FFFFFF!important}
 body[data-sec] .type{background:#F7F5F1}body[data-sec] .avatar{background:#FFFFFF}body[data-sec] .demo{background:rgba(255,255,255,.7)}
-}
+
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body[data-sec]{--surface:#1B1B19;--sunk:#232321}
+:root:not([data-theme="light"]) body[data-sec="peach"]{--secbg:#3A2219}:root:not([data-theme="light"]) body[data-sec="butter"]{--secbg:#332B0E}:root:not([data-theme="light"]) body[data-sec="lav"]{--secbg:#241E3D}
+:root:not([data-theme="light"]) body[data-sec="mint"]{--secbg:#132E22}:root:not([data-theme="light"]) body[data-sec="sky"]{--secbg:#15243A}:root:not([data-theme="light"]) body[data-sec="cream"]{--secbg:#2E2810}
+:root:not([data-theme="light"]) body[data-sec] .demo,:root:not([data-theme="light"]) body[data-sec] .type,:root:not([data-theme="light"]) body[data-sec] .avatar,:root:not([data-theme="light"]) body[data-sec="lav"] .tile.wide:not(.dark),:root:not([data-theme="light"]) body[data-sec="lav"] .hero{background:#232321!important}}
+:root[data-theme="dark"] body[data-sec]{--surface:#1B1B19;--sunk:#232321}
+:root[data-theme="dark"] body[data-sec="peach"]{--secbg:#3A2219}:root[data-theme="dark"] body[data-sec="butter"]{--secbg:#332B0E}:root[data-theme="dark"] body[data-sec="lav"]{--secbg:#241E3D}
+:root[data-theme="dark"] body[data-sec="mint"]{--secbg:#132E22}:root[data-theme="dark"] body[data-sec="sky"]{--secbg:#15243A}:root[data-theme="dark"] body[data-sec="cream"]{--secbg:#2E2810}
+:root[data-theme="dark"] body[data-sec] .demo,:root[data-theme="dark"] body[data-sec] .type,:root[data-theme="dark"] body[data-sec] .avatar,:root[data-theme="dark"] body[data-sec="lav"] .tile.wide:not(.dark),:root[data-theme="dark"] body[data-sec="lav"] .hero{background:#232321!important}
 
 .fi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit;z-index:0}
 .tav,.avatar,.th,.ph,.of .img,.wt{position:relative;overflow:hidden}
@@ -427,7 +435,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
       <button class="tile t-mint" data-v="facturas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg></span><span class="big" id="b-bills">0/0</span><span>facturas revisadas</span></button>
       <button class="tile t-butter2" data-v="ofertas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg></span><span class="big" id="b-offers">0</span><span>ofertas para tu perfil</span></button>
       <button class="tile t-sky2" data-v="docs"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><span class="big" id="b-docd">28 d</span><span id="b-docn">para que venza tu seguro</span></button>
-      <button class="tile wide dark" style="background:var(--ink);color:var(--bg)" data-v="perfil"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:var(--bg)" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
+      <button class="tile wide dark" style="background:var(--ink);color:#FAFAF8" data-v="perfil"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:#FAFAF8" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
     </div>
     <div class="wx"><div><span class="small muted">Hoy</span><b>14° · lluvia a las 18 h</b><span class="small muted">Datos de AEMET</span></div><div><span class="small muted">Farmacia de guardia</span><b>A 600 m</b><span class="small muted">Abierta hasta las 22 h</span></div></div>
     <div id="home-dash" class="view"></div>
@@ -933,7 +941,7 @@ const TT={inicio:["Viwai · ahorro sin esfuerzo","Lo que ahorras, lo vives"],aho
  hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],talla:["Ofertas en su talla","Lo que le falta"],vender:["Segunda vida","Vender o pasar"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
 const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",vender:"talla",familia:"perfil",eventos:"hogar",dinero:"perfil"};
 const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú",armario:"Armario",talla:"Lo que le falta"};
-const SEC={facturas:"peach",luz:"peach",ayudas:"butter",gasolina:"sky",reembolso:"lav",ahorro:"lav",dinero:"lav",ofertas:"cream",perfil:"lav",armario:"mint",talla:"mint",vender:"mint",familia:"mint",cal:"sky",tareas:"sky",eventos:"sky",hogar:"sky",menu:"cream",docs:"butter",pedidos:"butter",wallet:"butter",mant:"butter"};
+const SEC={inicio:"lav",facturas:"peach",luz:"peach",ayudas:"butter",gasolina:"sky",reembolso:"lav",ahorro:"lav",dinero:"lav",ofertas:"cream",perfil:"lav",armario:"mint",talla:"mint",vender:"mint",familia:"mint",cal:"sky",tareas:"sky",eventos:"sky",hogar:"sky",menu:"cream",docs:"butter",pedidos:"butter",wallet:"butter",mant:"butter"};
 function go(v){const top=PARENT[v]||v;if(SEC[v])document.body.dataset.sec=SEC[v];else delete document.body.dataset.sec;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
  $("#back").hidden=!PARENT[v];if(PARENT[v]){$("#back").dataset.v=PARENT[v];$("#back-l").textContent=LBL[PARENT[v]]}
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
@@ -1558,6 +1566,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||
   if(d.vecopy){const t=$("#vender-box .ad").innerText;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Texto copiado")).catch(()=>toast("Selecciona el texto del anuncio para copiarlo"));return}
 });
 
+if(!document.body.dataset.sec)document.body.dataset.sec="lav";
 renderAll();
 </script>
 <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
