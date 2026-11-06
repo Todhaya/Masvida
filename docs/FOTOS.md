@@ -2,7 +2,7 @@
 
 Lista exacta de las fotos que necesitan la app, la web y los anuncios. **Cualquier sesión puede ejecutarla:** buscar cada foto, descargarla, optimizarla y guardarla con el nombre exacto. La app ya está preparada: si el archivo existe, lo muestra; si no, enseña la letra o el icono de color como ahora.
 
-**Total: 38 fotos**, solo las que se ven en las pantallas que enseñamos (prototipo, web y anuncios). El resto de recetas, prendas, ofertas y escapadas se queda con su letra o icono de color hasta que haya foto. En la app real, las recetas y las prendas las pone cada familia y los productos los ponen las tiendas. Prioridad: 1 (perfiles) → 2 (recetas) → 6 (ambiente) → 5 → 3 → 4.
+**Total: 60 fotos**, solo las que se ven en las pantallas que enseñamos (prototipo, web y anuncios). El resto de recetas, prendas, ofertas y escapadas se queda con su letra o icono de color hasta que haya foto. En la app real, las recetas y las prendas las pone cada familia y los productos los ponen las tiendas. Prioridad: 1 (perfiles) → 2 (recetas) → 6 (ambiente) → 5 → 3 → 4.
 
 ## Reglas
 
@@ -53,6 +53,17 @@ La prenda sola, doblada o colgada, sobre fondo liso claro. Tallas de niño cuand
 | `prenda-vaqueros-rectos.jpg` | Vaqueros rectos |
 | `prenda-vestido-midi.jpg` | Vestido midi |
 | `prenda-zapatillas-blancas.jpg` | Zapatillas blancas |
+| `prenda-sudadera-rosa.jpg` | Sudadera rosa (Noa, talla de niña de 8 años) |
+| `prenda-camiseta-de-rayas.jpg` | Camiseta de rayas (Noa, talla de niña de 8 años) |
+| `prenda-leggings.jpg` | Leggings (Noa, talla de niña de 8 años) |
+| `prenda-falda-vaquera.jpg` | Falda vaquera (Noa, talla de niña de 8 años) |
+| `prenda-plumifero.jpg` | Plumífero (Noa, talla de niña de 8 años) |
+| `prenda-botas-de-agua.jpg` | Botas de agua (Noa, talla de niña de 8 años) |
+| `prenda-sudadera-gris.jpg` | Sudadera gris (Leo, talla de niño de 12 años) |
+| `prenda-camiseta-verde.jpg` | Camiseta verde (Leo, talla de niño de 12 años) |
+| `prenda-polo-blanco.jpg` | Polo blanco (Leo, talla de niño de 12 años) |
+| `prenda-vaqueros.jpg` | Vaqueros (Leo, talla de niño de 12 años) |
+| `prenda-bermudas.jpg` | Bermudas (Leo, talla de niño de 12 años) |
 
 ## 4. Productos de las ofertas (app) · `app/img/fotos/`
 
@@ -92,3 +103,21 @@ Horizontales 1200×800. Acompañan a las pantallas de la app en las bandas de co
 | `ambiente-calendario-nevera.jpg` | Calendario o notas familiares en la nevera |
 | `ambiente-escapada-familia.jpg` | Familia paseando en la playa o en la montaña |
 | `ambiente-sofa-tranquila.jpg` | Mujer relajada en el sofá con una taza, momento para ella |
+
+## 7. Ofertas en su talla (app) · `app/img/fotos/`
+
+Ropa y calzado infantil, la prenda sola sobre fondo liso claro. Salen en «Lo que le falta» y en el anuncio del armario.
+
+| Archivo | Producto |
+| --- | --- |
+| `oferta-pack-de-3-camisetas-de-algodon.jpg` | Pack de 3 camisetas de algodón (infantil) |
+| `oferta-camiseta-estampada.jpg` | Camiseta estampada (infantil) |
+| `oferta-camiseta-basica.jpg` | Camiseta básica (infantil) |
+| `oferta-pantalon-de-chandal-afelpado.jpg` | Pantalón de chándal afelpado (infantil) |
+| `oferta-pack-de-2-leggings.jpg` | Pack de 2 leggings (infantil) |
+| `oferta-jogger-de-algodon.jpg` | Jogger de algodón (infantil) |
+| `oferta-deportivas-con-velcro.jpg` | Deportivas con velcro (infantil) |
+| `oferta-zapatillas-de-lona.jpg` | Zapatillas de lona (infantil) |
+| `oferta-deportivas-ligeras.jpg` | Deportivas ligeras (infantil) |
+| `oferta-plumifero-ligero.jpg` | Plumífero ligero (infantil) |
+| `oferta-vestido-de-punto.jpg` | Vestido de punto (infantil) |
