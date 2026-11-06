@@ -149,6 +149,8 @@ create policy "ver mis invitaciones" on invitaciones for select using (hogar_inv
 
 -- Lista de espera: cualquiera puede apuntarse, nadie puede leerla desde la web
 create policy "apuntarse" on lista_espera for insert to anon, authenticated with check (true);
+grant usage on schema public to anon, authenticated;
+grant insert on lista_espera to anon, authenticated;
 
 -- clics y comisiones: sin políticas = solo el servidor (service role) accede
 
