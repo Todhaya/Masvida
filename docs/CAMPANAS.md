@@ -28,3 +28,6 @@ Mientras una campaña está activa, la app cambia sola:
 - **Avisos:** el push y el correo de la campaña abren directamente esa colección.
 
 Cómo se monta: una tabla `campanas` en la base de datos con nombre, fechas de inicio y fin, texto e imagen de portada, y los filtros que forman la colección (categorías, palabras clave, tiendas, edad o talla). Los productos salen de los catálogos de afiliación que ya se importan a diario, así que preparar una campaña es rellenar una fila, sin tocar código. Alba podrá crearlas desde su panel.
+
+## Mientras no está la app: la web como escaparate
+En cuanto haya tiendas aprobadas, la web tiene una sección «Ofertas» con la campaña activa (Black Friday, Navidad, Reyes…) y los chollos comprobados, con enlaces de afiliación. Cada página termina con la llamada a la lista de espera: «Esto es solo una muestra: en la app, las ofertas son para tu casa y una parte vuelve a ti». En la web no hay reembolso (no hay cuentas), y se dice claramente. Las mismas fichas de campaña sirven luego para la app, así que el trabajo no se repite.
