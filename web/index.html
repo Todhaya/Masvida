@@ -62,6 +62,10 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 .lv span{font-size:14px;opacity:.7}.lv .n{font-weight:800;font-size:17px;opacity:1}
 .note{font-size:14px;opacity:.65;margin-top:18px;max-width:46em}
 .oro{background:linear-gradient(transparent 42%,var(--gold) 42%,var(--gold) 94%,transparent 94%);padding:0 .12em;border-radius:.1em}
+.foto{display:block;width:100%;height:auto;max-width:460px;aspect-ratio:3/2;object-fit:cover;border-radius:28px;margin-top:28px;box-shadow:0 30px 60px -35px rgba(30,20,60,.45)}
+.nombre{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+.nombre .foto{margin-top:0;aspect-ratio:4/5}
+@media (max-width:860px){.nombre{grid-template-columns:1fr}.nombre .foto{aspect-ratio:3/2}}
 .final{padding-block:110px}
 .final .big span{display:block}.final .big .c{color:var(--peach)}
 .final .logo{color:#FAFAF8;--wave:#B9A8FF;margin-top:48px}
@@ -120,23 +124,23 @@ footer a{color:var(--brand-strong)}
   </div>
 </div></section>
 <section class="scene peach flip" id="facturas"><div class="in">
-  <div class="txt"><span class="eye">Facturas</span><h2 class="big">¿Pagas de más en la luz?</h2><p class="sub">Haz una foto de la factura. Te decimos si te conviene otra tarifa, con tu consumo real.</p></div>
+  <div class="txt"><span class="eye">Facturas</span><h2 class="big">¿Pagas de más en la luz?</h2><p class="sub">Haz una foto de la factura. Te decimos si te conviene otra tarifa, con tu consumo real.</p><img class="foto" src="img/fotos/ambiente-factura-movil.jpg" alt="Mujer revisando una factura con el móvil" loading="lazy" width="1200" height="800"></div>
   <div class="phone"><img src="img/facturas.jpg" alt="Pantalla para elegir qué factura revisar" loading="lazy" width="390" height="844"></div>
 </div></section>
 <section class="scene butter"><div class="in">
-  <div class="txt"><span class="eye">Ayudas</span><h2 class="big">¿Sabes qué ayudas te tocan?</h2><p class="sub">Bono social, ayudas por hijos, deducciones. Te enseñamos las de tu perfil y cómo pedirlas.</p></div>
+  <div class="txt"><span class="eye">Ayudas</span><h2 class="big">¿Sabes qué ayudas te tocan?</h2><p class="sub">Bono social, ayudas por hijos, deducciones. Te enseñamos las de tu perfil y cómo pedirlas.</p><img class="foto" src="img/fotos/ambiente-familia-cocina.jpg" alt="Madre cocinando con sus hijos" loading="lazy" width="1200" height="800"></div>
   <div class="phone"><img src="img/ayudas.jpg" alt="Pantalla de ayudas que te pueden corresponder" loading="lazy" width="390" height="844"></div>
 </div></section>
 <section class="scene mint flip"><div class="in">
-  <div class="txt"><span class="eye">Familias con peques</span><h2 class="big">¿La ropa de los niños se les queda pequeña enseguida?</h2><p class="sub">Su armario, con tallas. Te avisamos de lo que le falta y te ayudamos a vender lo que ya no le vale.</p></div>
+  <div class="txt"><span class="eye">Familias con peques</span><h2 class="big">¿La ropa de los niños se les queda pequeña enseguida?</h2><p class="sub">Su armario, con tallas. Te avisamos de lo que le falta y te ayudamos a vender lo que ya no le vale.</p><img class="foto" src="img/fotos/ambiente-ropa-ninos.jpg" alt="Niña jugando entre la ropa del armario" loading="lazy" width="1200" height="800"></div>
   <div class="duo"><div class="phone"><img src="img/armario.jpg" alt="Armario por persona" loading="lazy" width="390" height="844"></div><div class="phone"><img src="img/vender.jpg" alt="Vender o pasar la ropa que se ha quedado pequeña" loading="lazy" width="390" height="844"></div></div>
 </div></section>
 <section class="scene sky"><div class="in">
-  <div class="txt"><span class="eye">La casa, en orden</span><h2 class="big">¿Quién recoge hoy a Noa?</h2><p class="sub">Calendario y tareas compartidas con quien vive contigo. Todos ven lo mismo, al momento.</p></div>
+  <div class="txt"><span class="eye">La casa, en orden</span><h2 class="big">¿Quién recoge hoy a Noa?</h2><p class="sub">Calendario y tareas compartidas con quien vive contigo. Todos ven lo mismo, al momento.</p><img class="foto" src="img/fotos/ambiente-calendario-nevera.jpg" alt="Notas en la puerta de la nevera" loading="lazy" width="1200" height="800"></div>
   <div class="duo"><div class="phone"><img src="img/cal.jpg" alt="Calendario familiar" loading="lazy" width="390" height="844"></div><div class="phone"><img src="img/tareas.jpg" alt="Tareas de casa repartidas" loading="lazy" width="390" height="844"></div></div>
 </div></section>
 <section class="scene cream flip"><div class="in">
-  <div class="txt"><span class="eye">Organizar también es ahorrar</span><h2 class="big">Cada cosa que planificas es dinero que no se escapa.</h2><p class="sub">El menú de la semana para comprar solo lo que vas a usar. La gasolinera más barata de camino. El armario al día para no repetir compras.</p></div>
+  <div class="txt"><span class="eye">Organizar también es ahorrar</span><h2 class="big">Cada cosa que planificas es dinero que no se escapa.</h2><p class="sub">El menú de la semana para comprar solo lo que vas a usar. La gasolinera más barata de camino. El armario al día para no repetir compras.</p><img class="foto" src="img/fotos/ambiente-compra-super.jpg" alt="Cesta con la compra de fruta y verdura" loading="lazy" width="1200" height="800"></div>
   <div class="duo"><div class="phone"><img src="img/menu.jpg" alt="Menú de la semana" loading="lazy" width="390" height="844"></div><div class="phone"><img src="img/gasolina.jpg" alt="Gasolineras más baratas cerca" loading="lazy" width="390" height="844"></div></div>
 </div></section>
 <section class="band"><div class="in">
@@ -153,7 +157,7 @@ footer a{color:var(--brand-strong)}
   </div>
 </div></section>
 <section class="scene peach"><div class="in">
-  <div class="txt"><span class="eye">Para lo que importa</span><h2 class="big">Ahorrar no es el fin. Es para vivir.</h2><p class="sub">Te enseñamos lo que llevas ahorrado y en qué podrías disfrutarlo: una escapada, una cena fuera, un plan con los peques.</p></div>
+  <div class="txt"><span class="eye">Para lo que importa</span><h2 class="big">Ahorrar no es el fin. Es para vivir.</h2><p class="sub">Te enseñamos lo que llevas ahorrado y en qué podrías disfrutarlo: una escapada, una cena fuera, un plan con los peques.</p><img class="foto" src="img/fotos/ambiente-escapada-familia.jpg" alt="Familia paseando junto al mar" loading="lazy" width="1200" height="800"></div>
   <div class="phone"><img src="img/escapadas.jpg" alt="Buscador de escapadas y planes" loading="lazy" width="390" height="844"></div>
 </div></section>
 <section class="scene dark"><div class="in" style="display:block">
@@ -178,9 +182,12 @@ footer a{color:var(--brand-strong)}
     <div class="ok" id="dn" hidden></div>
   </form>
 </div></section>
-<section class="band" id="nombre"><div class="in">
+<section class="band" id="nombre"><div class="in nombre">
+  <div>
   <span class="eye">Por qué Viwai</span><h2>La ola que te devuelve lo que ahorras.</h2>
   <p class="sub" style="font-size:clamp(19px,2vw,23px);font-weight:700;line-height:1.4;max-width:30em;margin-top:24px;letter-spacing:-.01em">En hawaiano, <span class="oro">wai</span> es agua y <span class="oro">waiwai</span>, abundancia. Nosotras hemos unido <span class="oro">vida</span> y <span class="oro">abundancia</span> en <b style="color:var(--brand-strong)">Viwai</b>: una ola que te devuelve lo que ahorras, para que lo vivas. Y sí, también suena a <i>vida guay</i> <span class="oro">;)</span></p>
+</div>
+  <img class="foto" src="img/fotos/ambiente-sofa-tranquila.jpg" alt="Mujer tranquila en el sofá de casa" loading="lazy" width="1200" height="800">
 </div></section>
 <section class="scene dark final"><div class="in" style="display:block">
   <h2 class="big"><span>Así de fácil.</span><span>Así de ahorro.</span><span class="c">Así de más vida.</span></h2>
