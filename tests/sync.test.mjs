@@ -109,3 +109,26 @@ test("Admitad: sin catálogo de España, los más vendidos", async () => {
   const { feedsParaEspana } = await import("../scripts/sync/admitad.mjs");
   assert.deepEqual(feedsParaEspana([{ name: "10-25$", xml_link: "https://a" }, { name: "hot products", xml_link: "https://h" }]), ["https://h/?currency=EUR"]);
 });
+
+test("primer filtro: fuera recambios, coche y céntimos", async () => {
+  const { pasaFiltro } = await import("../scripts/sync/filtro.mjs");
+  const img = "https://i/x.jpg";
+  assert.equal(pasaFiltro({ titulo: "Interior Rear View Mirror for Audi A4", precio: 12, imagen: img }), false);
+  assert.equal(pasaFiltro({ titulo: "Sewing Machine Motor Drive V Belt", precio: 6, imagen: img }), false);
+  assert.equal(pasaFiltro({ titulo: "Electric Test Pen", precio: 0.3, imagen: img }), false);
+  assert.equal(pasaFiltro({ titulo: "10PCS Hooks", precio: 5, imagen: img }), false);
+  assert.equal(pasaFiltro({ titulo: "Portable Blender USB Rechargeable", precio: 14.9, imagen: img }), true);
+  assert.equal(pasaFiltro({ titulo: "Portable Blender", precio: 14.9, imagen: null }), false);
+});
+
+test("propuestas del escaparate: solo en productos sin revisar", async () => {
+  const { aplicaPropuestas } = await import("../scripts/sync/sincronizar.mjs");
+  const { writeFile, mkdtemp } = await import("node:fs/promises");
+  const dir = await mkdtemp("/tmp/esc-");
+  const ruta = dir + "/e.json";
+  await writeFile(ruta, JSON.stringify({ productos: [{ id: "ali:1", titulo_es: "Batidora portátil", categoria: "cocina", destacado: true }, { id: "ali:2" }] }));
+  const llamadas = [];
+  const db = { actualiza: async (t, f, d) => llamadas.push([t, f, d]) };
+  assert.equal(await aplicaPropuestas(db, ruta), 1);
+  assert.deepEqual(llamadas, [["productos", "id=eq.ali%3A1&curado=is.null", { titulo_es: "Batidora portátil", curado: "propuesto", categoria_fija: "cocina", destacado: true }]]);
+});

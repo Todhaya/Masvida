@@ -307,7 +307,7 @@ V.afiliados = async (m) => {
       { k: "estado", l: "Estado", t: "select", o: [["por_pedir", "por pedir"], ["pedida", "pedida"], ["aprobada", "aprobada"], ["rechazada", "rechazada"], ["pausada", "pausada"]], req: true },
       { k: "cashback", l: "Permite cashback (comprobado)", t: "bool" }, { k: "comision_texto", l: "Comisión (tal como la da la tienda)", w: 1 },
       { k: "programa_url", l: "Ficha del programa en la red", t: "url", w: 1 }, { k: "web_url", l: "Web de la tienda", t: "url", w: 1 },
-      { k: "catalogo", l: "Mostrar su catálogo en la web", t: "bool" }, { k: "max_productos", l: "Máximo de productos", t: "number" },
+      { k: "catalogo", l: "Mostrar su catálogo en la web", t: "bool" }, { k: "escaparate", l: "Solo lo que yo apruebe (escaparate)", t: "bool" }, { k: "max_productos", l: "Máximo de productos", t: "number" },
       { k: "programa_id", l: "Id del programa en la red" }, { k: "notas", l: "Notas", t: "textarea" }],
     cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b>${f.alta_auto ? ` <span class="tag info">auto</span>` : ""}<br><span class="note">${esc(f.categoria)}${f.sincronizada ? ` · catálogo ${fecha(f.sincronizada)}` : ""}</span>` }, { l: "Red", v: (f) => esc(f.red_id) },
       { l: "Estado", v: (f) => tagEstado(f.estado === "por_pedir" ? "por pedir" : f.estado) }, { l: "Cashback", v: (f) => (f.cashback ? "sí" : f.cashback === false ? "no" : "sin comprobar") },
@@ -458,7 +458,8 @@ V.reembolsos = async (m) => {
 
 V.catalogo = async (m) => {
   const [campanas, tiendas] = await Promise.all([cargar("campanas", { orden: "inicio" }), cargar("tiendas", { orden: "nombre" })]);
-  m.innerHTML = `<h2>Catálogo y ayudas</h2><div id="of"></div><div id="ay"></div>`;
+  m.innerHTML = `<h2>Catálogo y ayudas</h2><div id="esc"></div><div id="of"></div><div id="ay"></div>`;
+  escaparate($("#esc", m), tiendas);
   crud($("#of", m), {
     tabla: "ofertas", titulo: "Fichas de oferta", orden: "comprobada", desc: true, nuevo: { activa: true, comprobada: hoy() },
     campos: [{ k: "titulo", l: "Producto", req: true, w: 1 }, { k: "tienda_id", l: "Tienda", t: "select", o: () => tiendas.map((t) => [t.id, t.nombre]) },
@@ -483,6 +484,69 @@ V.catalogo = async (m) => {
       { l: "", v: (f) => (f.enlace ? `<a href="${esc(f.enlace)}" target="_blank" rel="noopener">oficial ↗</a>` : "") }],
   });
 };
+
+// ---------- Escaparate: qué productos salen en el buscador de la web ----------
+const CATS = [["hogar", "Hogar y deco"], ["cocina", "Cocina"], ["electrodomesticos", "Electrodomésticos"], ["tecnologia", "Tecnología"],
+  ["belleza", "Belleza y cuidado"], ["moda", "Moda"], ["peques", "Peques"], ["mascotas", "Mascotas"], ["deporte", "Deporte"],
+  ["alimentacion", "Súper y alimentación"], ["viajes", "Viajes y planes"], ["otros", "Otros"]];
+const POR_PAGINA = 48;
+function escaparate(el, tiendas) {
+  const conCatalogo = tiendas.filter((t) => t.catalogo || t.escaparate);
+  const st = { tienda: (conCatalogo.find((t) => t.escaparate) || conCatalogo[0] || {}).id || "", estado: "propuesto", q: "", pag: 0 };
+  el.innerHTML = `<h3>Escaparate</h3>
+    <p class="note">Decides qué productos salen en <a href="https://www.viwai.es/ofertas/" target="_blank" rel="noopener">viwai.es/ofertas</a>.
+    En las tiendas marcadas como «solo escaparate» solo sale lo aprobado; en las demás sale todo lo que pasa el filtro automático, menos lo descartado.
+    «Propuestos» son los que he elegido yo, ya con título en español.</p>
+    <div class="filtros" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+      <select id="e-t" aria-label="Tienda">${conCatalogo.map((t) => `<option value="${esc(t.id)}">${esc(t.nombre)}${t.escaparate ? " · solo escaparate" : ""}</option>`).join("")}</select>
+      <select id="e-e" aria-label="Estado"><option value="propuesto">Propuestos por Claude</option><option value="sin">Sin revisar (pasan el filtro)</option>
+        <option value="aprobado">Aprobados (se ven)</option><option value="descartado">Descartados</option><option value="todos">Todos</option></select>
+      <input id="e-q" type="search" placeholder="Buscar en el título" aria-label="Buscar">
+    </div><div id="e-n" class="note"></div><div id="e-l" class="grid esc"></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><button class="btn sec" id="e-ant">← Anteriores</button><button class="btn sec" id="e-sig">Siguientes →</button></div>`;
+  $("#e-t", el).value = st.tienda; $("#e-e", el).value = st.estado;
+  const pinta = async () => {
+    let q = sb.from("productos").select("id,titulo,titulo_es,categoria,categoria_fija,precio,imagen,url,curado,destacado,filtro_ok", { count: "exact" }).eq("tienda_id", st.tienda);
+    if (st.estado === "sin") q = q.is("curado", null).eq("filtro_ok", true);
+    else if (st.estado !== "todos") q = q.eq("curado", st.estado);
+    if (st.q) q = q.or(`titulo.ilike.%${st.q.replace(/[,()%]/g, " ")}%,titulo_es.ilike.%${st.q.replace(/[,()%]/g, " ")}%`);
+    const { data, count, error } = await q.order("destacado", { ascending: false }).order("precio", { ascending: false }).range(st.pag * POR_PAGINA, st.pag * POR_PAGINA + POR_PAGINA - 1);
+    if (error) { $("#e-l", el).innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
+    $("#e-n", el).textContent = `${num(count)} productos · página ${st.pag + 1} de ${Math.max(1, Math.ceil(count / POR_PAGINA))}`;
+    $("#e-ant", el).disabled = st.pag === 0; $("#e-sig", el).disabled = (st.pag + 1) * POR_PAGINA >= count;
+    $("#e-l", el).innerHTML = (data || []).map((p) => `<div class="card prod" data-id="${esc(p.id)}">
+      ${p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy">` : ""}
+      <div class="note" title="${esc(p.titulo)}">${esc(p.titulo.slice(0, 90))}</div>
+      <input class="t-es" value="${esc(p.titulo_es || "")}" placeholder="Título en español" aria-label="Título en español">
+      <select class="cat" aria-label="Categoría">${CATS.map(([k, n]) => `<option value="${k}" ${(p.categoria_fija || p.categoria) === k ? "selected" : ""}>${n}</option>`).join("")}</select>
+      <div class="fila"><b>${eur(p.precio)}</b> <a href="${esc(p.url)}" target="_blank" rel="noopener">ver ↗</a> ${p.curado ? `<span class="tag ${p.curado === "aprobado" ? "ok" : p.curado === "descartado" ? "bad" : "lav"}">${p.curado}</span>` : ""}</div>
+      <div class="fila"><button class="btn" data-a="aprobado">Aprobar</button><button class="btn sec" data-a="descartado">Descartar</button>
+        <button class="btn sec" data-a="destacado" aria-pressed="${p.destacado}" title="Sale primero">${p.destacado ? "★" : "☆"}</button></div></div>`).join("")
+      || `<p class="vacio">No hay productos en este apartado.</p>`;
+  };
+  el.onclick = async (e) => {
+    const b = e.target.closest("button[data-a]");
+    if (b) {
+      const c = b.closest(".prod"), id = c.dataset.id, a = b.dataset.a;
+      const datos = { titulo_es: c.querySelector(".t-es").value.trim() || null, categoria_fija: c.querySelector(".cat").value };
+      if (a === "destacado") datos.destacado = b.getAttribute("aria-pressed") !== "true";
+      else datos.curado = a;
+      if (a === "aprobado" && !datos.titulo_es && !confirm("No tiene título en español. ¿Aprobarlo con el título de la tienda?")) return;
+      const { error } = await sb.from("productos").update(datos).eq("id", id);
+      if (error) return alert(error.message);
+      if (a === "destacado") { b.setAttribute("aria-pressed", datos.destacado); b.textContent = datos.destacado ? "★" : "☆"; }
+      else if (st.estado !== "todos" && st.estado !== a) c.remove();
+      else pinta();
+      return;
+    }
+    if (e.target.id === "e-ant") { st.pag--; pinta(); }
+    if (e.target.id === "e-sig") { st.pag++; pinta(); }
+  };
+  $("#e-t", el).onchange = (e) => { st.tienda = e.target.value; st.pag = 0; pinta(); };
+  $("#e-e", el).onchange = (e) => { st.estado = e.target.value; st.pag = 0; pinta(); };
+  let tq; $("#e-q", el).oninput = (e) => { clearTimeout(tq); tq = setTimeout(() => { st.q = e.target.value.trim(); st.pag = 0; pinta(); }, 300); };
+  pinta();
+}
 
 V.calendario = async (m) => {
   m.innerHTML = `<h2>Calendario</h2><div class="aviso">Fechas de impuestos, temas legales, renovaciones y campañas. Las de IVA y pagos fraccionados solo te tocan cuando te des de alta en Hacienda; confírmalas con la gestoría.</div><div id="cal"></div>`;

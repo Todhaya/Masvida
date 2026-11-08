@@ -8,6 +8,8 @@ import { supabase, slug, trozos } from "./base.mjs";
 import { categoriza, categoriaTiendaPorDefecto } from "./categorias.mjs";
 import * as admitad from "./admitad.mjs";
 import * as cj from "./cj.mjs";
+import { pasaFiltro } from "./filtro.mjs";
+import { readFile } from "node:fs/promises";
 
 const SECO = !!process.env.DRY_RUN;
 const hoy = new Date().toISOString().slice(0, 10);
@@ -32,6 +34,7 @@ export function filaProducto(tienda, o, visto) {
     imagen: o.imagen || null,
     url: o.url,
     disponible: o.disponible,
+    filtro_ok: pasaFiltro(o),
     visto,
   };
 }
@@ -115,7 +118,9 @@ async function sincronizaCatalogo(db, t, mod, prog) {
   await vuelca();
   if (!SECO) {
     // Lo que lleva dos semanas sin aparecer en el catálogo se borra (libera espacio)
-    await db.borra("productos", `tienda_id=eq.${encodeURIComponent(t.id)}&visto=lt.${new Date(Date.now() - 14 * 864e5).toISOString()}`);
+    // (lo aprobado en el escaparate aguanta 60 días)
+    await db.borra("productos", `tienda_id=eq.${encodeURIComponent(t.id)}&visto=lt.${new Date(Date.now() - 14 * 864e5).toISOString()}&or=(curado.is.null,curado.neq.aprobado)`);
+    await db.borra("productos", `tienda_id=eq.${encodeURIComponent(t.id)}&visto=lt.${new Date(Date.now() - 60 * 864e5).toISOString()}`);
     await db.actualiza("tiendas", `id=eq.${encodeURIComponent(t.id)}`, { sincronizada: visto });
   }
   console.log(`  ${t.nombre}: ${n} productos`);
@@ -136,7 +141,38 @@ export async function main() {
     if (r.mensaje) console.log("   " + r.mensaje.replace(/\n/g, "\n   "));
     if (!r.ok) fallos++;
   }
+  if (!SECO) await aplicaPropuestas(db).catch((e) => console.log("   propuestas: " + e.message));
+  if (process.env.EXPORTA) await exportaCandidatos(db, Number(process.env.EXPORTA) || 400);
   if (fallos) process.exitCode = 1;
+}
+
+// La selección que propone Claude (data/escaparate.json) entra como «propuesto», con título en español,
+// solo en productos que Alba aún no ha revisado. Ella aprueba o descarta en el panel.
+export async function aplicaPropuestas(db, ruta = new URL("../../data/escaparate.json", import.meta.url)) {
+  let lista;
+  try { lista = JSON.parse(await readFile(ruta, "utf8")); } catch { return 0; }
+  let n = 0;
+  for (const p of lista.productos || []) {
+    if (!p.id || !p.titulo_es) continue;
+    const datos = { titulo_es: p.titulo_es, curado: "propuesto" };
+    if (p.categoria) datos.categoria_fija = p.categoria;
+    if (p.destacado) datos.destacado = true;
+    await db.actualiza("productos", `id=eq.${encodeURIComponent(p.id)}&curado=is.null`, datos);
+    n++;
+  }
+  console.log(`== escaparate: ${n} propuestas aplicadas (solo en productos sin revisar)`);
+  return n;
+}
+
+// Para preparar la selección: imprime en el registro los productos de las tiendas «solo escaparate»
+// que pasan el filtro automático y están sin revisar.
+async function exportaCandidatos(db, max) {
+  const tiendas = await db.todo("tiendas?select=id&escaparate=is.true");
+  for (const t of tiendas) {
+    const filas = await db.todo(`productos?select=id,titulo,precio,precio_tachado,categoria,categoria_tienda&tienda_id=eq.${encodeURIComponent(t.id)}&filtro_ok=is.true&curado=is.null&order=precio.desc`);
+    console.log(`== candidatos ${t.id}: ${filas.length}`);
+    for (const f of filas.slice(0, max)) console.log("CAND " + JSON.stringify(f));
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main().catch((e) => { console.error(e); process.exit(1); });

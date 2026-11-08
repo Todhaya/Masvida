@@ -12,6 +12,10 @@ on:
         description: "Solo probar (no escribe nada)"
         type: boolean
         default: false
+      exporta:
+        description: "Sacar en el registro los candidatos del escaparate (para que Claude proponga)"
+        type: boolean
+        default: false
 concurrency: catalogo
 jobs:
   sincronizar:
@@ -28,6 +32,7 @@ jobs:
         run: node scripts/sync/sincronizar.mjs
         env:
           DRY_RUN: ${{ inputs.prueba && '1' || '' }}
+          EXPORTA: ${{ inputs.exporta && '400' || '' }}
           SUPABASE_URL: https://adoznvxwqvcwyimqnxtj.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           ADMITAD_CLIENT_ID: ${{ secrets.ADMITAD_CLIENT_ID }}
