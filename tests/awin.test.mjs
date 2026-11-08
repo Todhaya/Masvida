@@ -33,3 +33,8 @@ test("CSV con comillas, comas y trozos partidos", async () => {
   const filas = []; for await (const f of filasCSV(trozos())) filas.push(f);
   assert.deepEqual(filas, [["a", "b", "c"], ["1", 'Hola, "mundo"', "3"], ["4", "5", "6"]]);
 });
+
+test("Awin: la lista nueva trae la dirección de descarga de cada catálogo", () => {
+  const csv = 'Advertiser ID,Advertiser Name,Membership Status,Feed ID,Language,URL\n21707,Samsung ES,active,111,es,https://ui.awin.com/x/111.csv.gz\n';
+  assert.deepEqual(feedsPorTienda(csv).get("21707"), ["https://ui.awin.com/x/111.csv.gz"]);
+});

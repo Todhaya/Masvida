@@ -42,5 +42,5 @@ jobs:
           CJ_CID: "8120936"
           CJ_PID: "101923458"
           AWIN_TOKEN: ${{ secrets.AWIN_TOKEN }}
-          AWIN_FEED_KEY: ${{ secrets.AWIN_FEED_KEY }}
+          AWIN_FEED_LIST: ${{ secrets.AWIN_FEED_LIST }}
           AWIN_PUBLISHER_ID: "3148698"

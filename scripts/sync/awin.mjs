@@ -1,6 +1,7 @@
 // Viwai · Awin: tiendas en las que estamos aceptadas y sus catálogos de productos para España.
 // Necesita AWIN_TOKEN (token de la API de Awin) y AWIN_PUBLISHER_ID (id de la cuenta, 3148698).
-// Para los productos, además AWIN_FEED_KEY (la clave de «Create-a-Feed»); sin ella solo se dan de alta las tiendas.
+// Para los productos, además AWIN_FEED_LIST: el enlace «Descargar lista» de Herramientas → Crea-un-feed
+// (lleva nuestra clave; por eso va en los secretos). Sin él solo se dan de alta las tiendas.
 import { createGunzip } from "node:zlib";
 import { Readable } from "node:stream";
 
@@ -18,9 +19,11 @@ export async function programas() {
   if (!r.ok) throw new Error(`Awin tiendas: ${r.status} ${(await r.text()).slice(0, 200)}`);
   const lista = (await r.json()).map(aPrograma);
   // Catálogos de producto (si hay clave de Create-a-Feed)
-  if (process.env.AWIN_FEED_KEY) {
-    const feeds = await listaFeeds();
-    for (const p of lista) p.feeds = feeds.get(p.programa_id) || [];
+  if (process.env.AWIN_FEED_LIST) {
+    try {
+      const feeds = await listaFeeds();
+      for (const p of lista) p.feeds = feeds.get(p.programa_id) || [];
+    } catch (e) { console.log("   Awin: sin catálogos (" + e.message + ")"); }
   }
   return lista;
 }
@@ -40,16 +43,18 @@ export function aPrograma(p) {
 
 // Lista de catálogos: CSV con una fila por catálogo. Nos quedamos con los de tiendas aceptadas, en español.
 async function listaFeeds() {
-  const r = await fetch(`${FEEDS}/datafeed/list/apikey/${process.env.AWIN_FEED_KEY}`);
+  const r = await fetch(process.env.AWIN_FEED_LIST);
   if (!r.ok) throw new Error(`Awin catálogos: ${r.status}`);
-  return feedsPorTienda(await r.text());
+  return feedsPorTienda(await textoPosiblementeGzip(r));
 }
 
 export function feedsPorTienda(csv) {
   const filas = leeCSV(csv);
   const cab = filas.shift()?.map((c) => c.trim().toLowerCase()) || [];
   const col = (n) => cab.indexOf(n);
-  const [iAdv, iFeed, iLang, iMem] = [col("advertiser id"), col("feed id"), col("language"), col("membership status")];
+  const busca = (...n) => cab.findIndex((c) => n.some((x) => c === x || c.replace(/[^a-z]/g, "") === x.replace(/[^a-z]/g, "")));
+  const [iAdv, iFeed, iLang, iMem, iUrl] = [busca("advertiser id", "advertiserid"), busca("feed id", "feedid"), busca("language"),
+    busca("membership status", "membershipstatus"), busca("url", "download url")];
   const m = new Map();
   for (const f of filas) {
     if (!f[iAdv] || !f[iFeed]) continue;
@@ -57,7 +62,7 @@ export function feedsPorTienda(csv) {
     if (iLang >= 0 && f[iLang] && !/^es/i.test(f[iLang])) continue;
     const id = String(f[iAdv]).trim();
     if (!m.has(id)) m.set(id, []);
-    m.get(id).push(String(f[iFeed]).trim());
+    m.get(id).push(iUrl >= 0 && f[iUrl] ? f[iUrl].trim() : String(f[iFeed]).trim());
   }
   return m;
 }
@@ -67,11 +72,11 @@ export const urlFeed = (fid, clave = process.env.AWIN_FEED_KEY) =>
 
 export async function* productos(prog, max) {
   let n = 0;
-  for (const fid of prog.feeds || []) {
+  for (const feed of prog.feeds || []) {
     if (n >= max) return;
-    const r = await fetch(urlFeed(fid), { signal: AbortSignal.timeout(6 * 60e3) });
+    const r = await fetch(/^https?:/.test(feed) ? feed : urlFeed(feed), { signal: AbortSignal.timeout(6 * 60e3) });
     if (!r.ok || !r.body) throw new Error(`Awin catálogo ${prog.nombre}: ${r.status}`);
-    const texto = Readable.fromWeb(r.body).pipe(createGunzip()).setEncoding("utf8");
+    const texto = await flujoTexto(r);
     let cab = null;
     for await (const fila of filasCSV(texto)) {
       if (!cab) { cab = fila.map((c) => c.trim()); continue; }
@@ -94,6 +99,19 @@ export function aProducto(p) {
     categoria_tienda: p.merchant_category || p.category_name || null,
     disponible: p.in_stock == null || p.in_stock === "" || /^(1|yes|true|si|sí)$/i.test(String(p.in_stock)),
   };
+}
+
+// Los catálogos pueden venir comprimidos (gzip) o no: se mira la firma del principio.
+async function flujoTexto(r) {
+  const it = r.body[Symbol.asyncIterator]();
+  const primero = await it.next();
+  const cabeza = primero.value || new Uint8Array();
+  async function* todo() { if (!primero.done) yield cabeza; for (;;) { const x = await it.next(); if (x.done) return; yield x.value; } }
+  const flujo = Readable.from(todo());
+  return (cabeza[0] === 0x1f && cabeza[1] === 0x8b ? flujo.pipe(createGunzip()) : flujo).setEncoding("utf8");
+}
+async function textoPosiblementeGzip(r) {
+  let t = ""; for await (const x of await flujoTexto(r)) t += x; return t;
 }
 
 // CSV con comillas (los títulos llevan comas). leeCSV para texto entero; filasCSV para un flujo.
