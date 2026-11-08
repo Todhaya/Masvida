@@ -70,7 +70,7 @@ test("fila de producto: id con tienda, categoría y precio tachado solo si es ma
 test("Admitad: cashback según los tipos de tráfico permitidos", () => {
   const p = aPrograma({ id: 6115, name: "Aliexpress WW", traffics: [{ name: "Cashback", enabled: true }, { name: "Incentive", enabled: false }], feeds_info: [{ xml_link: "https://f" }] });
   assert.equal(p.cashback, true);
-  assert.deepEqual(p.feeds, ["https://f"]);
+  assert.deepEqual(p.feeds, ["https://f/?currency=EUR"]);
   assert.equal(aPrograma({ id: 1, name: "X", traffics: [{ name: "Cashback", enabled: false }, { name: "Content", enabled: true }] }).cashback, false);
 });
 
