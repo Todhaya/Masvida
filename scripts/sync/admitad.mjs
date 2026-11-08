@@ -47,7 +47,7 @@ export async function* productos(prog, max) {
   let n = 0;
   for (const feed of prog.feeds) {
     if (n >= max) return;
-    const r = await fetch(feed);
+    const r = await fetch(feed, { signal: AbortSignal.timeout(10 * 60e3) }); // máx. 10 min por catálogo
     if (!r.ok || !r.body) {
       // El motivo viene en el cuerpo (sin la dirección del feed, que lleva nuestro identificador)
       const motivo = (await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 300);

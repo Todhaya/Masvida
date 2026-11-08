@@ -84,3 +84,10 @@ test("CJ: anunciantes aceptados y productos en euros", () => {
   assert.equal(p.precio_tachado, 400);
   assert.equal(aProducto({ id: "9", title: "x", price: { amount: "4", currency: "USD" }, linkCode: { clickUrl: "u" } }), null);
 });
+
+test("catálogo en otra moneda: para pronto y dice por qué", async () => {
+  const { ofertasDeFlujo } = await import("../scripts/sync/yml.mjs");
+  const oferta = (i) => `<offer id="${i}"><name>Cosa ${i}</name><url>https://x/${i}</url><price>5</price><currencyId>USD</currencyId></offer>`;
+  async function* flujo() { yield "<shop><offers>"; for (let i = 0; i < 50; i++) yield oferta(i); }
+  await assert.rejects(async () => { for await (const _ of ofertasDeFlujo(flujo(), 100, 10)); }, /USD×10/);
+});

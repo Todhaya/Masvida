@@ -56,8 +56,10 @@ export function leeOferta(bloque, cats = {}) {
 }
 
 // Recorre un flujo de texto (async iterable de strings) y entrega ofertas válidas hasta `max`.
-export async function* ofertasDeFlujo(trozos, max = Infinity) {
-  let buf = "", cats = {}, catsLeidas = false, n = 0;
+// Si tras `muestra` ofertas ninguna vale (p. ej. todas en dólares), para y explica por qué.
+export async function* ofertasDeFlujo(trozos, max = Infinity, muestra = 2000) {
+  let buf = "", cats = {}, catsLeidas = false, n = 0, leidas = 0;
+  const monedas = {};
   for await (const t of trozos) {
     buf += t;
     if (!catsLeidas) {
@@ -73,6 +75,11 @@ export async function* ofertasDeFlujo(trozos, max = Infinity) {
       buf = buf.slice(i + 8);
       if (!bloque) continue;
       const o = leeOferta(bloque, cats);
+      leidas++;
+      monedas[o.moneda] = (monedas[o.moneda] || 0) + 1;
+      if (!n && leidas >= muestra) {
+        throw new Error(`ninguna oferta válida en EUR entre las ${leidas} primeras (monedas: ${Object.entries(monedas).map(([m, c]) => m + "×" + c).join(", ")})`);
+      }
       if (o.ref && o.titulo && o.url && o.precio != null && o.moneda === "EUR") {
         yield o;
         if (++n >= max) return;
