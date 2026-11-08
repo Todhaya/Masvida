@@ -79,3 +79,20 @@ export async function* productos(prog, max) {
   }
   if (!n && fallos.length) throw new Error(`Admitad feed ${prog.nombre}: ${fallos[0]}`);
 }
+
+// Para elegir a qué tiendas pedir: todos los programas disponibles para el espacio web que venden en España
+// y en los que aún no estamos (lo imprime la sincronización con LISTA_REDES=1).
+export async function sinConectar(tk, web = process.env.ADMITAD_WEBSITE_ID) {
+  const out = [];
+  for (let offset = 0; offset < 5000; offset += 100) {
+    const r = await fetch(`${API}/advcampaigns/website/${web}/?limit=100&offset=${offset}`, { headers: { Authorization: `Bearer ${tk}` } });
+    if (!r.ok) throw new Error(`Admitad lista: ${r.status}`);
+    const j = await r.json();
+    out.push(...(j.results || []));
+    if (!j._meta || offset + 100 >= j._meta.count) break;
+  }
+  return out
+    .filter((p) => p.connection_status !== "active" && (p.regions || []).some((g) => ["ES", "00"].includes(g.region)))
+    .map((p) => ({ id: p.id, nombre: p.name, estado: p.connection_status, categorias: (p.categories || []).map((c) => c.name).slice(0, 3).join(", "),
+      cashback: (p.traffics || []).some((t) => t.enabled && /cashback/i.test(t.name || "")), web: p.site_url }));
+}

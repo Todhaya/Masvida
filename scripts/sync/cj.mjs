@@ -55,3 +55,20 @@ export function aProducto(p) {
     disponible: !p.availability || !/out/i.test(p.availability),
   };
 }
+
+// Para elegir: anunciantes de CJ en los que no estamos (lo imprime la sincronización con LISTA_REDES=1).
+export async function sinUnir(paginas = 10) {
+  const out = [];
+  for (let p = 1; p <= paginas; p++) {
+    const url = `https://advertiser-lookup.api.cj.com/v2/advertiser-lookup?requestor-cid=${process.env.CJ_CID}&advertiser-ids=notjoined&records-per-page=100&page-number=${p}`;
+    const r = await fetch(url, { headers: { Authorization: `Bearer ${process.env.CJ_TOKEN}` } });
+    if (!r.ok) throw new Error(`CJ lista: ${r.status}`);
+    const xml = await r.text();
+    const tag = (b, n) => (b.match(new RegExp(`<${n}>([\\s\\S]*?)</${n}>`)) || [])[1]?.trim() ?? "";
+    const bloques = [...xml.matchAll(/<advertiser>([\s\S]*?)<\/advertiser>/g)].map((m) => m[1]);
+    for (const b of bloques) out.push({ id: tag(b, "advertiser-id"), nombre: tag(b, "advertiser-name"), web: tag(b, "program-url"),
+      categoria: tag(b, "primary-category").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(), pais: tag(b, "primary-country") || tag(b, "country") });
+    if (bloques.length < 100) break;
+  }
+  return out;
+}

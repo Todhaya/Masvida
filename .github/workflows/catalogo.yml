@@ -20,6 +20,10 @@ on:
         description: "Sacar en el registro las tiendas de Awin España en las que aún no estamos"
         type: boolean
         default: false
+      lista_redes:
+        description: "Sacar en el registro las tiendas de Admitad y CJ en las que aún no estamos"
+        type: boolean
+        default: false
 concurrency: catalogo
 jobs:
   sincronizar:
@@ -49,3 +53,4 @@ jobs:
           AWIN_FEED_LIST: ${{ secrets.AWIN_FEED_LIST }}
           AWIN_PUBLISHER_ID: "3148698"
           AWIN_LISTA: ${{ inputs.awin_lista && '1' || '' }}
+          LISTA_REDES: ${{ inputs.lista_redes && '1' || '' }}
