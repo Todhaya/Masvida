@@ -8,6 +8,7 @@ import { supabase, slug, trozos } from "./base.mjs";
 import { categoriza, categoriaTiendaPorDefecto } from "./categorias.mjs";
 import * as admitad from "./admitad.mjs";
 import * as cj from "./cj.mjs";
+import * as awin from "./awin.mjs";
 import { pasaFiltro } from "./filtro.mjs";
 import { readFile } from "node:fs/promises";
 
@@ -46,7 +47,7 @@ async function sincronizaRed(db, red, mod) {
   const avisos = [];
   try {
     const tk = red === "admitad" ? await admitad.token() : null;
-    const progs = await (red === "admitad" ? admitad.programas(tk) : cj.programas());
+    const progs = await mod.programas(tk);
     const tiendas = await db.todo("tiendas?select=id,nombre,red_id,programa_id,estado,catalogo,escaparate,max_productos,categoria,cashback");
     const ids = new Set(tiendas.map((t) => t.id));
     const activas = [];
@@ -138,6 +139,7 @@ export async function main() {
   const redes = [];
   if (process.env.ADMITAD_CLIENT_ID) redes.push(["admitad", admitad]);
   if (process.env.CJ_TOKEN) redes.push(["cj", cj]);
+  if (process.env.AWIN_TOKEN) redes.push(["awin", awin]);
   if (!redes.length) { console.log("No hay claves de ninguna red configuradas. Nada que hacer."); return; }
   let fallos = 0;
   for (const [red, mod] of redes) {
