@@ -60,6 +60,7 @@ export function leeOferta(bloque, cats = {}) {
 export async function* ofertasDeFlujo(trozos, max = Infinity, muestra = 2000) {
   let buf = "", cats = {}, catsLeidas = false, n = 0, leidas = 0;
   const monedas = {};
+  let ejemplo = "";
   for await (const t of trozos) {
     buf += t;
     if (!catsLeidas) {
@@ -76,9 +77,10 @@ export async function* ofertasDeFlujo(trozos, max = Infinity, muestra = 2000) {
       if (!bloque) continue;
       const o = leeOferta(bloque, cats);
       leidas++;
+      if (!ejemplo) ejemplo = o.titulo || "";
       monedas[o.moneda] = (monedas[o.moneda] || 0) + 1;
       if (!n && leidas >= muestra) {
-        throw new Error(`ninguna oferta válida en EUR entre las ${leidas} primeras (monedas: ${Object.entries(monedas).map(([m, c]) => m + "×" + c).join(", ")})`);
+        throw new Error(`ninguna oferta válida en EUR entre las ${leidas} primeras (monedas: ${Object.entries(monedas).map(([m, c]) => m + "×" + c).join(", ")}; p. ej. «${ejemplo.slice(0, 60)}»)`);
       }
       if (o.ref && o.titulo && o.url && o.precio != null && o.moneda === "EUR") {
         yield o;

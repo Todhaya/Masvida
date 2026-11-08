@@ -91,3 +91,9 @@ test("catálogo en otra moneda: para pronto y dice por qué", async () => {
   async function* flujo() { yield "<shop><offers>"; for (let i = 0; i < 50; i++) yield oferta(i); }
   await assert.rejects(async () => { for await (const _ of ofertasDeFlujo(flujo(), 100, 10)); }, /USD×10/);
 });
+
+test("los catálogos de Admitad se piden en euros", async () => {
+  const { enEuros } = await import("../scripts/sync/admitad.mjs");
+  assert.match(enEuros("https://export.admitad.com/x/?user=a&currency=USD&format=xml"), /currency=EUR/);
+  assert.doesNotMatch(enEuros("https://export.admitad.com/x/?user=a&currency=USD"), /USD/);
+});

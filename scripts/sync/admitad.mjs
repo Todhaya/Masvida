@@ -38,8 +38,13 @@ export function aPrograma(p) {
     web_url: p.site_url || null,
     enlace: p.gotolink || null,
     cashback: tipos.length ? tipos.some((t) => t.includes("cashback")) : null,
-    feeds: (p.feeds_info || []).map((f) => f.xml_link).filter(Boolean),
+    feeds: (p.feeds_info || []).map((f) => f.xml_link).filter(Boolean).map(enEuros),
   };
+}
+
+// Admitad convierte los precios del catálogo a la moneda que se le pida (algunas tiendas lo dan en dólares)
+export function enEuros(url) {
+  try { const u = new URL(url); u.searchParams.set("currency", "EUR"); return u.toString(); } catch { return url; }
 }
 
 // Productos del catálogo de un programa (hasta `max`). El enlace del feed ya lleva nuestro seguimiento.
