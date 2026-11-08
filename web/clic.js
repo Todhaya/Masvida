@@ -11,7 +11,8 @@ export const PARAMS = [
 export function conSubid(url, id) {
   let u;
   try { u = new URL(url); } catch { return url; }
-  const regla = PARAMS.find(([re]) => re.test(u.hostname));
+  // Admitad usa muchos dominios (rzekl.com, alitems…), pero todos sus enlaces son /g/<código>/
+  const regla = PARAMS.find(([re]) => re.test(u.hostname)) || (/^\/g\/[0-9a-f]{10,}\/?$/i.test(u.pathname) ? [null, "subid"] : null);
   if (!regla) return url;
   const p = regla[1];
   // CJ con enlaces del tipo /links/<pid>/type/dlg/<url>: el sid va en la ruta

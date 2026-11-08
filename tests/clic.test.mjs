@@ -9,6 +9,9 @@ test("Awin: clickref", () => {
 test("Admitad: subid", () => {
   assert.match(conSubid("https://ad.admitad.com/g/abc/?ulp=https%3A%2F%2Fx.es", id), new RegExp(`subid=${id}`));
 });
+test("Admitad con otro dominio (enlaces /g/)", () => {
+  assert.equal(conSubid("https://rzekl.com/g/1e8d114494b9a6cff83d16525dc3e8/", id), `https://rzekl.com/g/1e8d114494b9a6cff83d16525dc3e8/?subid=${id}`);
+});
 test("CJ: sid en enlaces de clic y en la ruta de los deep links", () => {
   assert.match(conSubid("https://www.anrdoezrs.net/click-8120936-1234", id), new RegExp(`\\?sid=${id}$`));
   assert.equal(conSubid("https://www.anrdoezrs.net/links/8120936/type/dlg/https://www.notino.es/", id), `https://www.anrdoezrs.net/links/8120936/type/dlg/sid/${id}/https://www.notino.es/`);
