@@ -1,6 +1,6 @@
 # Bienvenida, perfil y tutoriales
 
-Decidido por Alba el 6 de noviembre de 2026. Pendiente de implementar.
+Decidido por Alba el 6 de noviembre de 2026. Implementado en la app el 8 de noviembre (app/js/bienvenida.js); ayuda por apartado pendiente.
 
 ## 1. Primera entrada: el perfil busca tus ayudas (obligatorio, 2–3 minutos)
 Tras registrarse, la persona configura el perfil antes de entrar. Se le explica desde la primera pantalla para qué sirve: **«Con estas preguntas buscamos las ayudas, bonos y deducciones que te pueden tocar.»** Cada pantalla recuerda en una línea qué ayuda depende de esa respuesta.

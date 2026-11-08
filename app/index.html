@@ -7,6 +7,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icono.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icono.svg">
+<link rel="stylesheet" href="js/bienvenida.css">
+<script>if(!/[?&]demo\b/.test(location.search))document.documentElement.classList.add("bv-espera")</script>
 <meta charset="utf-8">
 <title>Viwai</title>
 
@@ -658,7 +660,7 @@ const AIDS=[
  {n:"Tarifa plana de autónomos",amt:"Cuota reducida el primer año",who:"Seguridad Social",docs:["Alta nueva como autónoma"],t:p=>p.situacion.includes("autonoma")?"maybe":null},
  {n:"Ingreso mínimo vital",amt:"Ingreso mensual según el hogar",who:"Seguridad Social",docs:["Ingresos y patrimonio bajos"],t:p=>p.ingresos==="bajos"?"maybe":null}
 ];
-const myAids=()=>AIDS.map(a=>({...a,lvl:a.t(P)})).filter(a=>a.lvl).sort((a,b)=>(a.lvl==="yes"?0:1)-(b.lvl==="yes"?0:1));
+const myAids=()=>window.viwaiMisAyudas?window.viwaiMisAyudas():AIDS.map(a=>({...a,lvl:a.t(P)})).filter(a=>a.lvl).sort((a,b)=>(a.lvl==="yes"?0:1)-(b.lvl==="yes"?0:1));
 function renderAids(){
   const l=myAids();$("#a-count").textContent=l.length+(l.length===1?" ayuda":" ayudas");
   $("#aids").innerHTML=l.map(a=>{const who=typeof a.who==="function"?a.who(P):a.who,why=a.why?a.why(P):"";return`<div class="aid"><div class="h"><span class="n">${a.n}</span><span class="lvl ${a.lvl==="yes"?"l-yes":"l-maybe"}">${a.lvl==="yes"?"Probablemente sí":"Comprueba"}</span></div><span class="amt">${a.amt}</span><span class="small muted">${who}</span><ul>${a.docs.map(d=>`<li>${d}</li>`).join("")}</ul>${why?`<span class="small muted">${why}</span>`:""}<div class="btns"><button class="btn" data-toast="${a.lead||"Te llevamos a la página oficial para pedirla"}">${a.lead?"Pedir presupuesto":"Cómo pedirla"}</button><button class="btn" data-toast="Te avisaremos cuando abra el plazo">Avísame</button></div></div>`}).join("")||'<div class="aid">Con tu perfil no hemos encontrado ayudas. Si algo cambia, actualízalo.</div>';
@@ -1572,6 +1574,8 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||
 if(!document.body.dataset.sec)document.body.dataset.sec="lav";
 renderAll();
 </script>
+<script src="config.js"></script>
+<script type="module" src="js/nube.js"></script>
 <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});</script>
 </body>
 </html>

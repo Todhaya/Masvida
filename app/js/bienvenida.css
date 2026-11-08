@@ -1,0 +1,35 @@
+/* Viwai · pantalla de entrada y bienvenida (encima de la app) */
+.bv-espera body > *:not(#bv){visibility:hidden}
+#bv{position:fixed;inset:0;z-index:1000;overflow:auto;background:linear-gradient(180deg,#E4DDFF 0,#FAFAF8 340px);color:#0F0F0E;font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#bv *{box-sizing:border-box}
+.bv-caja{max-width:520px;margin:0 auto;padding:max(28px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;min-height:100%}
+#bv h1{font-size:clamp(28px,7vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin:6px 0 0}
+.bv-lead{font-size:18px;font-weight:600;line-height:1.4;margin:0}
+.bv-nota{font-size:14px;color:#55544F;margin:0;line-height:1.45}
+.bv-nota a,#bv .bv-ayuda a{color:#5B3FE0;font-weight:700}
+.bv-campo{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:15px;margin:0}
+#bv input:not([type=radio]):not([type=checkbox]){width:100%;border:1.5px solid #E4E3DE;background:#fff;color:#0F0F0E;border-radius:14px;padding:14px;font:600 17px inherit;font-family:inherit}
+#bv input:focus{outline:3px solid #7B5CFF;outline-offset:1px}
+.bv-ops{display:flex;flex-direction:column;gap:8px}
+.bv-op{display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid #E4E3DE;border-radius:16px;padding:14px 16px;font-weight:700;cursor:pointer}
+.bv-op:has(input:checked){border-color:#5B3FE0;background:#F3F0FF}
+.bv-op input{width:20px;height:20px;accent-color:#5B3FE0;flex:none}
+.bv-peque{display:grid;grid-template-columns:1fr 90px 44px;gap:8px;margin-bottom:8px}
+.bv-btn{border:0;border-radius:999px;padding:15px 24px;font:800 16px inherit;font-family:inherit;background:#5B3FE0;color:#fff;cursor:pointer}
+.bv-sec{border:0;border-radius:999px;padding:13px 16px;font:700 15px inherit;font-family:inherit;background:transparent;color:#0F0F0E;box-shadow:inset 0 0 0 1.5px #E4E3DE;cursor:pointer}
+.bv-btn:focus-visible,.bv-sec:focus-visible{outline:3px solid #7B5CFF;outline-offset:2px}
+.bv-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:14px}
+.bv-nav div{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.bv-prog{height:6px;border-radius:99px;background:rgba(15,15,14,.08);overflow:hidden}.bv-prog i{display:block;height:100%;background:#5B3FE0;transition:width .3s}
+.bv-err{color:#B3261E;font-weight:700;font-size:14px;margin:0;min-height:1em}
+#bv-f{display:flex;flex-direction:column;gap:10px}
+#bv img{border-radius:18px}
+.bv-ayudas{display:flex;flex-direction:column;gap:10px}
+.bv-ayuda{background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:5px;box-shadow:inset 0 0 0 1.5px #E4E3DE}
+.bv-ah{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.bv-niv{font-size:12px;font-weight:800;border-radius:99px;padding:3px 9px;white-space:nowrap}.bv-niv.si{background:#CDEFDD}.bv-niv.comprueba{background:#FFEFB5}
+.bv-cuantia{font-weight:800;font-size:17px}
+.bv-tuto{display:flex;flex-direction:column;gap:14px;margin-top:12vh}
+.bv-paso{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5B3FE0}
+.bv-puntos{display:flex;gap:6px}.bv-puntos i{width:8px;height:8px;border-radius:99px;background:rgba(15,15,14,.15)}.bv-puntos i.on{background:#5B3FE0;width:22px}
+[hidden]{display:none!important}
