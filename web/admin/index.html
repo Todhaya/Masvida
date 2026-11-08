@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Viwai · Panel</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAFAF8;--surface:#fff;--ink:#0F0F0E;--muted:#6B6A64;--line:#E7E5DF;--brand:#7B5CFF;--brand-strong:#5B3FE0;--lav:#E4DDFF;--gold:#F5B400;--cream:#FFF4C9;
+--peach:#FFD9C7;--mint:#CDEFDD;--sky:#D5E7FF;--butter:#FFEFB5;--bad:#B3261E;--ok:#1E7A4C;--f:"Plus Jakarta Sans",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#121211;--surface:#1C1C1A;--ink:#F3F2EE;--muted:#A3A29B;--line:#2E2E2B;--lav:#2C2650;--cream:#3A3320;--peach:#4A2E22;--mint:#1F3A2C;--sky:#1F2E44;--butter:#3D3618;--brand:#B9A8FF;--brand-strong:#B9A8FF}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f);-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:14px;padding:12px 20px;max-width:1280px;margin:0 auto}
+.bar b{font-weight:800;font-size:20px;letter-spacing:-.03em}.bar b i{font-style:normal;color:var(--gold)}
+.bar .yo{margin-left:auto;font-size:13px;color:var(--muted)}
+nav{display:flex;gap:4px;overflow-x:auto;padding:0 16px 10px;max-width:1280px;margin:0 auto;scrollbar-width:none}
+nav button{border:0;background:transparent;color:var(--muted);font:700 14px var(--f);padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{background:var(--lav);color:var(--ink)}
+main{max-width:1280px;margin:0 auto;padding:20px}
+h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin:8px 0 14px}
+h3{font-size:17px;font-weight:800;margin:26px 0 10px;letter-spacing:-.01em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
+.kpi small{display:block;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi .v{font-size:30px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi .s{font-size:13px;color:var(--muted)}
+.obj{display:flex;flex-direction:column;gap:8px}.obj .t{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.prog{height:10px;border-radius:99px;background:var(--line);overflow:hidden}.prog i{display:block;height:100%;background:var(--brand)}
+.prog i.full{background:var(--ok)}
+.note{font-size:13px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+tr.clic{cursor:pointer}tr.clic:hover td{background:var(--bg)}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;background:var(--line)}
+.tag.ok{background:var(--mint)}.tag.warn{background:var(--butter)}.tag.bad{background:var(--peach)}.tag.info{background:var(--sky)}.tag.lav{background:var(--lav)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.btn{border:0;border-radius:999px;padding:10px 18px;font:800 14px var(--f);background:var(--brand-strong);color:#fff;cursor:pointer}
+@media (prefers-color-scheme:dark){.btn{color:#121211}}
+.btn.sec{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.bad{background:var(--bad);color:#fff}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,nav button:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;width:100%}
+textarea{min-height:90px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700}
+label.c{display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px}label.c input{width:auto}
+dialog{border:0;border-radius:24px;padding:0;width:min(640px,94vw);max-height:90vh;overflow:auto;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(15,15,14,.45)}
+dialog form{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:22px}
+dialog form .w{grid-column:1/-1}dialog h3{grid-column:1/-1;margin:0}
+.acc{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end}
+.login{max-width:420px;margin:12vh auto;display:flex;flex-direction:column;gap:14px}
+.login b{font-size:34px;font-weight:800;letter-spacing:-.04em}
+.split{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+@media (max-width:860px){.split{grid-template-columns:1fr}dialog form{grid-template-columns:1fr}}
+.reparto{display:flex;height:34px;border-radius:12px;overflow:hidden;font-size:12px;font-weight:800}
+.reparto span{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;min-width:0}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin-top:8px}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+svg.spark{width:100%;height:80px;display:block}
+.vacio{color:var(--muted);padding:18px;text-align:center}
+.aviso{background:var(--cream);border-radius:16px;padding:12px 14px;font-size:14px;margin:10px 0}
+.err{color:var(--bad);font-size:14px}
+a{color:var(--brand-strong);font-weight:700;text-decoration:none}a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="login" class="login" hidden>
+  <b>Viwai <span style="color:var(--gold)">·</span> panel</b>
+  <p>Entra con el correo de administración. Te llega un enlace para entrar, sin contraseña.</p>
+  <label class="f">Correo <input id="email" type="email" autocomplete="email" value="hola@viwai.es"></label>
+  <button class="btn" id="enviar">Enviarme el enlace</button>
+  <p id="loginMsg" class="note"></p>
+</div>
+<div id="app" hidden>
+  <header>
+    <div class="bar"><b>Viwai<i>.</i> panel</b><span class="yo" id="yo"></span><button class="btn sec" id="salir">Salir</button></div>
+    <nav id="tabs" role="tablist"></nav>
+  </header>
+  <main id="vista"></main>
+</div>
+<dialog id="dlg"></dialog>
+<script src="/config.js"></script>
+<script type="module" src="./admin.js"></script>
+</body>
+</html>
