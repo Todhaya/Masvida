@@ -280,7 +280,16 @@ V.afiliados = async (m) => {
   ]);
   const porTienda = (id) => kpis(clics.filter((c) => c.tienda_id === id), comisiones.filter((c) => c.tienda_id === id && c.fecha >= haceDias(90)));
   await cargar("tiendas", {}, true);
-  m.innerHTML = `<h2>Afiliados</h2><div id="redes"></div><div id="tiendas"></div>
+  const [syncs, nProductos] = await Promise.all([cargar("sincronizaciones", { orden: "inicio", desc: true }, true), cuenta("productos")]);
+  const ult = syncs[0];
+  m.innerHTML = `<h2>Afiliados</h2>
+    <div class="card"><b>Catálogo automático</b>
+      <p class="note">Cada madrugada se comprueba qué tiendas te han aprobado en cada red y se descargan sus productos. Las tiendas nuevas aparecen solas como «aprobada» (marcadas como alta automática).</p>
+      ${ult ? `<div class="row">${ult.ok ? `<span class="tag ok">bien</span>` : `<span class="tag bad">con errores</span>`} Última: ${new Date(ult.inicio).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })} · ${num(nProductos)} productos en el catálogo</div>` : `<p class="note">Todavía no se ha ejecutado ninguna sincronización.</p>`}
+      ${syncs.slice(0, 8).map((x) => `<div class="row"><span class="tag ${x.ok ? "ok" : "bad"}">${esc(x.red)}</span> ${fecha(x.inicio)} · ${num(x.productos)} productos${x.tiendas_nuevas?.length ? ` · nuevas: <b>${esc(x.tiendas_nuevas.join(", "))}</b>` : ""}${x.mensaje ? `<br><span class="note">${esc(x.mensaje).replace(/\n/g, "<br>")}</span>` : ""}</div>`).join("")}
+      <p class="note"><a href="/ofertas/" target="_blank" rel="noopener">Ver el buscador de la web ↗</a> · Lanzar a mano: GitHub → Actions → «Catálogo de tiendas» → Run workflow.</p>
+    </div>
+    <div id="redes"></div><div id="tiendas"></div>
     <p class="note">Clics, ventas, conversión y € por clic de los últimos 90 días. «Cashback» indica si la tienda permite devolver parte a las usuarias (sin comprobar = no se devuelve nada).</p>`;
   crud($("#redes", m), {
     tabla: "redes", titulo: "Redes", clave: "id", orden: "nombre", nuevo: { estado: "pendiente" },
@@ -297,8 +306,10 @@ V.afiliados = async (m) => {
       { k: "red_id", l: "Red", t: "select", o: () => redes.map((r) => [r.id, r.nombre]) }, { k: "categoria", l: "Categoría" },
       { k: "estado", l: "Estado", t: "select", o: [["por_pedir", "por pedir"], ["pedida", "pedida"], ["aprobada", "aprobada"], ["rechazada", "rechazada"], ["pausada", "pausada"]], req: true },
       { k: "cashback", l: "Permite cashback (comprobado)", t: "bool" }, { k: "comision_texto", l: "Comisión (tal como la da la tienda)", w: 1 },
-      { k: "programa_url", l: "Ficha del programa en la red", t: "url", w: 1 }, { k: "web_url", l: "Web de la tienda", t: "url", w: 1 }, { k: "notas", l: "Notas", t: "textarea" }],
-    cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b><br><span class="note">${esc(f.categoria)}</span>` }, { l: "Red", v: (f) => esc(f.red_id) },
+      { k: "programa_url", l: "Ficha del programa en la red", t: "url", w: 1 }, { k: "web_url", l: "Web de la tienda", t: "url", w: 1 },
+      { k: "catalogo", l: "Mostrar su catálogo en la web", t: "bool" }, { k: "max_productos", l: "Máximo de productos", t: "number" },
+      { k: "programa_id", l: "Id del programa en la red" }, { k: "notas", l: "Notas", t: "textarea" }],
+    cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b>${f.alta_auto ? ` <span class="tag info">auto</span>` : ""}<br><span class="note">${esc(f.categoria)}${f.sincronizada ? ` · catálogo ${fecha(f.sincronizada)}` : ""}</span>` }, { l: "Red", v: (f) => esc(f.red_id) },
       { l: "Estado", v: (f) => tagEstado(f.estado === "por_pedir" ? "por pedir" : f.estado) }, { l: "Cashback", v: (f) => (f.cashback ? "sí" : f.cashback === false ? "no" : "sin comprobar") },
       { l: "Clics", n: 1, v: (f) => num(porTienda(f.id).clics) }, { l: "Ventas", n: 1, v: (f) => num(porTienda(f.id).ventas) },
       { l: "Conv.", n: 1, v: (f) => porTienda(f.id).conversion + " %" }, { l: "€/clic", n: 1, v: (f) => eur(porTienda(f.id).epc) }, { l: "Comisión", n: 1, v: (f) => eur(porTienda(f.id).comision) },
