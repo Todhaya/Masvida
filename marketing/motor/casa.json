@@ -1,0 +1,3 @@
+{"hook":{"bg":"#E4DDFF","eye":"Casa al día","ico":"documentos","lines":["¿Cuándo","vence","la ITV?"],"foto":"ambiente-calendario-nevera.jpg","fotoTop":980},
+"prob":{"bg":"#FFE6DC","lines":["Seguros,","garantías,","la caldera…"],"sub":"Demasiadas fechas para llevarlas de cabeza."},
+"app":{"bg":"#D5E7FF","shots":[{"img":"c1.jpg","cap":"Tu casa, de un vistazo.","tap":"c1tap","d":3.4},{"img":"c2.jpg","cap":"Cada fecha con su cuenta atrás. Te avisamos antes.","tap":"c2tap","d":3.8},{"img":"c3.jpg","cap":"Y el mantenimiento, cuando toca. Un toque y listo.","tap":"c3tap","d":3.8}]}}

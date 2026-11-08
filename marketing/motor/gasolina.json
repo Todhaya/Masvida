@@ -1,0 +1,3 @@
+{"hook":{"bg":"#D5E7FF","eye":"Gasolina","ico":"gasolina","lines":["¿Repostas","en la de","siempre?"],"foto":"ambiente-gasolinera.jpg","fotoTop":980},
+"prob":{"bg":"#FFF4C9","lines":["A dos","calles","está más","barata."],"sub":"Y con tus tarjetas, aún más. Pero nadie lo mira."},
+"app":{"bg":"#CDEFDD","shots":[{"img":"g1.jpg","cap":"La más barata cerca de ti, con tus tarjetas.","tap":"g1tap","d":3.6},{"img":"g2.jpg","cap":"Y cuánto te ahorras al llenar el depósito.","d":3.8}]}}

@@ -1,3 +1,3 @@
-{"hook":{"bg":"#FFF4C9","eye":"Menú y compra","lines":["¿Qué hay","hoy para","cenar?"],"foto":"ambiente-familia-cocina.jpg","fotoTop":860},
+{"hook":{"bg":"#FFF4C9","eye":"Menú y compra","ico":"menu","lines":["¿Qué hay","hoy para","cenar?"],"foto":"ambiente-familia-cocina.jpg","fotoTop":980},
 "prob":{"bg":"#CDEFDD","lines":["Y acabas","comprando","de más."],"sub":"Y tirando comida que se queda olvidada en la nevera."},
-"app":{"bg":"#D5E7FF","shots":[{"img":"m1.jpg","cap":"El menú de la semana, pensado para tu casa.","tap":"m2tap","d":3.4},{"img":"m2.jpg","cap":"Lo planificas en un minuto.","tap":"m3tap","d":3.4},{"img":"m3.jpg","cap":"Y la lista de la compra se hace sola, por pasillos.","d":3.8}]}}
+"app":{"bg":"#D5E7FF","shots":[{"img":"m1.jpg","cap":"El menú de la semana, pensado para tu casa.","tap":"m1tap","d":3.4},{"img":"m2.jpg","cap":"Lo planificas en un minuto.","tap":"m2tap","d":3.4},{"img":"m3.jpg","cap":"Y la lista de la compra se hace sola, por pasillos.","d":3.8}]}}

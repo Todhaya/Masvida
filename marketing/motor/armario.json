@@ -1,0 +1,3 @@
+{"hook":{"bg":"#CDEFDD","eye":"Armario","ico":"armario","lines":["¿Otra vez","se le ha","quedado","pequeño?"],"foto":"ambiente-ropa-ninos.jpg","fotoTop":1080},
+"prob":{"bg":"#D5E7FF","lines":["Compras","repetido","sin saberlo."],"sub":"Y la ropa que ya no le vale se queda en un cajón."},
+"app":{"bg":"#E4DDFF","shots":[{"img":"a1.jpg","cap":"Su armario, con su talla.","tap":"a1tap","d":3.4},{"img":"a2.jpg","cap":"Te decimos lo que le falta, en su talla.","d":3.6},{"img":"a3.jpg","cap":"Y lo que ya no le vale, a vender o a otra familia.","d":3.8}]}}
