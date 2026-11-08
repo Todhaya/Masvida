@@ -1,0 +1,38 @@
+# Viwai · sincronización nocturna del catálogo de tiendas.
+# Corre sola cada día a las 4:00 UTC (5:00 en invierno, 6:00 en verano, hora de Madrid).
+# También se puede lanzar a mano: pestaña Actions → «Catálogo de tiendas» → Run workflow.
+# Las claves están en Settings → Secrets and variables → Actions (nunca en el código).
+name: Catálogo de tiendas
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+    inputs:
+      prueba:
+        description: "Solo probar (no escribe nada)"
+        type: boolean
+        default: false
+concurrency: catalogo
+jobs:
+  sincronizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Tests
+        run: npm test
+      - name: Sincronizar tiendas y productos
+        run: node scripts/sync/sincronizar.mjs
+        env:
+          DRY_RUN: ${{ inputs.prueba && '1' || '' }}
+          SUPABASE_URL: https://adoznvxwqvcwyimqnxtj.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ADMITAD_CLIENT_ID: ${{ secrets.ADMITAD_CLIENT_ID }}
+          ADMITAD_CLIENT_SECRET: ${{ secrets.ADMITAD_CLIENT_SECRET }}
+          ADMITAD_WEBSITE_ID: "3019659"
+          CJ_TOKEN: ${{ secrets.CJ_TOKEN }}
+          CJ_CID: "8120936"
+          CJ_PID: "101923458"
