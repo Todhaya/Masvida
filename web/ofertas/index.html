@@ -8,6 +8,8 @@
 <title>Ofertas de todas las tiendas · Viwai</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="/diseno/tokens.css">
+<script src="/diseno/iconos.js"></script>
 <style>
 /* Estilo de los anuncios: bandas a sangre de color pastel, titulares grandes y pantallas reales de la app */
 :root{
@@ -216,7 +218,7 @@ async function busca(anadir = false) {
   $("res").textContent = total ? `${Number(total).toLocaleString("es-ES")} productos` : "";
   const v = $("vacio");
   v.hidden = !!total;
-  v.innerHTML = est.q ? `No hemos encontrado «${esc(est.q)}» en las tiendas asociadas. Prueba con otra palabra.` : "Estamos cargando el catálogo de las tiendas. Vuelve mañana.";
+  v.innerHTML = est.q ? `No hemos encontrado «${esc(est.q)}» en las tiendas asociadas. Prueba con otra palabra.` : `<span style="display:flex;gap:14px;align-items:center">${viwaiIcono("tienda")}<span><b>Estamos preparando el catálogo.</b><br>Las ofertas aparecerán aquí en cuanto las tiendas nos aprueben. Mientras, mira los <a href="/black-friday/">chollos de Black Friday</a>.</span></span>`;
   const u = new URLSearchParams(); if (est.q) u.set("q", est.q); if (est.cat) u.set("cat", est.cat);
   history.replaceState(null, "", u.toString() ? "?" + u : location.pathname);
 }

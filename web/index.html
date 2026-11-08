@@ -9,12 +9,14 @@
 <title>Viwai · Lo que ahorras, lo vives</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="/diseno/tokens.css">
+<script src="/diseno/iconos.js"></script>
 <style>
 /* Estilo de los anuncios: bandas a sangre de color pastel, titulares grandes y pantallas reales de la app */
 :root{
   --bg:#FAFAF8; --ink:#0F0F0E; --muted:#55544F; --line:#E4E3DE; --surface:#FFFFFF;
-  --peach:#FFD9C7; --lav:#E4DDFF; --mint:#CDEFDD; --sky:#D5E7FF; --butter:#FFEFB5; --cream:#FFF4C9;
-  --brand:#7B5CFF; --brand-strong:#5B3FE0; --wave:#7B5CFF; --gold:#F5B400; --p-ink:#0F0F0E;
+  --peach:#FFD9C7; --lav:var(--vw-lavanda); --mint:var(--vw-menta); --sky:var(--vw-cielo); --butter:#FFEFB5; --cream:var(--vw-mantequilla);
+  --brand:#7B5CFF; --brand-strong:var(--vw-lila-app); --wave:#7B5CFF; --gold:var(--vw-oro); --p-ink:#0F0F0E;
   --f:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
@@ -52,7 +54,10 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 .duo .phone:last-child{margin-top:64px}
 
 .mods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
-.mod{border-radius:26px;padding:22px;color:var(--p-ink);display:flex;flex-direction:column;gap:6px;min-width:0}
+.mod{border-radius:26px;padding:22px;color:var(--p-ink);display:flex;flex-direction:column;gap:6px;min-width:0;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.mod:hover{transform:translateY(-3px);box-shadow:0 18px 36px -24px rgba(30,20,60,.35)}
+.mod .mi{width:46px;height:46px;border-radius:15px;background:rgba(255,255,255,.65);display:grid;place-items:center;margin-bottom:8px}.mod .mi .vw-ico{width:23px;height:23px}
+.mod:after{content:"";position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);pointer-events:none}
 .mod p{font-size:15px;opacity:.85}
 .vals{grid-template-columns:repeat(3,1fr)}
 .vals4{grid-template-columns:repeat(4,1fr)}
@@ -126,18 +131,18 @@ footer a{color:var(--brand-strong)}
 <section class="band" id="casas"><div class="in">
   <span class="eye">Para cualquier casa</span><h2>Vivas sola, en pareja, con peques o compartiendo piso.</h2>
   <div class="mods vals4">
-    <div class="mod sky"><h3>Sola</h3><p>Paga solo la luz que gastas y no te pierdas ninguna ayuda.</p><span class="f">Facturas y ayudas</span></div>
-    <div class="mod lav"><h3>En pareja</h3><p>El menú, la compra y la casa organizados entre los dos.</p><span class="f">Menú y casa compartida</span></div>
-    <div class="mod mint"><h3>Con peques</h3><p>Su armario, su talla y las tareas repartidas con premios.</p><span class="f">Armario y tareas</span></div>
-    <div class="mod peach"><h3>Piso compartido</h3><p>Gastos, tareas y calendario a medias, sin discusiones.</p><span class="f">Casa compartida</span></div>
+    <div class="mod sky"><span class="mi"><svg data-ico="persona"></svg></span><h3>Sola</h3><p>Paga solo la luz que gastas y no te pierdas ninguna ayuda.</p><span class="f">Facturas y ayudas</span></div>
+    <div class="mod lav"><span class="mi"><svg data-ico="corazon"></svg></span><h3>En pareja</h3><p>El menú, la compra y la casa organizados entre los dos.</p><span class="f">Menú y casa compartida</span></div>
+    <div class="mod mint"><span class="mi"><svg data-ico="bebe"></svg></span><h3>Con peques</h3><p>Su armario, su talla y las tareas repartidas con premios.</p><span class="f">Armario y tareas</span></div>
+    <div class="mod peach"><span class="mi"><svg data-ico="familia"></svg></span><h3>Piso compartido</h3><p>Gastos, tareas y calendario a medias, sin discusiones.</p><span class="f">Casa compartida</span></div>
   </div>
 </div></section>
 <section class="band" id="valor"><div class="in">
   <span class="eye">Por qué desde Viwai</span><h2>El mismo precio. Y una parte vuelve a ti.</h2>
   <div class="mods vals">
-    <div class="mod cream"><h3>Hasta un 3 % de vuelta</h3><p>Compras en la tienda al mismo precio y con sus rebajas, y te devolvemos una parte de lo que gastas.</p><span class="f">En las tiendas que lo permiten</span></div>
-    <div class="mod peach"><h3>Te decimos si pagas de más</h3><p>Miramos tus facturas de luz, gas y fibra con tu consumo real. Es donde más se ahorra al año.</p><span class="f">Y las ayudas que te tocan</span></div>
-    <div class="mod mint"><h3>Ofertas que te sirven</h3><p>En la talla de cada peque, en tu súper y en lo que de verdad usas. Sin buscar en diez webs.</p><span class="f">Elegidas para tu casa</span></div>
+    <div class="mod cream"><span class="mi"><svg data-ico="hucha"></svg></span><h3>Hasta un 3 % de vuelta</h3><p>Compras en la tienda al mismo precio y con sus rebajas, y te devolvemos una parte de lo que gastas.</p><span class="f">En las tiendas que lo permiten</span></div>
+    <div class="mod peach"><span class="mi"><svg data-ico="facturas"></svg></span><h3>Te decimos si pagas de más</h3><p>Miramos tus facturas de luz, gas y fibra con tu consumo real. Es donde más se ahorra al año.</p><span class="f">Y las ayudas que te tocan</span></div>
+    <div class="mod mint"><span class="mi"><svg data-ico="ofertas"></svg></span><h3>Ofertas que te sirven</h3><p>En la talla de cada peque, en tu súper y en lo que de verdad usas. Sin buscar en diez webs.</p><span class="f">Elegidas para tu casa</span></div>
   </div>
 </div></section>
 <section class="scene peach flip" id="facturas"><div class="in">
@@ -163,14 +168,14 @@ footer a{color:var(--brand-strong)}
 <section class="band"><div class="in">
   <span class="eye">Todo en una app</span><h2>Todo lo que te hace ahorrar, en un solo sitio.</h2>
   <div class="mods">
-    <div class="mod" style="background:var(--lav)"><h3>Menú y compra</h3><p>Planificas la semana, compras lo justo y tiras menos comida.</p><span class="f">Con las ofertas de tu súper</span></div>
-    <div class="mod" style="background:var(--sky)"><h3>Gasolina</h3><p>Ves qué gasolinera es la más barata cerca antes de repostar.</p><span class="f">Con los precios oficiales del día</span></div>
-    <div class="mod" style="background:var(--peach)"><h3>Armario</h3><p>Sabes qué tiene cada uno y su talla: no compras repetido y vendes lo que se queda pequeño.</p><span class="f">Y le das una segunda vida</span></div>
-    <div class="mod" style="background:var(--mint)"><h3>Mantenimiento</h3><p>Filtros, caldera, revisiones del coche a tiempo. Cuidar las cosas evita averías caras.</p><span class="f">Con lo que tienes en casa</span></div>
-    <div class="mod" style="background:var(--butter)"><h3>Papeles y fechas</h3><p>Devoluciones, garantías y renovaciones con aviso antes de que caduquen.</p><span class="f">Ni un plazo perdido</span></div>
-    <div class="mod" style="background:var(--peach)"><h3>Facturas</h3><p>Luz, gas, fibra y móvil comparados con tu consumo real.</p><span class="f">Con tu consumo de Datadis</span></div>
-    <div class="mod" style="background:var(--mint)"><h3>Ayudas</h3><p>Bono social, ayudas por hijos, deducciones: las que te tocan según tu perfil.</p><span class="f">Catálogo por comunidad</span></div>
-    <div class="mod" style="background:var(--sky)"><h3>Ofertas</h3><p>Súper, moda, hogar y planes, con lo que te devolvemos al lado.</p><span class="f">Reembolso tienda a tienda</span></div>
+    <div class="mod" style="background:var(--lav)"><span class="mi"><svg data-ico="menu"></svg></span><h3>Menú y compra</h3><p>Planificas la semana, compras lo justo y tiras menos comida.</p><span class="f">Con las ofertas de tu súper</span></div>
+    <div class="mod" style="background:var(--sky)"><span class="mi"><svg data-ico="gasolina"></svg></span><h3>Gasolina</h3><p>Ves qué gasolinera es la más barata cerca antes de repostar.</p><span class="f">Con los precios oficiales del día</span></div>
+    <div class="mod" style="background:var(--peach)"><span class="mi"><svg data-ico="armario"></svg></span><h3>Armario</h3><p>Sabes qué tiene cada uno y su talla: no compras repetido y vendes lo que se queda pequeño.</p><span class="f">Y le das una segunda vida</span></div>
+    <div class="mod" style="background:var(--mint)"><span class="mi"><svg data-ico="mantenimiento"></svg></span><h3>Mantenimiento</h3><p>Filtros, caldera, revisiones del coche a tiempo. Cuidar las cosas evita averías caras.</p><span class="f">Con lo que tienes en casa</span></div>
+    <div class="mod" style="background:var(--butter)"><span class="mi"><svg data-ico="documentos"></svg></span><h3>Papeles y fechas</h3><p>Devoluciones, garantías y renovaciones con aviso antes de que caduquen.</p><span class="f">Ni un plazo perdido</span></div>
+    <div class="mod" style="background:var(--peach)"><span class="mi"><svg data-ico="facturas"></svg></span><h3>Facturas</h3><p>Luz, gas, fibra y móvil comparados con tu consumo real.</p><span class="f">Con tu consumo de Datadis</span></div>
+    <div class="mod" style="background:var(--mint)"><span class="mi"><svg data-ico="ayudas"></svg></span><h3>Ayudas</h3><p>Bono social, ayudas por hijos, deducciones: las que te tocan según tu perfil.</p><span class="f">Catálogo por comunidad</span></div>
+    <div class="mod" style="background:var(--sky)"><span class="mi"><svg data-ico="ofertas"></svg></span><h3>Ofertas</h3><p>Súper, moda, hogar y planes, con lo que te devolvemos al lado.</p><span class="f">Reembolso tienda a tienda</span></div>
   </div>
 </div></section>
 <section class="scene peach"><div class="in">
