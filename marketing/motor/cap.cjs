@@ -37,5 +37,10 @@ const [, , proto, out = "."] = process.argv;
   await ir("hogar"); J.c1tap = await ctr('#hogar-dash .hd-t[data-v="docs"]'); await shot("c1");
   await ir("docs"); J.c2tap = await ctr('#docs-box .vi .btn'); await shot("c2");
   await ir("mant"); J.c3tap = await ctr('#mant-box .ckb'); await shot("c3");
+  // OFERTAS (datos de ejemplo del prototipo)
+  await ir("ofertas"); J.o1tap = await ctr('#offers .hr[data-cat="belleza"]'); await ir("ofertas", "#offers .rail", 200); await shot("o1");
+  await p.evaluate(() => { cat = "belleza"; renderOffers(); scrollTo(0, 0); }); await p.waitForTimeout(400); J.o2tap = await ctr('[data-oseg="escapadas"]'); await shot("o2");
+  await p.click('[data-oseg="escapadas"]'); await p.evaluate(() => scrollTo(0, 0)); await shot("o3");
+  await p.click('[data-oseg="compras"]'); await p.evaluate(() => { cat = "para"; renderOffers(); });
   fs.writeFileSync(path.join(out, "pos.json"), JSON.stringify(J)); console.log(JSON.stringify(J)); await b.close();
 })();

@@ -16,4 +16,4 @@ Usa la letra de la marca (Plus Jakarta Sans, en `marketing/redes/fuentes`) y los
 
 O todo de una vez: `bash marketing/motor/todos.sh <trabajo>`.
 
-Cada vídeo nuevo es un `.json` con los textos, el icono, la foto, los colores y las capturas. Vídeos actuales: facturas, menu, armario, gasolina y casa.
+Cada vídeo nuevo es un `.json` con los textos, el icono, la foto, los colores y las capturas. Vídeos actuales: facturas, menu, armario, gasolina, casa y ofertas (este con datos de ejemplo del prototipo, rotulado como tal).
