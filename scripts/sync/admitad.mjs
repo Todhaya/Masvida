@@ -43,12 +43,14 @@ export function aPrograma(p) {
   };
 }
 
-// Si la tienda tiene catálogos por país, solo los de España (títulos en español); si no, todos.
+// Si la tienda tiene catálogos por país, solo los de España (títulos en español); si no, los más vendidos; si no, todos.
 const ES = /(^|[^a-z])(es|esp|spain|españa|espana|spanish|español)([^a-z]|$)/i;
 export function feedsParaEspana(info) {
   const con = info.filter((f) => f.xml_link);
   const es = con.filter((f) => ES.test(f.name || ""));
-  return (es.length ? es : con).map((f) => enEuros(f.xml_link));
+  // Sin catálogo de España: mejor los más vendidos que todo el catálogo mundial
+  const top = con.filter((f) => /hot|top|best|popular/i.test(f.name || ""));
+  return (es.length ? es : top.length ? top : con).map((f) => enEuros(f.xml_link));
 }
 
 // Admitad convierte los precios del catálogo a la moneda que se le pida (algunas tiendas lo dan en dólares)
