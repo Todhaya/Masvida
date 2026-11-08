@@ -1,0 +1,365 @@
+{
+ "descripcion": "Selección de AliExpress propuesta por Claude (catálogo mundial de Admitad, títulos traducidos). Entra como «propuesto»; Alba aprueba o descarta en el panel.",
+ "fecha": "2026-11-08",
+ "productos": [
+  {
+   "id": "aliexpress:1005013138766570",
+   "titulo_es": "Set de 24 recipientes herméticos para la despensa",
+   "categoria": "cocina",
+   "original": "24-PCS Airtight Food Storage Container Set BPA-Free PP Kitchen Jars Leak-Proof L",
+   "precio": 37.83,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005013382885143",
+   "titulo_es": "Botes de especias de cristal con tapa de bambú",
+   "categoria": "cocina",
+   "original": "15/24/36PCS Spice Bottles, Condiment Containers, Glass Spice Bottles With Bamboo",
+   "precio": 25,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005009673764906",
+   "titulo_es": "Báscula de cocina digital de precisión",
+   "categoria": "cocina",
+   "original": "Bincoo LED Intelligent Electronic Scale Kitchen Scale Professional Coffee Scale ",
+   "precio": 35.26
+  },
+  {
+   "id": "aliexpress:1005013393271249",
+   "titulo_es": "Ensaladera para llevar con compartimentos y salseras",
+   "categoria": "cocina",
+   "original": "A76I-Salad Bowl Kit,Removable Divided Tray, 2 Dressing Cups, Leak-Proof Airtight",
+   "precio": 34.63
+  },
+  {
+   "id": "aliexpress:1005009993268170",
+   "titulo_es": "Cafetera de émbolo de cristal de doble capa",
+   "categoria": "cocina",
+   "original": "Double Layers French Press Pot High Borosilicate Tea Coffee Brewer Pot For Coffe",
+   "precio": 27.91
+  },
+  {
+   "id": "aliexpress:1005012397430379",
+   "titulo_es": "Espumador de leche eléctrico de mano",
+   "categoria": "cocina",
+   "original": "MHW-3BOMBER Electric Milk Frother Handheld Coffee Stirrer Household Egg Beater M",
+   "precio": 23.43,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005013468100604",
+   "titulo_es": "Molinillo eléctrico de sal y pimienta",
+   "categoria": "cocina",
+   "original": "Wireless Electric Salt and Pepper Grinder Adjustable Burr Transparent Hopper Aut",
+   "precio": 23.44
+  },
+  {
+   "id": "aliexpress:1005013276325842",
+   "titulo_es": "Molinillo de café eléctrico recargable por USB",
+   "categoria": "cocina",
+   "original": "USB Rechargeable Portable Electric Coffee Grinder Automatic Adjustable Burr Elec",
+   "precio": 19.22
+  },
+  {
+   "id": "aliexpress:1005013382020529",
+   "titulo_es": "Picador de verduras 15 en 1",
+   "categoria": "cocina",
+   "original": "15 In 1 Vegetable Chopper Cutter Food Onion Veggie Dicer Slicer Kitchen Tool Mul",
+   "precio": 13.19,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005013332873757",
+   "titulo_es": "Fiambrera de madera de dos pisos",
+   "categoria": "cocina",
+   "original": "Natural Wooden Lunch Box - Double Layer Rectangle Food Container - Eco Friendly ",
+   "precio": 21.97
+  },
+  {
+   "id": "aliexpress:1005012728559404",
+   "titulo_es": "Fiambrera bento extraplana",
+   "categoria": "cocina",
+   "original": "Bento Lunch Box Slimline Bento Box Lunch Container Sturdy Meal Prep Container Li",
+   "precio": 20.63
+  },
+  {
+   "id": "aliexpress:1005012932234744",
+   "titulo_es": "Fiambrera autocalentable para el trabajo o de excursión",
+   "categoria": "cocina",
+   "original": "Portable Self-Heating Lunch Box, Leak-Proof and Heat-Retaining—Perfect for Outdo",
+   "precio": 21.06
+  },
+  {
+   "id": "aliexpress:1005013353247861",
+   "titulo_es": "Termómetro de cocina digital con sonda",
+   "categoria": "cocina",
+   "original": "Digital Food Thermometer with Long Probe Instant Read Waterproof Cooking Thermom",
+   "precio": 19.75
+  },
+  {
+   "id": "aliexpress:1005007432055617",
+   "titulo_es": "Rejilla de enfriado de 3 pisos para repostería",
+   "categoria": "cocina",
+   "original": "3-Tier Cooling Racks, Stackable Baking Rack Shelf, Kitchen Cookie Cooling Rack B",
+   "precio": 20.19
+  },
+  {
+   "id": "aliexpress:1005013577186154",
+   "titulo_es": "3 boles de acero inoxidable con medidas",
+   "categoria": "cocina",
+   "original": "3Pcs Mixing Bowl Stainless Nesting Salad Measurement Mark Deep Multi Purpose Kit",
+   "precio": 18.25
+  },
+  {
+   "id": "aliexpress:1005012044003940",
+   "titulo_es": "Boles de acero con tapa hermética",
+   "categoria": "cocina",
+   "original": "Steel Mixing Bowls Stainless Steel Non-Slip Dishwasher Safe Airtight Lids Salad ",
+   "precio": 14.34
+  },
+  {
+   "id": "aliexpress:1005013178324894",
+   "titulo_es": "Dispensador de cereales hermético de 4 litros",
+   "categoria": "cocina",
+   "original": "Sealed Grain Dispenser Food Storage Container 4L Airtight Moisture Proof Reusabl",
+   "precio": 10.78
+  },
+  {
+   "id": "aliexpress:1005013434144215",
+   "titulo_es": "Frutero de 3 pisos",
+   "categoria": "cocina",
+   "original": "3 Tier Fruit Basket for Kitchen Countertop Metal Stand Tiered Organizer Rack for",
+   "precio": 10.5
+  },
+  {
+   "id": "aliexpress:1005013420594291",
+   "titulo_es": "Escurreplatos de acero inoxidable con desagüe",
+   "categoria": "cocina",
+   "original": "Dish Drying Tray Self-draining Stainless Steel Drainage Spout Board Dish Rack Dr",
+   "precio": 12.76
+  },
+  {
+   "id": "aliexpress:1005013267669156",
+   "titulo_es": "Tabla de cortar de bambú con canal para jugos",
+   "categoria": "cocina",
+   "original": "16x11 Inch Bamboo Cutting Board, Deep Juice Groove & Easy-Grip Handles, Easy to ",
+   "precio": 18.2
+  },
+  {
+   "id": "aliexpress:1005012189749086",
+   "titulo_es": "Set de 3 tablas de cortar de acacia con soporte",
+   "categoria": "cocina",
+   "original": "3 Pieces Book Shaped Cutting Board Set Thickened Wooden Chopping Board Set with ",
+   "precio": 17.86
+  },
+  {
+   "id": "aliexpress:1005013039501375",
+   "titulo_es": "Soporte para tablas de cortar de bambú",
+   "categoria": "cocina",
+   "original": "Bamboo Chopping Board Rack No-Install Bamboo Cutting Board Stand Long-Lasting Ve",
+   "precio": 14.81
+  },
+  {
+   "id": "aliexpress:1005010399831799",
+   "titulo_es": "Aceitera de cristal pintada a mano",
+   "categoria": "cocina",
+   "original": "Home kitchen vinegar bottle hand-painted oil pot glass oil bottle seasoning bott",
+   "precio": 15.88
+  },
+  {
+   "id": "aliexpress:1005013514349006",
+   "titulo_es": "Azucarero y especieros de cerámica con cuchara",
+   "categoria": "cocina",
+   "original": "Sugar Pepper and Salt Bowls with Lid and Spoon Flora Vintage Ceramics Condiment ",
+   "precio": 16.42
+  },
+  {
+   "id": "aliexpress:1005013506604119",
+   "titulo_es": "Bote hermético para café con marcador de fecha",
+   "categoria": "cocina",
+   "original": "ABUH-Coffee Canister Airtight Bean Container Storage Tank With Date Tracker Stai",
+   "precio": 13.56
+  },
+  {
+   "id": "aliexpress:1005013423109596",
+   "titulo_es": "Organizador de cápsulas de café con tapa de madera",
+   "categoria": "cocina",
+   "original": "Large Capacity with Wood Base and Lid Kitchen Countertop Organizer Coffee Pod Ba",
+   "precio": 23.75
+  },
+  {
+   "id": "aliexpress:1005013412707294",
+   "titulo_es": "Árbol para tazas de bambú",
+   "categoria": "cocina",
+   "original": "Bamboo Mug Tree Stand with 6 Hooks Space Saving Stable Coffee Cup Holder Counter",
+   "precio": 13.1
+  },
+  {
+   "id": "aliexpress:1005011530007845",
+   "titulo_es": "Cafetera de cold brew de cristal",
+   "categoria": "cocina",
+   "original": "Ice Drip Coffee Pot New High Borosilicate Glass Drip-Style Cold Brew Sharing Pot",
+   "precio": 20.05
+  },
+  {
+   "id": "aliexpress:1005013335574480",
+   "titulo_es": "Molde para cubitos de hielo grandes",
+   "categoria": "cocina",
+   "original": "Household Big Ball Ice Cube Ice Maker Whiskey Round Large Ice Hockey Mould Refri",
+   "precio": 24.68
+  },
+  {
+   "id": "aliexpress:1005013219184902",
+   "titulo_es": "Guantes de horno resistentes al calor",
+   "categoria": "cocina",
+   "original": "Heat-resistant oven baking factory gloves, high-temperature resistant, burn-proo",
+   "precio": 27.67
+  },
+  {
+   "id": "aliexpress:1005011666695434",
+   "titulo_es": "Escurridor y rallador 3 en 1",
+   "categoria": "cocina",
+   "original": "3 in 1 Multifunctional Stainless Steel Basin and Grater Vegetable Cutter Grater ",
+   "precio": 12.17
+  },
+  {
+   "id": "aliexpress:1005012946169600",
+   "titulo_es": "Jarra medidora de acero de 1 litro",
+   "categoria": "cocina",
+   "original": "ALIM-Measuring Jug 1L Stainless Steel Stainless Steel Measuring Cups Kitchen Mix",
+   "precio": 10.35
+  },
+  {
+   "id": "aliexpress:1005012901649644",
+   "titulo_es": "Papel de horno precortado",
+   "categoria": "cocina",
+   "original": "Parchment Paper for Baking Non Curl Precut Sheets Nonstick Oven Liner Heat Resis",
+   "precio": 21.82
+  },
+  {
+   "id": "aliexpress:1005013119051941",
+   "titulo_es": "Sandwichera de sartén antiadherente",
+   "categoria": "cocina",
+   "original": "Grilled Sandwich and Panini Maker Pan with Non-Stick Plates Bun And Hotdog Toast",
+   "precio": 17.63
+  },
+  {
+   "id": "aliexpress:1005010746017558",
+   "titulo_es": "Cafetera de émbolo de acero de doble pared",
+   "categoria": "cocina",
+   "original": "350ml/800ml/1000ml French Press Coffee Maker Stainless Steel Double Walled Insul",
+   "precio": 20.82
+  },
+  {
+   "id": "aliexpress:1005005401559696",
+   "titulo_es": "Cafetera moka italiana de 4, 6 o 9 tazas",
+   "categoria": "cocina",
+   "original": "4/6/9 Cups Moka Pot Caffe Machine Espresso Cups Coffee Makers Latte Percolator S",
+   "precio": 10.99,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005012778995344",
+   "titulo_es": "Hervidor de cuello de cisne de acero",
+   "categoria": "cocina",
+   "original": "Gooseneck Tea Kettle with Lid Food-Grade Stainless Steel Kettle with Filter Stea",
+   "precio": 12.95
+  },
+  {
+   "id": "aliexpress:1005006059502193",
+   "titulo_es": "Botella térmica que marca la temperatura",
+   "categoria": "cocina",
+   "original": "500ml Smart Water Bottle Stainless Steel Thermos Temperature Display Leakproof V",
+   "precio": 10.36
+  },
+  {
+   "id": "aliexpress:1005010297150817",
+   "titulo_es": "Hervidor eléctrico de 1,2 litros con apagado automático",
+   "categoria": "electrodomesticos",
+   "original": "1.2L Automatic Power-off Kettle Electric Kettle Household",
+   "precio": 29.92,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005011890900050",
+   "titulo_es": "Espumador de leche eléctrico para frío y caliente",
+   "categoria": "electrodomesticos",
+   "original": "Whisk Dense Milk Foam Electric Milk Foam Machine Coffee Latte Flower Mixer Hot a",
+   "precio": 27.13
+  },
+  {
+   "id": "aliexpress:1005012941583607",
+   "titulo_es": "Batidora portátil recargable por USB",
+   "categoria": "electrodomesticos",
+   "original": "6 Blades Electric Juicer Cup 2 Cups Travel Portable Juicer Mixer Usb Charge Fres",
+   "precio": 17.95,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005013124382496",
+   "titulo_es": "Licuadora portátil inalámbrica de 800 ml",
+   "categoria": "electrodomesticos",
+   "original": "800 ML Portable Juicing Bucket with Straw and Strap Large Capacity Electric Juic",
+   "precio": 24.13
+  },
+  {
+   "id": "aliexpress:1005013533955116",
+   "titulo_es": "50 papeles para freidora de aire",
+   "categoria": "electrodomesticos",
+   "original": "50pcs Round Air Fryer Paper Liners Parchment Baking Paper Disposable Non Stick W",
+   "precio": 12.6,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005013342135507",
+   "titulo_es": "Bandeja de silicona con 3 compartimentos para freidora de aire",
+   "categoria": "electrodomesticos",
+   "original": "Reusable 3‑Compartment Divider Silicone Air Fryer Basket Liner Non‑Stick Baking ",
+   "precio": 13.72
+  },
+  {
+   "id": "aliexpress:1005013412248663",
+   "titulo_es": "Rejilla de 3 pisos para freidora de aire",
+   "categoria": "electrodomesticos",
+   "original": "304 Stainless Steel 3 Tier Stackable Cooling Rack Air Fryer Oven Rack Fruit Vege",
+   "precio": 15.03
+  },
+  {
+   "id": "aliexpress:1005011723457693",
+   "titulo_es": "Masajeador de pies y pantorrillas",
+   "categoria": "belleza",
+   "original": "Foot massager, foot massage machine Foot finger massage Home calf massager",
+   "precio": 27.99,
+   "destacado": true
+  },
+  {
+   "id": "aliexpress:1005010720253502",
+   "titulo_es": "Plancha y rizador 2 en 1",
+   "categoria": "belleza",
+   "original": "2-in-1 Hair Straightener Curler Volumizing Egg Roll Anti-Damage Styling Tool for",
+   "precio": 22.51
+  },
+  {
+   "id": "aliexpress:1005010720049015",
+   "titulo_es": "Rizador de cerámica de calentamiento rápido",
+   "categoria": "belleza",
+   "original": "Ceramic Glaze Curling Iron Fast Heating Quick Styling Anti-Damage Hair Curler fo",
+   "precio": 20.95
+  },
+  {
+   "id": "aliexpress:1005013513971708",
+   "titulo_es": "Ambientador automático",
+   "categoria": "hogar",
+   "original": "ABLG Automatic Perfume Dispenser Fragrance Dispensing For Air Portable Fragrance",
+   "precio": 17.84
+  },
+  {
+   "id": "aliexpress:1005013344428783",
+   "titulo_es": "Dispensador de bebidas de cristal de 3,8 litros con grifo",
+   "categoria": "hogar",
+   "original": "Large Capacity Glass Drink Dispenser 3.8L Modern Juice Jar with Faucet Clear Sea",
+   "precio": 32.26
+  }
+ ]
+}
