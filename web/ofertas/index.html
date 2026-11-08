@@ -185,6 +185,7 @@ footer a{color:var(--brand-strong)}
 </div></footer>
 <script src="/config.js"></script>
 <script src="/cuenta.js" defer></script>
+<script type="module" src="/clic.js"></script>
 <script>
 const NOMBRES = { peques: "Peques", mascotas: "Mascotas", belleza: "Belleza y cuidado", electrodomesticos: "Electrodomésticos", tecnologia: "Tecnología", cocina: "Cocina", hogar: "Hogar y deco", deporte: "Deporte", moda: "Moda", alimentacion: "Súper", viajes: "Viajes y planes", otros: "Otros" };
 const C = window.VIWAI || {}, H = { apikey: C.supabaseAnonKey, "Content-Type": "application/json" };
@@ -197,7 +198,7 @@ const params = new URLSearchParams(location.search);
 est.q = params.get("q") || ""; est.cat = params.get("cat"); $("q").value = est.q;
 
 function tarjeta(p) {
-  return `<a class="chollo" href="${esc(p.url)}" target="_blank" rel="sponsored noopener">${p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}<div>
+  return `<a class="chollo" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" target="_blank" rel="sponsored noopener">${p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}<div>
     ${p.descuento ? `<span class="d">-${p.descuento} % de verdad</span>` : ""}<span class="t">${esc(p.titulo)}</span>
     <span class="p">${eur(p.precio)}</span>${p.descuento ? `<small>Precio más bajo de los 30 días anteriores: ${eur(p.precio_min_30d)}</small>` : ""}
     <small>${esc(p.tienda)}${p.marca ? " · " + esc(p.marca) : ""}</small></div></a>`;

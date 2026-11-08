@@ -106,6 +106,11 @@ async function sincronizaRed(db, red, mod) {
         const porPrograma = new Map(tiendas.filter((t) => t.red_id === red && t.programa_id).map((t) => [String(t.programa_id), t.id]));
         const filas = (await mod.comisiones(tk)).map((c) => ({ ...c, tienda_id: porPrograma.get(String(c.programa_id)) || `${red}-${c.programa_id}` }))
           .map(({ programa_id, ...c }) => c);
+        // El id de clic solo vale si lo apuntamos nosotras (si no, la comisión entra igual, sin clic)
+        const ids = [...new Set(filas.map((c) => c.clic_id).filter(Boolean))];
+        const existen = new Set();
+        if (!SECO) for (const tr of trozos(ids, 100)) for (const x of await db.lee(`clics?select=id&id=in.(${tr.join(",")})`) || []) existen.add(x.id);
+        for (const c of filas) if (c.clic_id && !existen.has(c.clic_id)) c.clic_id = null;
         if (!SECO) for (const tr of trozos(filas, 500)) await db.inserta("comisiones", tr, "red,ref_red");
         console.log(`   ${red}: ${filas.length} comisiones de los últimos 30 días`);
       } catch (e) { avisos.push(`Comisiones: ${e.message}`); }

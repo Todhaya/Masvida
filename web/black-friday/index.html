@@ -186,6 +186,7 @@ footer a{color:var(--brand-strong)}
 
 <script src="/config.js"></script>
 <script src="/cuenta.js" defer></script>
+<script type="module" src="/clic.js"></script>
 <script>
 (async () => {
   const C = window.VIWAI || {}, H = { apikey: C.supabaseAnonKey };
@@ -206,12 +207,12 @@ footer a{color:var(--brand-strong)}
   ]);
   const nombre = id => (tiendas.find(t => t.id === id) || {}).nombre || id;
   const tt = ofertas.filter(o => o.categoria === "tienda");
-  document.getElementById("tiendas").innerHTML = tt.map(o => `<a class="tienda" href="${esc(o.url)}" target="_blank" rel="sponsored noopener"><b>${esc(nombre(o.tienda_id))}</b><span>${esc(o.titulo)}</span><i>Ver ofertas →</i></a>`).join("");
+  document.getElementById("tiendas").innerHTML = tt.map(o => `<a class="tienda" href="${esc(o.url)}" data-tienda="${esc(o.tienda_id)}" target="_blank" rel="sponsored noopener"><b>${esc(nombre(o.tienda_id))}</b><span>${esc(o.titulo)}</span><i>Ver ofertas →</i></a>`).join("");
   const ch = ofertas.filter(o => o.categoria !== "tienda");
   if (!ch.length) { document.getElementById("vacio").hidden = false; return; }
   document.getElementById("chollos").innerHTML = ch.map(o => {
     const d = o.precio && o.precio_min_30d && o.precio < o.precio_min_30d ? Math.round((1 - o.precio / o.precio_min_30d) * 100) : null;
-    return `<a class="chollo" href="${esc(o.url)}" target="_blank" rel="sponsored noopener">${o.imagen ? `<img src="${esc(o.imagen)}" alt="" loading="lazy">` : ""}<div>
+    return `<a class="chollo" href="${esc(o.url)}" data-tienda="${esc(o.tienda_id)}" target="_blank" rel="sponsored noopener">${o.imagen ? `<img src="${esc(o.imagen)}" alt="" loading="lazy">` : ""}<div>
       ${d ? `<span class="d">-${d} % de verdad</span>` : ""}<span class="t">${esc(o.titulo)}</span>
       ${o.precio ? `<span class="p">${eur(o.precio)}</span>` : ""}${o.precio_min_30d ? `<small>Precio más bajo de los 30 días anteriores: ${eur(o.precio_min_30d)}</small>` : ""}
       <small>${esc(nombre(o.tienda_id))}${o.comprobada ? " · comprobado el " + new Date(o.comprobada).toLocaleDateString("es-ES", { day: "numeric", month: "short" }) : ""}</small></div></a>`;
