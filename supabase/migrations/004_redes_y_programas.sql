@@ -6,7 +6,7 @@ insert into redes (id, nombre, panel_url, estado, notas) values
   ('amazon',        'Amazon Afiliados',  'https://afiliados.amazon.es',                           'alta',      'Programa directo. Sin cashback: sus condiciones no permiten devolver comisión a las usuarias.'),
   ('temu',          'Temu',              'https://www.temu.com/es/affiliate_recruit.html',        'alta',      'Programa directo. Hasta 35 % en pedidos de clientes nuevos y premios por invitación.'),
   ('civitatis',     'Civitatis',         'https://www.civitatis.com/es/afiliados/',               'revision',  'Programa directo. Actividades y excursiones, 8–10 %.'),
-  ('admitad',       'Admitad',           'https://store.admitad.com',                             'revision',  'Espacio web www.viwai.es como «servicio de cashback», verificado con meta etiqueta. Borrar el espacio antiguo de app (viwai.app).'),
+  ('admitad',       'Admitad',           'https://store.admitad.com',                             'alta',      'Espacio web www.viwai.es («servicio de cashback») verificado y activo el 8 nov 2026. Falta rellenar los datos de pago. Se puede borrar el espacio antiguo de app (viwai.app).'),
   ('webgains',      'Webgains',          'https://www.webgains.com',                              'revision',  'Moda, deporte y hogar europeos.'),
   ('cj',            'CJ Affiliate',      'https://members.cj.com',                                'alta',      'Cuenta activada el 8 nov 2026. Sitio promocional www.viwai.es (modelo principal: cashback). W-8BEN enviado.'),
   ('aliexpress',    'AliExpress Portals','https://portals.aliexpress.com',                        'pendiente', 'Sin darse de alta. También disponible a través de Admitad.'),
