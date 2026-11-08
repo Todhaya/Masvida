@@ -25,3 +25,21 @@
 - **Tablas**: buscador, filtros por estado con recuento, orden al pulsar la cabecera y cambio de estado de una tienda sin abrir el formulario.
 - **⌘K / Ctrl+K**: ir a una sección o buscar una tienda.
 - **Automático cada noche** (GitHub Actions): tiendas aprobadas, pendientes y rechazadas de Awin y Admitad; catálogos; comisiones de Awin y Admitad de los últimos 30 días.
+
+## Versión 2 (8 nov 2026): más gráfica
+- Cada sección tiene su color suave, como la app: lila para Hoy y el cuadro de mando, menta para dinero, azul para tiendas y avisos, mantequilla para el escaparate y el calendario, melocotón para las campañas. Cada una abre con una portada en degradado y sus cifras grandes.
+- **Cuadro de mando** (`#kpis`): todos los indicadores del periodo (7, 30 o 90 días) comparados con el periodo anterior.
+  - Embudo: visitas → aperturas → clics → ventas.
+  - Grupos de crecimiento, tráfico y conversión, dinero, tiendas, y redes y avisos.
+  - Tiendas con más clics y evolución diaria.
+- Gráficos propios en `web/admin/graficos.js`, sin librerías:
+  - donut con leyenda, donde tocar un trozo resalta su parte; en Tiendas, además, filtra la tabla, y en Hoy lleva a Tiendas ya filtrado;
+  - líneas con cruceta y cifras al pasar el ratón;
+  - barras con su cifra encima;
+  - ranking horizontal;
+  - anillos de objetivos;
+  - mini líneas dentro de las fichas.
+- La paleta de gráficos está validada para daltonismo y contraste: `#6A4CF5 #1FA37A #E8A100 #3B82F6 #E0664F #C2479A`, siempre en ese orden.
+- El calendario se ve como línea de tiempo por meses: se filtra por tipo y se marca como hecho con un toque. Las campañas se ven en una franja del año con la línea de hoy.
+- En el móvil, el menú pasa a una barra inferior con iconos.
+- Visitas, instalaciones y aperturas se cuentan solas: `web/cuenta.js`, `app/js/cuenta.js` y la función `suma_metrica`.
