@@ -1,0 +1,90 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><style>
+@font-face{font-family:J;src:url(fuentes/PlusJakartaSans-Medium.ttf);font-weight:500}
+@font-face{font-family:J;src:url(fuentes/PlusJakartaSans-SemiBold.ttf);font-weight:600}
+@font-face{font-family:J;src:url(fuentes/PlusJakartaSans-Bold.ttf);font-weight:700}
+@font-face{font-family:J;src:url(fuentes/PlusJakartaSans-ExtraBold.ttf);font-weight:800}
+:root{--ink:#0F0F0E;--lila:#7B5CFF;--lilaf:#5B3FE0;--lav:#E4DDFF;--gold:#F5B400;--cream:#FFF4C9;--peach:#FFD9C7;--mint:#CDEFDD;--sky:#D5E7FF;--butter:#FFEFB5;--bg:#FAFAF8}
+*{box-sizing:border-box;margin:0}body{font-family:J;background:#ddd;padding:20px;display:flex;flex-direction:column;gap:20px;-webkit-font-smoothing:antialiased}
+.s{width:1080px;height:1350px;position:relative;overflow:hidden;padding:96px 88px;display:flex;flex-direction:column;color:var(--ink)}
+.s h1{font-size:118px;font-weight:800;letter-spacing:-.045em;line-height:.98}
+.s h2{font-size:92px;font-weight:800;letter-spacing:-.045em;line-height:1}
+.s p{font-size:44px;font-weight:600;line-height:1.3;letter-spacing:-.01em}
+.eye{font-size:30px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:40px}
+.oro{color:var(--gold)}.lil{color:var(--lilaf)}
+.pie{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;font-size:30px;font-weight:700}
+.pie img{height:62px}
+.num{font-size:200px;font-weight:800;letter-spacing:-.06em;line-height:.9;margin-bottom:30px}
+.dark{background:var(--ink);color:#FAFAF8}
+.tag{display:inline-block;background:var(--gold);color:var(--ink);border-radius:999px;padding:14px 30px;font-size:34px;font-weight:800;margin-top:44px;align-self:flex-start}
+.tel{position:absolute;width:430px;border-radius:56px;box-shadow:0 0 0 12px var(--ink),0 50px 90px -40px rgba(30,20,60,.55);overflow:hidden;background:#fff}
+.tel img{display:block;width:100%}
+.precio{display:flex;gap:28px;align-items:baseline;margin-top:50px}
+.precio s{font-size:64px;opacity:.45;font-weight:700}.precio b{font-size:110px;font-weight:800;letter-spacing:-.04em}
+.fb{width:1640px;height:624px;position:relative;overflow:hidden;background:linear-gradient(120deg,#E4DDFF 0%,#E4DDFF 55%,#FFF4C9 100%);padding:0}
+.circ{position:absolute;border-radius:50%}
+</style></head><body>
+
+<!-- Portada de Facebook (1640x624). Zona segura: centro; abajo-izquierda la tapa la foto de perfil en ordenador -->
+<div class="fb" id="fb-portada">
+  <div class="circ" style="width:520px;height:520px;background:#F5B400;opacity:.18;right:260px;top:-160px"></div>
+  <div style="position:absolute;left:290px;top:130px;width:620px">
+    <div style="font-size:24px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin-bottom:22px">Ahorro sin esfuerzo para tu casa</div>
+    <div style="font-size:80px;font-weight:800;letter-spacing:-.045em;line-height:.98">Lo que ahorras,<br><span class="lil">lo vives.</span></div>
+    <div style="font-size:27px;font-weight:600;margin-top:24px;line-height:1.3">Facturas, ayudas, ofertas y la casa en orden.<br>Y una parte de lo que compras vuelve a ti.</div>
+  </div>
+  <div class="tel" style="width:260px;border-radius:38px;box-shadow:0 0 0 9px #0F0F0E,0 40px 70px -30px rgba(30,20,60,.5);right:290px;top:70px"><img src="../../web/img/inicio.jpg"></div>
+  <div class="tel" style="width:220px;border-radius:34px;box-shadow:0 0 0 8px #0F0F0E,0 40px 70px -30px rgba(30,20,60,.5);right:500px;top:190px;transform:rotate(-5deg)"><img src="../../web/img/ayudas.jpg"></div>
+</div>
+
+<!-- Carrusel 1: Black Friday -->
+<div class="s dark" id="bf-1"><span class="eye oro">Black Friday · 27 nov</span>
+  <h1>¿Rebaja<br>de verdad<br>o <span class="oro">cuento?</span></h1>
+  <p style="margin-top:50px;opacity:.85">4 trucos para que no te la cuelen este Black Friday.</p>
+  <div class="pie"><img src="../../marca/viwai-logo-blanco.svg"><span>Desliza →</span></div></div>
+<div class="s" style="background:var(--peach)" id="bf-2"><div class="num">1</div><h2>Mira el precio<br>de antes.</h2>
+  <p style="margin-top:44px">Por ley, el descuento se calcula sobre el <b>precio más bajo de los 30 días anteriores</b>. Si lo subieron en octubre para «rebajarlo» ahora, no es una rebaja.</p>
+  <div class="precio"><s>99 €</s><b>79 €</b></div><p style="font-size:34px;margin-top:10px">¿Y hace 3 semanas costaba 75 €? Entonces no es un -20 %.</p>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span>2/5</span></div></div>
+<div class="s" style="background:var(--butter)" id="bf-3"><div class="num">2</div><h2>Desconfía<br>del reloj.</h2>
+  <p style="margin-top:44px">«Quedan 2», «termina en 10 minutos»… La prisa es para que no compares.</p><p style="margin-top:30px">Si de verdad lo necesitas, seguirá teniendo sentido mañana.</p>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span>3/5</span></div></div>
+<div class="s" style="background:var(--mint)" id="bf-4"><div class="num">3</div><h2>Suma el envío<br>y la devolución.</h2>
+  <p style="margin-top:44px">Un 10 % menos no sirve si luego pagas 6 € de envío o devolverlo cuesta dinero.</p>
+  <div class="num" style="margin-top:80px">4</div><h2>Haz tu lista<br>antes.</h2>
+  <p style="margin-top:30px">Lo que no estaba en la lista no es ahorro: es gasto rebajado.</p>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span>4/5</span></div></div>
+<div class="s" style="background:var(--lav)" id="bf-5"><span class="eye lil">Lo hacemos por ti</span>
+  <h2>Chollos de Black Friday<br><span class="lil">comprobados.</span></h2>
+  <p style="margin-top:44px">Cada descuento, revisado contra el precio más bajo de los 30 días anteriores. Si no es rebaja de verdad, no sale.</p>
+  <span class="tag">viwai.es/black-friday</span>
+  <div class="tel" style="right:-60px;bottom:-120px;width:420px;transform:rotate(-6deg)"><img src="../../web/img/reembolso.jpg"></div>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span></span></div></div>
+
+<!-- Carrusel 2: qué es Viwai -->
+<div class="s" style="background:var(--lav)" id="qv-1"><span class="eye">Hola, somos Viwai</span>
+  <h1>Lo que<br>ahorras,<br><span class="lil">lo vives.</span></h1>
+  <p style="margin-top:50px">Una app gratis para ahorrar en casa sin esfuerzo. Te contamos qué hace →</p>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span>1/4</span></div></div>
+<div class="s" style="background:var(--peach)" id="qv-2"><span class="eye">Ahorra en lo de siempre</span>
+  <h2>Facturas<br>y ayudas.</h2>
+  <p style="margin-top:40px;max-width:520px">Revisamos tu luz, gas, móvil y seguros con tu consumo real. Y buscamos las ayudas, bonos y deducciones que te tocan.</p>
+  <div class="tel" style="right:70px;top:420px"><img src="../../web/img/facturas.jpg"></div>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span>2/4</span></div></div>
+<div class="s" style="background:var(--mint)" id="qv-3"><span class="eye">La casa en orden</span>
+  <h2>Menú, armario,<br>tareas y papeles.</h2>
+  <p style="margin-top:40px;max-width:520px">Organizar también es ahorrar: menos comida tirada, menos compras repetidas, ningún seguro que se renueve solo.</p>
+  <div class="tel" style="right:70px;top:440px"><img src="../../web/img/menu.jpg"></div>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span>3/4</span></div></div>
+<div class="s dark" id="qv-4"><span class="eye oro">Y una parte vuelve a ti</span>
+  <h2>Compra al mismo precio.<br><span class="oro">Te devolvemos parte.</span></h2>
+  <p style="margin-top:44px;opacity:.85">En las tiendas asociadas, la tienda nos paga por recomendarla y te devolvemos una parte. A ti te cuesta lo mismo.</p>
+  <span class="tag">Apúntate en viwai.es</span>
+  <div class="pie"><img src="../../marca/viwai-logo-blanco.svg"><span>4/4</span></div></div>
+
+<!-- Post 3: nombre -->
+<div class="s" style="background:var(--cream)" id="nombre-1"><span class="eye">¿Por qué Viwai?</span>
+  <h2>En hawaiano,<br><span class="lil">wai</span> es agua<br>y <span class="lil">waiwai</span>,<br>abundancia.</h2>
+  <p style="margin-top:50px">Juntamos <b>vida</b> y <b>abundancia</b>: ahorrar no es el fin, es para vivir mejor.</p>
+  <p style="margin-top:24px;opacity:.7">Y sí, también suena a vida guay ;)</p>
+  <div class="pie"><img src="../../marca/viwai-logo-color.svg"><span></span></div></div>
+</body></html>

@@ -48,7 +48,11 @@ export async function* productos(prog, max) {
   for (const feed of prog.feeds) {
     if (n >= max) return;
     const r = await fetch(feed);
-    if (!r.ok || !r.body) throw new Error(`Admitad feed ${prog.nombre}: ${r.status}`);
+    if (!r.ok || !r.body) {
+      // El motivo viene en el cuerpo (sin la dirección del feed, que lleva nuestro identificador)
+      const motivo = (await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 300);
+      throw new Error(`Admitad feed ${prog.nombre}: ${r.status} ${motivo}`);
+    }
     for await (const o of ofertasDeFlujo(textoDeRespuesta(r), max - n)) { n++; yield o; }
   }
 }
