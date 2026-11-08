@@ -11,6 +11,9 @@
 <script>if(!/[?&]demo\b/.test(location.search))document.documentElement.classList.add("bv-espera")</script>
 <meta charset="utf-8">
 <title>Viwai</title>
+<link rel="stylesheet" href="diseno/tokens.css">
+<link rel="stylesheet" href="diseno/componentes.css">
+<script src="diseno/iconos.js"></script>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
@@ -48,7 +51,7 @@ body[data-sec] .type{background:#F7F5F1}body[data-sec] .avatar{background:#FFFFF
   --sage:#F4F4F2; --sage-ink:#0B0B0B; --lilac:#E4DDFF; --lilac-ink:#2A1A6E; --gold:#F5B400; --cream:#FFF4C9;
   --butter:#F4F4F2; --butter-ink:#0B0B0B; --sky:#F4F4F2; --sky-ink:#0B0B0B;
   --ok:#17804B; --ok-soft:#DFF2E7; --warn:#8A5A00; --warn-soft:#FBEFD3;
-  --peach:#FFF4C9; --lav:#E4DDFF; --mint:#CDEFDD; --sky:#D5E7FF; --butter:#FFF4C9; --p-ink:#0B0B0B;
+  --peach:var(--vw-mantequilla); --lav:var(--vw-lavanda); --mint:var(--vw-menta); --sky:var(--vw-cielo); --butter:var(--vw-mantequilla); --p-ink:var(--vw-tinta);
   --f-display:"Plus Jakarta Sans","Helvetica Neue",Arial,sans-serif;
   --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
@@ -423,100 +426,8 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .chip.sm{padding:5px 10px;font-size:12px}.vr .chips{flex-wrap:wrap;overflow:visible}
 .ad{background:var(--bg);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px}.ad span{font-size:14px}
 
-/* Ahorro: panel gráfico (en qué se va el dinero, cuánto puedes ahorrar) */
-.adb{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
-.ad-hero{border-radius:26px;padding:20px;background:linear-gradient(140deg,var(--mint),var(--surface) 80%);display:flex;flex-direction:column;gap:2px;position:relative;overflow:hidden}
-.ad-hero:after{content:"";position:absolute;right:-50px;top:-60px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(31,163,122,.22),transparent 70%)}
-.ad-hero .lab{font-size:13px;font-weight:700;color:var(--muted)}.ad-hero .big{font-size:44px;font-weight:800;letter-spacing:-.045em;line-height:1.05}
-.ad-bar{height:12px;border-radius:99px;background:rgba(0,0,0,.07);overflow:hidden;margin:10px 0 4px}.ad-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1FA37A,#6A4CF5);transition:width .6s}
-.ad-card{background:var(--surface);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.ad-card h2{margin:0;font-size:17px}
-.ad-don{display:grid;grid-template-columns:128px 1fr;gap:14px;align-items:center}
-.ad-don svg{width:128px;height:128px}.ad-don circle.s{cursor:pointer;transition:opacity .2s,stroke-width .2s}.ad-don .off{opacity:.22}
-.ad-don .cv{font-weight:800;font-size:17px;fill:var(--ink);letter-spacing:-.03em}.ad-don .cl{font-weight:700;font-size:9px;fill:var(--muted)}
-.ad-leg{display:flex;flex-direction:column;gap:2px}
-.ad-leg button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:6px 6px;border-radius:10px;font-family:inherit;font-weight:600;font-size:13.5px;color:var(--ink);text-align:left;cursor:pointer}
-.ad-leg button i{width:10px;height:10px;border-radius:4px;flex:none}.ad-leg button b{margin-left:auto;white-space:nowrap;padding-left:6px}.ad-leg button.off{opacity:.35}
-.ad-det{border-radius:18px;padding:12px 14px;background:var(--sage);display:flex;align-items:center;gap:12px;animation:adIn .25s ease-out}
-.ad-det span{flex:1;font-size:13.5px}.ad-det b{display:block;font-size:15px}
-@keyframes adIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.ad-split{display:flex;height:14px;border-radius:99px;overflow:hidden;gap:2px}.ad-split i{display:block;height:100%}
-.ad-row{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}.ad-row b{color:var(--ink)}.ad-row i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
-@media (prefers-reduced-motion:reduce){.ad-bar i,.ad-det{transition:none;animation:none}}
-.kpis button>.ring{position:absolute;top:12px;right:12px}
 
-/* Hogar: resumen gráfico */
-.hd{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
-.hd-hero{border-radius:26px;padding:18px;background:linear-gradient(140deg,var(--sky),var(--surface) 82%);display:flex;align-items:center;gap:16px}
-.hd-hero b{display:block;font-size:20px;letter-spacing:-.02em}.hd-hero span{font-size:13px;color:var(--muted)}
-.hd-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.hd-t{border:0;border-radius:20px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;cursor:pointer;color:var(--p-ink);font:inherit;transition:transform .15s}
-.hd-t:active{transform:scale(.97)}.hd-t b{font-size:26px;font-weight:800;letter-spacing:-.04em;line-height:1.1}.hd-t span{font-size:12.5px;font-weight:600}
-.hd-t .dots{display:flex;gap:3px;margin-top:6px}.hd-t .dots i{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.18)}.hd-t .dots i.on{background:currentColor}
-.hd-h{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 2px -4px}
-.hd-tl{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x mandatory}
-.hd-ev{flex:none;width:150px;scroll-snap-align:start;border:0;background:var(--surface);border-radius:20px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px;cursor:pointer;font:inherit;color:var(--ink)}
-.hd-ev .d{display:inline-flex;align-self:flex-start;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:800}
-.hd-ev .n{font-weight:700;font-size:14px;line-height:1.25}
-.hd-ev .pb{height:6px;border-radius:99px;background:var(--line);overflow:hidden}.hd-ev .pb i{display:block;height:100%;border-radius:99px}
-/* Tú: camino de niveles */
-.lvt{display:flex;align-items:flex-start;justify-content:space-between;position:relative;margin:6px 4px 18px}
-.lvt:before{content:"";position:absolute;left:14px;right:14px;top:14px;height:4px;border-radius:99px;background:var(--line)}
-.lvt .fill{position:absolute;left:14px;top:14px;height:4px;border-radius:99px;background:linear-gradient(90deg,#6A4CF5,#1FA37A)}
-.lvt .st{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;width:56px;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
-.lvt .st i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:var(--surface);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted)}
-.lvt .st.on i{background:#6A4CF5;color:#fff;box-shadow:none}.lvt .st.cur i{box-shadow:0 0 0 4px rgba(106,76,245,.22)}.lvt .st.on{color:var(--ink)}
-.lvt .st small{font-weight:800;color:#1A8A66}
 
-/* ===== Kit visual v2: tarjetas con icono, cuentas atrás, grupos y héroes en degradado ===== */
-.vh{border-radius:26px;padding:18px;display:flex;gap:16px;align-items:center;position:relative;overflow:hidden;background:linear-gradient(140deg,var(--vt,var(--lav)),var(--surface) 85%)}
-.vh:after{content:"";position:absolute;right:-50px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%);pointer-events:none}
-.vh .tx{display:flex;flex-direction:column;gap:2px;min-width:0;position:relative;z-index:1}
-.vh .k{font-size:12.5px;font-weight:700;color:var(--muted)}.vh .t{font-size:21px;font-weight:800;letter-spacing:-.03em;line-height:1.15}.vh .s{font-size:13px;color:var(--muted)}
-.vh .num{font-size:40px;font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
-.pills{display:flex;gap:6px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 11px;font-size:12.5px;font-weight:800;background:var(--surface)}
-.pill i{width:8px;height:8px;border-radius:50%;background:var(--c,currentColor)}
-.vg{display:flex;flex-direction:column;gap:8px}
-.vg-h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 2px 0}
-.vg-h em{font-style:normal;background:var(--surface);border-radius:99px;padding:1px 8px;letter-spacing:0}
-.vi{background:var(--surface);border-radius:22px;padding:14px;display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;box-shadow:0 1px 2px rgba(15,15,14,.04),0 8px 24px -18px rgba(30,20,60,.25);text-align:left;width:100%;border:0;font:inherit;color:var(--ink)}
-.vi .ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:var(--p-ink)}.vi .ic svg{width:22px;height:22px}
-.vi .bd{display:flex;flex-direction:column;gap:3px;min-width:0}.vi .n{font-weight:800;font-size:15.5px;letter-spacing:-.01em;line-height:1.25}
-.vi .m{font-size:12.5px;color:var(--muted)}.vi .nt{font-size:13px;color:var(--muted);line-height:1.35}
-.vi .cd{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:54px;height:54px;border-radius:16px;font-variant-numeric:tabular-nums}
-.vi .cd b{font-size:20px;font-weight:800;line-height:1;letter-spacing:-.03em}.vi .cd small{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
-.vi .full{grid-column:1/-1;display:flex;flex-direction:column;gap:8px}
-.vi .btns .btn{padding:7px 13px;font-size:13px}
-.hb2{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}.hb2 i{display:block;height:100%;border-radius:99px}
-.ckb{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--bg);font-size:18px;font-weight:900;color:var(--muted);display:grid;place-items:center;transition:transform .15s,background .2s}
-.ckb:active{transform:scale(.9)}.ckb.on{background:#1FA37A;border-color:#1FA37A;color:#fff}
-.yr{display:grid;grid-template-columns:repeat(12,46px);gap:6px;overflow-x:auto;scrollbar-width:none;padding:3px 2px}.yr::-webkit-scrollbar{display:none}
-.yr button{border:0;background:var(--surface);border-radius:12px;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase}
-.yr button span{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;min-height:6px;max-width:28px}.yr button span i{width:6px;height:6px;border-radius:50%}
-.yr button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.yr button.hoy{box-shadow:inset 0 0 0 2px var(--ink)}
-.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.qa button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:700;color:var(--ink);text-align:center;line-height:1.2}
-.qa button i{width:56px;height:56px;border-radius:20px;display:grid;place-items:center;color:var(--p-ink);transition:transform .15s}.qa button:active i{transform:scale(.92)}.qa svg{width:24px;height:24px}
-.tl2{display:flex;flex-direction:column}
-.tl2 button{border:0;background:transparent;display:grid;grid-template-columns:40px 1fr 14px;gap:12px;align-items:start;text-align:left;font:inherit;color:var(--ink);padding:0;width:100%}
-.tl2 .rl{display:flex;flex-direction:column;align-items:center;align-self:stretch}
-.tl2 .rl i{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;color:var(--p-ink);flex:none}.tl2 .rl i svg{width:19px;height:19px}
-.tl2 .rl:after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0;min-height:10px}
-.tl2 button:last-child .rl:after{display:none}
-.tl2 .bd{padding:2px 0 14px;display:flex;flex-direction:column;gap:2px}.tl2 b{font-size:15px;line-height:1.3}.tl2 small{font-size:12.5px;color:var(--muted)}
-.tl2 em{font-style:normal;color:var(--muted);font-size:20px;padding-top:8px}
-.rail2{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;padding:2px 2px 6px}.rail2::-webkit-scrollbar{display:none}
-.sv{flex:none;width:170px;scroll-snap-align:start;border:0;border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:var(--p-ink)}
-.sv i{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.6);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
-.sv b{font-size:15.5px}.sv span{font-size:12.5px;opacity:.8}.sv strong{font-size:20px;letter-spacing:-.03em}
-.sv .go{align-self:flex-start;margin-top:4px;background:var(--ink);color:var(--bg);border-radius:99px;padding:7px 13px;font-size:12.5px;font-weight:800}
-.wx2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.wx2>div{border-radius:20px;padding:12px 14px;display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center}
-.wx2 i{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.6);display:grid;place-items:center}.wx2 i svg{width:19px;height:19px}
-.wx2 b{display:block;font-size:14.5px;line-height:1.2}.wx2 small{font-size:11.5px;opacity:.75}
-.fb{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.fb:last-child{border-bottom:0}
-.fb .n{font-weight:800}.fb .m{font-size:12.5px;color:var(--muted)}.fb .p{font-size:20px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.fb .tr{grid-column:1/-1;height:10px;border-radius:99px;background:var(--sunk);overflow:hidden}.fb .tr i{display:block;height:100%;border-radius:99px}
 </style>
 </head>
 <body>
@@ -524,7 +435,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 
 <div class="app">
   <div class="top">
-    <div><button class="backb" id="back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg><span id="back-l">Ahorro</span></button><div class="eyebrow" id="eyebrow">Viwai · ahorro sin esfuerzo</div><h1 id="title">Lo que ahorras, lo vives</h1></div>
+    <div><button class="backb" id="back" hidden><svg data-ico="atras"></svg><span id="back-l">Ahorro</span></button><div class="eyebrow" id="eyebrow">Viwai · ahorro sin esfuerzo</div><h1 id="title">Lo que ahorras, lo vives</h1></div>
     <div style="display:flex;gap:8px;align-items:center"><span class="demo">Prototipo</span><button class="avatar" data-v="perfil" aria-label="Tu perfil">L<img class="fi" src="img/fotos/persona-laura.jpg" alt="" onerror="this.remove()"></button></div>
   </div>
 
@@ -532,11 +443,11 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
     <div class="qa" id="qa"></div>
     <div class="bento">
       <button class="tile wide" data-v="facturas"><span>Podrías ahorrar al año</span><span class="big" id="b-save">0 €</span><span id="b-save-sub">Revisa tu primera factura</span></button>
-      <button class="tile t-lav" data-v="ayudas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><span class="big" id="b-aids">0</span><span>ayudas que te pueden corresponder</span></button>
-      <button class="tile t-mint" data-v="facturas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></svg></span><span class="big" id="b-bills">0/0</span><span>facturas revisadas</span></button>
-      <button class="tile t-butter2" data-v="ofertas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg></span><span class="big" id="b-offers">0</span><span>ofertas para tu perfil</span></button>
-      <button class="tile t-sky2" data-v="docs"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><span class="big" id="b-docd">28 d</span><span id="b-docn">para que venza tu seguro</span></button>
-      <button class="tile wide dark" style="background:var(--ink);color:#FAFAF8" data-v="perfil"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:#FAFAF8" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
+      <button class="tile t-lav" data-v="ayudas"><span class="tic"><svg data-ico="ayudas"></svg></span><span class="big" id="b-aids">0</span><span>ayudas que te pueden corresponder</span></button>
+      <button class="tile t-mint" data-v="facturas"><span class="tic"><svg data-ico="facturas"></svg></span><span class="big" id="b-bills">0/0</span><span>facturas revisadas</span></button>
+      <button class="tile t-butter2" data-v="ofertas"><span class="tic"><svg data-ico="ofertas"></svg></span><span class="big" id="b-offers">0</span><span>ofertas para tu perfil</span></button>
+      <button class="tile t-sky2" data-v="docs"><span class="tic"><svg data-ico="escudo"></svg></span><span class="big" id="b-docd">28 d</span><span id="b-docn">para que venza tu seguro</span></button>
+      <button class="tile wide dark" style="background:var(--ink);color:#FAFAF8" data-v="perfil"><span class="tic"><svg data-ico="estrella"></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:#FAFAF8" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
     </div>
     <div class="wx2" id="wx2"></div>
     <div id="home-dash" class="view"></div>
@@ -583,11 +494,11 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   <section class="view" id="v-ahorro" hidden>
     <div id="ahorro-dash"></div>
     <div class="hub">
-      <button class="hr" data-v="facturas"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></i><span><b>Tus facturas</b><small>Luz, gas, fibra, seguros, alarma, banco</small></span><span class='tag' id='tag-facturas'></span></button>
-      <button class="hr" data-v="luz"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i><span><b>Tu consumo de luz</b><small>Conectado con Datadis, gratis</small></span><span class='tag' id='tag-luz'></span></button>
-      <button class="hr" data-v="gasolina"><i style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 8h6"/></svg></i><span><b>Gasolina</b><small>La más barata para ti, con tus tarjetas</small></span><span class='tag' id='tag-gasolina'></span></button>
-      <button class="hr" data-v="ayudas"><i style="background:var(--lav)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></i><span><b>Ayudas y ventajas</b><small>Subvenciones según tu perfil y otras bonificaciones</small></span><span class='tag' id='tag-ayudas'></span></button>
-      <button class="hr" data-v="reembolso"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2"/></svg></i><span><b>Tu reembolso</b><small>Lo que te devolvemos por tus compras</small></span><span class='tag' id='tag-reembolso'></span></button>
+      <button class="hr" data-v="facturas"><i style="background:var(--peach)"><svg data-ico="facturas"></svg></i><span><b>Tus facturas</b><small>Luz, gas, fibra, seguros, alarma, banco</small></span><span class='tag' id='tag-facturas'></span></button>
+      <button class="hr" data-v="luz"><i style="background:var(--butter)"><svg data-ico="luz"></svg></i><span><b>Tu consumo de luz</b><small>Conectado con Datadis, gratis</small></span><span class='tag' id='tag-luz'></span></button>
+      <button class="hr" data-v="gasolina"><i style="background:var(--sky)"><svg data-ico="gasolina"></svg></i><span><b>Gasolina</b><small>La más barata para ti, con tus tarjetas</small></span><span class='tag' id='tag-gasolina'></span></button>
+      <button class="hr" data-v="ayudas"><i style="background:var(--lav)"><svg data-ico="ayudas"></svg></i><span><b>Ayudas y ventajas</b><small>Subvenciones según tu perfil y otras bonificaciones</small></span><span class='tag' id='tag-ayudas'></span></button>
+      <button class="hr" data-v="reembolso"><i style="background:var(--mint)"><svg data-ico="reembolso"></svg></i><span><b>Tu reembolso</b><small>Lo que te devolvemos por tus compras</small></span><span class='tag' id='tag-reembolso'></span></button>
     </div>
   </section>
 
@@ -595,16 +506,16 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
     <div id="hogar-dash"></div>
     <div class="hub">
       <span class="hub-t">Casa en orden</span>
-      <button class="hr" data-v="docs"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></i><span><b>Documentos y fechas</b><small>ITV, DNI, seguros, garantías</small></span><span class='tag' id='tag-docs'></span></button>
-      <button class="hr" data-v="pedidos"><i style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg></i><span><b>Pedidos y devoluciones</b><small>Dónde está cada pedido y hasta cuándo devolverlo</small></span><span class='tag' id='tag-pedidos'></span></button>
-      <button class="hr" data-v="wallet"><i style="background:var(--lav)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i><span><b>Wallet</b><small>Tarjetas de fidelización y entradas</small></span><span class='tag' id='tag-wallet'></span></button>
-      <button class="hr" data-v="mant"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/></svg></i><span><b>Mantenimiento</b><small>Caldera, filtros y aparatos</small></span><span class='tag' id='tag-mant'></span></button>
+      <button class="hr" data-v="docs"><i style="background:var(--peach)"><svg data-ico="documentos"></svg></i><span><b>Documentos y fechas</b><small>ITV, DNI, seguros, garantías</small></span><span class='tag' id='tag-docs'></span></button>
+      <button class="hr" data-v="pedidos"><i style="background:var(--sky)"><svg data-ico="pedidos"></svg></i><span><b>Pedidos y devoluciones</b><small>Dónde está cada pedido y hasta cuándo devolverlo</small></span><span class='tag' id='tag-pedidos'></span></button>
+      <button class="hr" data-v="wallet"><i style="background:var(--lav)"><svg data-ico="wallet"></svg></i><span><b>Wallet</b><small>Tarjetas de fidelización y entradas</small></span><span class='tag' id='tag-wallet'></span></button>
+      <button class="hr" data-v="mant"><i style="background:var(--butter)"><svg data-ico="mantenimiento"></svg></i><span><b>Mantenimiento</b><small>Caldera, filtros y aparatos</small></span><span class='tag' id='tag-mant'></span></button>
       <span class="hub-t">Organización familiar</span>
-      <button class="hr" data-v="armario"><i style="background:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3c-.5 1.5-2 2.5-4 2.5S8.5 4.5 8 3z"/></svg></i><span><b>Armario</b><small>Uno por persona, tallas y cesto de la ropa</small></span><span class='tag' id='tag-armario'></span></button>
-      <button class="hr" data-v="tareas"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></i><span><b>Tareas de casa</b><small>Repartidas entre todos, con premios</small></span><span class='tag' id='tag-tareas'></span></button>
-      <button class="hr" data-v="cal"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></i><span><b>Calendario familiar</b><small>Cumpleaños, extraescolares, custodias</small></span><span class='tag' id='tag-cal'></span></button>
-      <button class="hr" data-v="menu"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M2 10h20M9 6c0-1.5 1-2 1-3M14 6c0-1.5 1-2 1-3"/></svg></i><span><b>Menú y compra</b><small>El menú de la semana y la lista hecha</small></span><span class='tag' id='tag-menu'></span></button>
-      <button class="hr" data-v="eventos"><i style="background:var(--lav)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l5-14 9 9z"/><path d="M14 4l1 2M19 6l-2 1M20 11l-2-.5"/></svg></i><span><b>Eventos</b><small>Cumpleaños y viajes con gastos compartidos</small></span><span class='tag' id='tag-eventos'></span></button>
+      <button class="hr" data-v="armario"><i style="background:var(--sky)"><svg data-ico="armario"></svg></i><span><b>Armario</b><small>Uno por persona, tallas y cesto de la ropa</small></span><span class='tag' id='tag-armario'></span></button>
+      <button class="hr" data-v="tareas"><i style="background:var(--butter)"><svg data-ico="tareas"></svg></i><span><b>Tareas de casa</b><small>Repartidas entre todos, con premios</small></span><span class='tag' id='tag-tareas'></span></button>
+      <button class="hr" data-v="cal"><i style="background:var(--mint)"><svg data-ico="calendario"></svg></i><span><b>Calendario familiar</b><small>Cumpleaños, extraescolares, custodias</small></span><span class='tag' id='tag-cal'></span></button>
+      <button class="hr" data-v="menu"><i style="background:var(--peach)"><svg data-ico="menu"></svg></i><span><b>Menú y compra</b><small>El menú de la semana y la lista hecha</small></span><span class='tag' id='tag-menu'></span></button>
+      <button class="hr" data-v="eventos"><i style="background:var(--lav)"><svg data-ico="eventos"></svg></i><span><b>Eventos</b><small>Cumpleaños y viajes con gastos compartidos</small></span><span class='tag' id='tag-eventos'></span></button>
     </div>
   </section>
 
@@ -634,8 +545,8 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   <section class="view" id="v-perfil" hidden>
     <div class="level" id="level"></div>
     <div class="card" id="refwin"></div>
-    <button class="hr" data-v="familia"><i style="background:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 14.5c3 0 6 1.8 6 5.5"/></svg></i><span><b>Tu familia y casa compartida</b><small>Quién vive en casa y quién la gestiona contigo</small></span><span class='tag' id='tag-familia'></span></button>
-    <button class="hr" data-v="dinero"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i><span><b>Mi dinero</b><small>Conecta tu banco y te decimos dónde ahorrar más</small></span><span class="tag new">2,99 €/mes</span></button>
+    <button class="hr" data-v="familia"><i style="background:var(--mint)"><svg data-ico="familia"></svg></i><span><b>Tu familia y casa compartida</b><small>Quién vive en casa y quién la gestiona contigo</small></span><span class='tag' id='tag-familia'></span></button>
+    <button class="hr" data-v="dinero"><i style="background:var(--peach)"><svg data-ico="dinero"></svg></i><span><b>Mi dinero</b><small>Conecta tu banco y te decimos dónde ahorrar más</small></span><span class="tag new">2,99 €/mes</span></button>
     <div class="card"><div class="card-h"><h2>Tu reembolso sube</h2></div><p class="muted small" style="margin:0">Viwai es gratis y completa desde el primer día. Cada amiga que se une te sube de nivel, y cuanto más alto, más dinero te devolvemos en tus compras y reservas.</p><div id="levels"></div></div>
     <div class="card">
       <div class="card-h"><h2>Tu perfil</h2><span class="saved" id="saved"></span></div>
@@ -646,11 +557,11 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 </div>
 
 <nav class="tabs" aria-label="Secciones"><div class="in" id="tabs">
-  <button data-v="inicio" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>Inicio</button>
-  <button data-v="ahorro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.6-1-1.7-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.3 0-2.4-.5-3-1.5M12 6v2M12 16v2"/></svg>Ahorro</button>
-  <button data-v="ofertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>Ofertas</button>
-  <button data-v="hogar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Hogar</button>
-  <button data-v="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Tú</button>
+  <button data-v="inicio" aria-current="page"><svg data-ico="inicio"></svg>Inicio</button>
+  <button data-v="ahorro"><svg data-ico="ahorro"></svg>Ahorro</button>
+  <button data-v="ofertas"><svg data-ico="ofertas"></svg>Ofertas</button>
+  <button data-v="hogar"><svg data-ico="hogar"></svg>Hogar</button>
+  <button data-v="perfil"><svg data-ico="perfil"></svg>Tú</button>
 </div></nav>
 <div class="toast" id="toast" hidden></div>
 
@@ -800,7 +711,7 @@ function renderOffers(){
     return;
   }
   if(cat!=="para"){const c=CATS.find(x=>x[0]===cat),list=OFF.filter(o=>o.c===cat&&fits(o));
-    $("#offers").innerHTML=`<div class="row-h"><button class="backb" data-cat="para" style="margin:0">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>'}<span>Todas las categorías</span></button></div><div class="pk-h"><i style="background:var(--${CCOL[cat]});color:var(--p-ink)">${ci(cat)}</i><b>${c[1]}</b></div>`+(list.length?`<div class="offers">${list.map(card).join("")}</div>`:'<div class="aid">No hay ofertas de esta categoría para tu perfil.</div>');return}
+    $("#offers").innerHTML=`<div class="row-h"><button class="backb" data-cat="para" style="margin:0">${viwaiIcono("atras")}<span>Todas las categorías</span></button></div><div class="pk-h"><i style="background:var(--${CCOL[cat]});color:var(--p-ink)">${ci(cat)}</i><b>${c[1]}</b></div>`+(list.length?`<div class="offers">${list.map(card).join("")}</div>`:'<div class="aid">No hay ofertas de esta categoría para tu perfil.</div>');return}
   const mine=CATS.filter(([k])=>catOn(k)).sort((a,b)=>a[2]-b[2]),others=CATS.filter(([k])=>!catOn(k));
   const top=OFF.filter(o=>forYou(o)&&CATS.find(c=>c[0]===o.c)[2]<=2).sort((a,b)=>pctOf(b)-pctOf(a)).slice(0,6);
   const capr=OFF.filter(o=>fits(o)&&o.o>=49&&catOn(o.c)).sort((a,b)=>pctOf(b)-pctOf(a));
@@ -906,7 +817,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-fl]");if(!
 const REEMB=[["Pienso para gato · Mascotas","0,76 €","Disponible"],["Sérum de vitamina C","0,36 €","Disponible"],["Escapada 2 noches · Viajes","3,56 €","Pendiente"],["Cambio de tarifa de luz","8,00 €","Disponible"],["Zapatillas de running","0,90 €","Disponible"],["Fibra y móvil","2,54 €","Pendiente"]];
 
 /* Panel de Ahorro: en qué se va el dinero cada mes y cuánto se puede ahorrar */
-const AD_PAL=["#6A4CF5","#1FA37A","#E8A100","#3B82F6","#E0664F","#C2479A"];
+const AD_PAL=[1,2,3,4,5,6].map(i=>getComputedStyle(document.documentElement).getPropertyValue("--vw-g"+i).trim()||"#6A4CF5");
 let adSel=null;const e2=v=>v.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
 function renderAhorroDash(){
   const box=document.getElementById("ahorro-dash");if(!box)return;
@@ -1084,7 +995,7 @@ function renderMenu(){
      <div class="aid"><b>Ahorra en esta compra</b><span class="small">Hay ofertas en tu súper en yogures, atún y pasta. Si compras online desde Viwai, te devolvemos el ${cbNow().toLocaleString("es-ES")} %.</span><div class="btns"><button class="btn" data-v="ofertas">Ver ofertas del súper</button></div></div>`;return}
   // recetas
   const q=norm(recQ),list=Object.entries(REC).filter(([k,r])=>!q||norm(r.n).includes(q)||r.ing.some(i=>norm(i[0]).includes(q)));
-  if(recOpen){const r=REC[recOpen];$("#mn-box").innerHTML=`<button class="backb" data-mnrec="">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>'}<span>Recetas</span></button><div class="meal"><div class="ph" style="background:var(--${r.col})">${r.n[0]}${FOTO("receta",r.n)}</div><div class="bd"><span class="sl">${r.t} min · 4 raciones</span><span class="n">${r.n}</span></div></div><div class="recd"><h2>Ingredientes</h2><ul>${r.ing.map(i=>`<li>${i[0]} · ${fq({q:i[1],u:i[2]})} <span class="muted">(${i[3]})</span></li>`).join("")}</ul><h2>Pasos</h2><ol>${r.st.map(x=>`<li>${x}</li>`).join("")}</ol></div>`;return}
+  if(recOpen){const r=REC[recOpen];$("#mn-box").innerHTML=`<button class="backb" data-mnrec="">${viwaiIcono("atras")}<span>Recetas</span></button><div class="meal"><div class="ph" style="background:var(--${r.col})">${r.n[0]}${FOTO("receta",r.n)}</div><div class="bd"><span class="sl">${r.t} min · 4 raciones</span><span class="n">${r.n}</span></div></div><div class="recd"><h2>Ingredientes</h2><ul>${r.ing.map(i=>`<li>${i[0]} · ${fq({q:i[1],u:i[2]})} <span class="muted">(${i[3]})</span></li>`).join("")}</ul><h2>Pasos</h2><ol>${r.st.map(x=>`<li>${x}</li>`).join("")}</ol></div>`;return}
   $("#mn-box").innerHTML=`<label class="search" for="rq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="rq" type="search" placeholder="Buscar por nombre o ingrediente" value="${recQ}" autocomplete="off"></label>
    ${list.map(([k,r])=>`<button class="rec" data-mnrec="${k}"><span class="th" style="background:var(--${r.col})">${r.n[0]}${FOTO("receta",r.n)}</span><span><b>${r.n}</b><small>${r.t} min · ${r.ing.map(i=>i[0]).slice(0,3).join(", ")}</small></span></button>`).join("")||'<div class="aid">No hay recetas con esa palabra.</div>'}
    <div class="btns"><button class="btn pri" data-toast="Pegarías el texto de la receta o una foto y la leeríamos por ti">Añadir receta</button></div>`;
@@ -1522,10 +1433,7 @@ const DOC0=[
 let DOCX=S.get("docx",DOC0),docCat="todo",docNew=null;
 
 const SVG=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-const ICN={coche:'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3zM7 19v1M17 19v1"/><circle cx="7.5" cy="13.5" r="1"/><circle cx="16.5" cy="13.5" r="1"/>',casa:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M10 21v-6h4v6"/>',personas:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',papeles:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
- calor:'<path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/>',escudo:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',olla:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 6c0-1 1-2 3-2s3 1 3 2"/>',ropa:'<path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0z"/>',frio:'<path d="M12 2v20M4 6l16 12M20 6 4 18"/>',gota:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',sol:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>',
- lluvia:'<path d="M7 15a5 5 0 1 1 9.6-2H17a3 3 0 0 1 0 6H7a3 3 0 0 1 0-6"/><path d="M9 20l-1 2M13 20l-1 2"/>',cruz:'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',subir:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',mas:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M12 9v7M8.5 12.5h7"/>',carro:'<circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M3 4h2l2.5 11h11L21 8H7"/>',regalo:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-3-5 0M12 8c2-4 6-3 5 0"/>',
- surtidor:'<path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 8h6"/>'};
+const ICN=new Proxy({},{get:(_,k)=>VIWAI_ICONOS[{personas:"persona",mas:"anadir-fecha",carro:"compra",cruz:"farmacia",surtidor:"gasolina"}[k]||k]||VIWAI_ICONOS.punto});
 const DCOL={coche:"sky",casa:"mint",personas:"lav",papeles:"butter"};
 const ZIC=z=>({"Calefacción":["calor","peach"],"Seguridad":["escudo","lav"],"Cocina":["olla","butter"],"Ropa":["ropa","sky"],"Coche":["coche","sky"],"Climatización":["frio","sky"],"Agua":["gota","sky"],"Agua caliente":["gota","peach"],"Exterior":["sol","mint"]}[z]||["casa","mint"]);
 const URGC=v=>v<=30?["var(--peach)","#B5452E"]:v<=90?["var(--butter)","#8A5A00"]:["var(--mint)","#17804B"];
@@ -1655,7 +1563,7 @@ function homeFeed(){
   evOn(1).forEach(e=>add(40,"mint","cal",`Mañana ${e.h||""} · ${e.t}`,e.note||"","cal"));
   return it.sort((a,b)=>b.p-a.p);
 }
-const HIC={doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',box:'<path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/>',food:'<path d="M4 10h16v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M2 10h20"/>',wash:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4"/>'};
+const HIC=new Proxy({},{get:(_,k)=>VIWAI_ICONOS[{doc:"facturas",box:"caja",cal:"calendario",task:"tarea",tool:"mantenimiento",food:"menu",wash:"lavadora"}[k]||k]||VIWAI_ICONOS.punto});
 function homeDash(){
   const box=$("#home-dash");if(!box)return;
   const qa=$("#qa");if(qa)qa.innerHTML=[["facturas","Subir factura","subir","lav"],["docs","Añadir fecha","mas","peach"],["menu","Lista de la compra","carro","mint"],["perfil","Invitar amigas","regalo","sky"]].map(([v,l,ic,c])=>`<button data-v="${v}"><i style="background:var(--${c})">${SVG(ICN[ic])}</i>${l}</button>`).join("");

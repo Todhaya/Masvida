@@ -15,6 +15,7 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 2. Cuenta de la API de Claude (lectura de facturas) y guardar la clave como secreto `ANTHROPIC_API_KEY` en Supabase.
 3. Conectar dominios a Cloudflare cuando el correo funcione: viwai.es → web, viwai.app → app.
 4. Solicitud de marca en la OEPM (clases 9 limitada a software, 35, 36, 42) con `marca/viwai-logo-color.jpg`.
+6. Pedir la clave gratuita de AEMET OpenData (opendata.aemet.es → «Obtención de API Key», con su correo) para conectar el tiempo de la app. Guardarla como secreto `AEMET_API_KEY` (no pasarla por el chat).
 5. Altas en redes de afiliación (Awin, Tradedoubler, Amazon, Temu, Civitatis). Antes de activar enlaces: alta censal en Hacienda (037), domiciliación y añadir NIF y domicilio a las páginas legales.
 
 ## Siguiente trabajo técnico (por orden)
@@ -24,3 +25,6 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 3. Panel para Alba (lista de espera, uso, comisiones, pagos y neto).
 4. Vídeos de gasolina, casa compartida y escapadas (motor en `marketing/motor/`; no usar en anuncios las fotos de auriculares ni del juego de construcción por parecido con marcas).
 5. Importación diaria de comisiones de las redes.
+6. **Tiempo (pendiente, decidido el 8 nov 2026):** conectar la tarjeta «Hoy» de la app a AEMET OpenData. La consulta se haría desde el servidor, cada pocas horas y por municipio (según el código postal de la casa), y se guardaría en Supabase citando a AEMET. Hasta entonces la app muestra datos de ejemplo. Necesita la clave de Alba (punto 6 de arriba).
+7. **Farmacias de guardia (pendiente, decidido el 8 nov 2026):** no hay servicio nacional; cada Colegio de Farmacéuticos publica las suyas. Primera fase: la tarjeta abre la página oficial de guardias del colegio de la provincia de la casa. Más adelante: conectar las provincias con datos abiertos, empezando por las que tengan más usuarias. No copiar automáticamente webs que no lo permitan.
+8. Pasar al sistema de diseño (`diseno/`) las pantallas que faltan: Pedidos, Wallet, Calendario, Tareas, Armario, Menú y Luz.

@@ -47,23 +47,7 @@ const kpi = (titulo, valor, sub = "", ir = "", o = {}) => `<div class="tile${ir 
 const cab = (titulo, texto = "", acciones = "", extra = "") => `<section class="hero">${acciones ? `<div class="acc" style="float:right;display:flex;gap:8px;flex-wrap:wrap">${acciones}</div>` : ""}
   <h1>${esc(titulo)}</h1>${texto ? `<p class="sub">${texto}</p>` : ""}${extra}</section>`;
 const TONO = { lav: ["#EEE9FF", "#6A4CF5"], mint: ["#DDF5EA", "#1A8A66"], sky: ["#E1EDFF", "#2F6FD6"], butter: ["#FFF4C9", "#A26F00"], peach: ["#FFE6DC", "#C4503A"], rosa: ["#FBE3F1", "#A93C86"] };
-const ico = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-const ICO = {
-  punto: ico('<circle cx="12" cy="12" r="4"/>'),
-  gente: ico('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>'),
-  euro: ico('<path d="M17 6.5A7 7 0 1 0 17 17.5M4 10h9M4 14h9"/>'),
-  tienda: ico('<path d="M4 7h16l-1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>'),
-  clic: ico('<path d="m9 9 11 4-5 2-2 5z"/><path d="M5 5l2 2M3 10h2M10 3v2"/>'),
-  ojo: ico('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
-  movil: ico('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18h2"/>'),
-  caja: ico('<path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/>'),
-  reloj: ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
-  casa: ico('<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>'),
-  ok: ico('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>'),
-  x: ico('<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>'),
-  hucha: ico('<path d="M5 11a7 6 0 0 1 13-2h2v4l-2 1a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-6z"/><circle cx="15" cy="10" r=".6" fill="currentColor"/>'),
-  regalo: ico('<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-3-5 0M12 8c2-4 6-3 5 0"/>'),
-};
+const ICO = new Proxy({}, { get: (_, k) => viwaiIcono({"punto": "punto", "gente": "gente", "euro": "euro", "tienda": "tienda", "clic": "clic", "ojo": "ojo", "movil": "movil", "caja": "caja", "reloj": "reloj", "casa": "casa", "ok": "hecho", "x": "rechazo", "hucha": "hucha", "regalo": "regalo"}[k] || k) });
 function toast(msg) {
   const t = $("#toast"); t.textContent = msg; t.classList.add("ve");
   clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("ve"), 2600);
@@ -206,18 +190,17 @@ function editar(cfg, fila, el, existe) {
 }
 
 // ---------- Secciones ----------
-const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const TABS = [
-  ["resumen", "Hoy", I('<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>')],
-  ["kpis", "Cuadro de mando", I('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')],
-  ["dinero", "Dinero y objetivos", I('<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 1 0 0 5M8 11h5M8 13h5"/>')],
-  ["afiliados", "Tiendas y redes", I('<path d="M4 7h16l-1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>')],
-  ["catalogo", "Escaparate y ayudas", I('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>')],
-  ["campanas", "Campañas", I('<path d="M4 10v4l12 5V5z"/><path d="M16 9a3 3 0 0 1 0 6"/>')],
-  ["envios", "Push y correo", I('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>')],
-  ["usuarias", "Usuarias", I('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>')],
-  ["reembolsos", "Reembolsos", I('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>')],
-  ["calendario", "Calendario", I('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')],
+  ["resumen", "Hoy", viwaiIcono("casa")],
+  ["kpis", "Cuadro de mando", viwaiIcono("grafico")],
+  ["dinero", "Dinero y objetivos", viwaiIcono("euro")],
+  ["afiliados", "Tiendas y redes", viwaiIcono("tienda")],
+  ["catalogo", "Escaparate y ayudas", viwaiIcono("rejilla")],
+  ["campanas", "Campañas", viwaiIcono("campana")],
+  ["envios", "Push y correo", viwaiIcono("correo")],
+  ["usuarias", "Usuarias", viwaiIcono("gente")],
+  ["reembolsos", "Reembolsos", viwaiIcono("devolver")],
+  ["calendario", "Calendario", viwaiIcono("calendario")],
 ];
 const V = {};
 

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Viwai · Estilo</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/diseno/tokens.css">
+<link rel="stylesheet" href="/diseno/componentes.css">
+<link rel="stylesheet" href="/diseno/graficos.css">
+<script src="/diseno/iconos.js"></script>
+<style>
+/* Variables de la app (las que usan las piezas), sacadas de los tokens */
+:root{--bg:var(--vw-fondo);--surface:var(--vw-blanco);--sunk:var(--vw-hundido);--line:var(--vw-linea);--ink:var(--vw-tinta);--muted:var(--vw-gris);--p-ink:var(--vw-tinta);
+  --lav:var(--vw-lavanda);--acc:var(--vw-lila);--tint:var(--vw-lavanda-suave);--sh:var(--vw-sombra);--f:var(--vw-letra);--okc:var(--vw-g2);--line2:#D9D3EA;--mint:var(--vw-menta);--sky:var(--vw-cielo);--butter:var(--vw-mantequilla);--peach:var(--vw-mantequilla)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--vw-letra);-webkit-font-smoothing:antialiased}
+main{max-width:1120px;margin:0 auto;padding:32px 20px 80px}
+h1{font-size:40px;font-weight:800;letter-spacing:-.04em;margin:0}h1 i{font-style:normal;color:var(--vw-oro)}
+h2{font-size:22px;font-weight:800;letter-spacing:-.03em;margin:40px 0 6px}
+p.l{color:var(--muted);max-width:70ch;margin:6px 0 16px}
+code{font-size:12.5px;background:var(--sunk);border-radius:6px;padding:1px 6px}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sw div{background:var(--surface);border-radius:16px;overflow:hidden;box-shadow:var(--vw-sombra)}
+.sw span{display:block;height:64px}.sw b,.sw small{display:block;padding:0 10px}.sw b{padding-top:8px;font-size:13px}.sw small{padding-bottom:10px;color:var(--muted);font-size:11.5px}
+.ics{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.ics button{border:0;background:var(--surface);border-radius:16px;padding:14px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;font:600 12px var(--vw-letra);color:var(--ink);cursor:pointer;box-shadow:var(--vw-sombra)}
+.ics button:hover{background:var(--vw-lavanda-suave)}
+.ics .vw-ico{width:26px;height:26px}
+input[type=search]{font:inherit;width:100%;max-width:360px;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;margin-bottom:12px;background:var(--surface)}
+.demo{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;align-items:start}
+.demo>div{display:flex;flex-direction:column;gap:10px}
+.demo h3{margin:0;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.btn{border:0;background:var(--bg);border-radius:999px;padding:9px 16px;font:700 14px var(--vw-letra);box-shadow:inset 0 0 0 1.5px var(--ink);cursor:pointer}
+.btn.pri{background:var(--vw-lila-app);color:#fff;box-shadow:none}.btns{display:flex;gap:8px;flex-wrap:wrap}
+.ring text{font:800 14px var(--vw-letra)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:13px;opacity:0;transition:.2s}#toast.ve{opacity:1}
+@media (max-width:600px){h1{font-size:30px}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Viwai<i>.</i> estilo</h1>
+  <p class="l">Las piezas con las que se hacen la app, la web y el panel. Una pantalla nueva se monta solo con lo que hay aquí. Si falta algo, primero se añade al sistema de diseño (<code>diseno/</code>) y aparece en esta página; después se usa.</p>
+
+  <h2>Colores</h2>
+  <p class="l">En el código se escriben como variables (<code>var(--vw-lila)</code>), nunca con el número del color. Cada apartado de la app tiene su pastel.</p>
+  <div class="sw" id="colores"></div>
+
+  <h2>Colores de los gráficos</h2>
+  <p class="l">Siempre en este orden, sin saltarse ninguno. Están comprobados para que se distingan también con daltonismo. Si hay más de seis cosas, el resto va junto en «Otros».</p>
+  <div class="sw" id="graficos"></div>
+
+  <h2>Iconos</h2>
+  <p class="l">Todos salen de la misma colección, <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a>: mismo trazo, mismas esquinas redondeadas. En el código: <code>viwaiIcono("facturas")</code>. Toca uno para copiar su nombre. Para añadir uno nuevo, se busca en lucide.dev y se apunta en <code>diseno/iconos.json</code>.</p>
+  <input type="search" id="q" placeholder="Buscar icono…" aria-label="Buscar icono">
+  <div class="ics" id="iconos"></div>
+
+  <h2>Piezas</h2>
+  <div class="demo">
+    <div><h3>Cabecera de apartado · .vh</h3>
+      <div class="vh" style="--vt:var(--sky)"><span class="tx"><span class="k">Lo próximo</span><span class="t">ITV del coche</span><span class="s">Vence en 14 días · 22 nov</span>
+        <span class="pills" style="margin-top:8px"><span class="pill" style="--c:var(--vw-urgente)"><i></i>2 este mes</span><span class="pill" style="--c:var(--vw-g3)"><i></i>2 en 3 meses</span><span class="pill" style="--c:var(--vw-bien)"><i></i>4 al día</span></span></span></div>
+      <div class="vh" style="--vt:var(--mint)"><span id="ring1"></span><span class="tx"><span class="k">Tu casa</span><span class="t">Casi al día</span><span class="s">3 cosas tocan ya</span></span></div>
+    </div>
+    <div><h3>Tarjeta con icono y cuenta atrás · .vi</h3>
+      <div class="vg"><span class="vg-h">Este mes<em>2</em></span>
+        <div class="vi"><span class="ic" style="background:var(--sky)" data-i="coche"></span><span class="bd"><span class="n">ITV del coche</span><span class="m">22 nov · Coche</span></span><span class="cd" style="background:var(--peach);color:var(--vw-urgente)"><b>14</b><small>días</small></span>
+          <div class="full"><span class="nt">Pide cita con tiempo: en noviembre se llena.</span><span class="btns"><button class="btn">Pedir cita</button></span></div></div>
+        <div class="vi"><span class="ic" style="background:var(--butter)" data-i="olla"></span><span class="bd"><span class="n">Filtro de la campana</span><span class="m">En 12 días · cada 3 meses</span></span><button class="ckb" onclick="this.classList.toggle('on')">✓</button>
+          <div class="full"><span class="hb2"><i style="width:60%;background:linear-gradient(90deg,var(--vw-g3),var(--vw-oro))"></i></span></div></div>
+      </div>
+    </div>
+    <div><h3>Accesos rápidos · .qa</h3>
+      <div class="qa" id="qa"></div>
+      <h3 style="margin-top:12px">Línea de tiempo · .tl2</h3>
+      <div class="tl2" id="tl"></div>
+    </div>
+    <div><h3>Tarjetas deslizables · .rail2 .sv</h3>
+      <div class="rail2"><button class="sv" style="background:var(--butter)"><i>kWh</i><b>Luz</b><span>Podrías ahorrar hasta</span><strong>156 €/año</strong><span class="go">Revisar · 1 min</span></button>
+        <button class="sv" style="background:var(--sky)"><i>m³</i><b>Gas</b><span>Podrías ahorrar hasta</span><strong>108 €/año</strong><span class="go">Revisar · 1 min</span></button></div>
+      <h3>Botones y etiquetas</h3>
+      <div class="btns"><button class="btn pri">Principal</button><button class="btn">Secundario</button></div>
+      <div class="pills"><span class="pill" style="--c:var(--vw-bien)"><i></i>Al día</span><span class="pill" style="--c:var(--vw-g3)"><i></i>Pronto</span><span class="pill" style="--c:var(--vw-urgente)"><i></i>Urgente</span></div>
+    </div>
+    <div><h3>Gráfico circular (panel) · donut()</h3><div class="vi" style="display:block" id="donut"></div></div>
+    <div><h3>Barras y ranking (panel) · barras(), ranking()</h3><div class="vi" style="display:block" id="barras"></div></div>
+  </div>
+  <p class="l" style="margin-top:40px">Fuente: <code>diseno/tokens.css</code> (colores, letra, bordes), <code>diseno/componentes.css</code> (piezas), <code>diseno/iconos.json</code> (iconos) y <code>web/admin/graficos.js</code> (gráficos). Reglas: <code>diseno/README.md</code>.</p>
+</main>
+<div id="toast" role="status"></div>
+<script type="module">
+import { donut, barras, ranking, anillo, PAL } from "/admin/graficos.js";
+const css = getComputedStyle(document.documentElement);
+const vars = [...document.styleSheets].flatMap((h) => { try { return [...h.cssRules]; } catch { return []; } })
+  .filter((r) => r.selectorText === ":root").flatMap((r) => [...r.style]).filter((v) => v.startsWith("--vw-"));
+const esColor = (v) => /^#/.test(css.getPropertyValue(v).trim());
+const ficha = (v) => `<div><span style="background:var(${v})"></span><b>${v.replace("--vw-", "")}</b><small>${css.getPropertyValue(v).trim()}</small></div>`;
+document.getElementById("colores").innerHTML = [...new Set(vars)].filter((v) => esColor(v) && !/^--vw-g/.test(v)).map(ficha).join("");
+document.getElementById("graficos").innerHTML = ["--vw-g1", "--vw-g2", "--vw-g3", "--vw-g4", "--vw-g5", "--vw-g6", "--vw-g-otros"].map(ficha).join("");
+const toast = (t) => { const e = document.getElementById("toast"); e.textContent = t; e.classList.add("ve"); setTimeout(() => e.classList.remove("ve"), 1600); };
+const pintaIconos = (q = "") => (document.getElementById("iconos").innerHTML = Object.keys(VIWAI_ICONOS).filter((n) => n.includes(q.toLowerCase()))
+  .map((n) => `<button data-n="${n}">${viwaiIcono(n)}${n}</button>`).join(""));
+pintaIconos();
+document.getElementById("q").oninput = (e) => pintaIconos(e.target.value);
+document.getElementById("iconos").onclick = (e) => { const b = e.target.closest("button"); if (b) { navigator.clipboard?.writeText(`viwaiIcono("${b.dataset.n}")`); toast(`Copiado: viwaiIcono("${b.dataset.n}")`); } };
+document.querySelectorAll("[data-i]").forEach((e) => (e.innerHTML = viwaiIcono(e.dataset.i)));
+document.getElementById("ring1").innerHTML = anillo(63, { c: "var(--vw-g3)" });
+document.getElementById("qa").innerHTML = [["Subir factura", "subir", "lav"], ["Añadir fecha", "anadir-fecha", "peach"], ["Compra", "compra", "mint"], ["Invitar", "regalo", "sky"]]
+  .map(([l, i, c]) => `<button><i style="background:var(--${c})">${viwaiIcono(i)}</i>${l}</button>`).join("");
+document.getElementById("tl").innerHTML = [["Llega hoy: zapatillas", "SEUR", "pedidos", "sky"], ["ITV del coche: 14 días", "Pide cita con tiempo", "facturas", "butter"], ["16:30 · Recoger a Noa", "Lleva Laura", "calendario", "mint"]]
+  .map(([t, s, i, c]) => `<button><span class="rl"><i style="background:var(--${c})">${viwaiIcono(i)}</i></span><span class="bd"><b>${t}</b><small>${s}</small></span><em>›</em></button>`).join("");
+document.getElementById("donut").innerHTML = donut([{ k: "a", l: "Aprobadas", v: 3, c: PAL[1] }, { k: "b", l: "Esperando", v: 14, c: PAL[2] }, { k: "c", l: "Por pedir", v: 1, c: PAL[0] }], { centro: "tiendas" });
+document.getElementById("barras").innerHTML = barras(["ene", "feb", "mar", "abr", "may", "jun"].map((l, i) => ({ l, v: [4, 7, 5, 9, 12, 10][i], v2: [1, 2, 0, 3, 2, 4][i] })), { c: PAL[1], n1: "confirmada", n2: "por confirmar", alto: 110 })
+  + "<div style='height:14px'></div>" + ranking([{ l: "Awin", v: 13, c: PAL[3] }, { l: "Admitad", v: 2, c: PAL[3] }, { l: "CJ", v: 1, c: PAL[3] }]);
+</script>
+</body>
+</html>

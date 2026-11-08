@@ -1,8 +1,10 @@
 // Viwai · gráficos del panel (SVG y HTML, sin librerías). Interactivos: pasa el ratón o toca para ver cifras,
 // toca un trozo del donut o de su leyenda para resaltarlo (y, si el donut filtra algo, para filtrar).
 // Paleta categórica validada (daltonismo y contraste) con el método de la skill de visualización: orden fijo.
-export const PAL = ["#6A4CF5", "#1FA37A", "#E8A100", "#3B82F6", "#E0664F", "#C2479A"];
-export const GRIS = "#B9B4CC";
+// Los colores salen del sistema de diseño (diseno/tokens.css: --vw-g1…--vw-g6); estos son solo el respaldo.
+const token = (n, x) => (typeof document !== "undefined" && getComputedStyle(document.documentElement).getPropertyValue(n).trim()) || x;
+export const PAL = ["#6A4CF5", "#1FA37A", "#E8A100", "#3B82F6", "#E0664F", "#C2479A"].map((x, i) => token("--vw-g" + (i + 1), x));
+export const GRIS = token("--vw-g-otros", "#B9B4CC");
 
 const esc = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const n0 = (x) => (Number(x) || 0).toLocaleString("es-ES");

@@ -4,3 +4,6 @@
 /admin/*
   X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: no-store
+
+/estilo/*
+  X-Robots-Tag: noindex, nofollow, noarchive

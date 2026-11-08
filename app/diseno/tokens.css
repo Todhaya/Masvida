@@ -1,0 +1,24 @@
+/* Viwai · sistema de diseño: los colores, letras, bordes y sombras de toda la marca (app, web y panel).
+   Fuente única: diseno/tokens.css. Se copia a app/diseno/ y web/diseno/ con «node tools/diseno.mjs».
+   Regla: en el código se usan estas variables (var(--vw-…)); no se escriben colores sueltos. */
+:root{
+  /* Marca */
+  --vw-lila:#6A4CF5; --vw-lila-fuerte:#5236D9; --vw-lila-app:#5B3FE0; --vw-oro:#F5B400;
+  --vw-tinta:#0B0B0B; --vw-tinta-panel:#1D1733; --vw-gris:#6B6B66; --vw-gris-panel:#6C6787;
+  --vw-fondo:#FAFAF8; --vw-blanco:#FFFFFF; --vw-hundido:#F4F2EE; --vw-linea:#E3E3DF;
+  /* Pasteles (cada apartado tiene el suyo) */
+  --vw-lavanda:#E4DDFF; --vw-menta:#CDEFDD; --vw-cielo:#D5E7FF; --vw-mantequilla:#FFF4C9; --vw-melocoton:#FFE6DC;
+  --vw-lavanda-suave:#EEE9FF; --vw-menta-suave:#DDF5EA; --vw-cielo-suave:#E1EDFF; --vw-rosa-suave:#FBE3F1;
+  /* Estados (siempre con texto o icono, nunca solo el color) */
+  --vw-bien:#17804B; --vw-bien-fondo:#DFF2E7; --vw-atencion:#8A5A00; --vw-atencion-fondo:#FBEFD3;
+  --vw-urgente:#B5452E; --vw-urgente-fondo:#FCE3DC;
+  /* Gráficos: siempre en este orden (validado para daltonismo y contraste) */
+  --vw-g1:#6A4CF5; --vw-g2:#1FA37A; --vw-g3:#E8A100; --vw-g4:#3B82F6; --vw-g5:#E0664F; --vw-g6:#C2479A; --vw-g-otros:#B9B4CC;
+  /* Letra, bordes y sombras */
+  --vw-letra:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --vw-r-s:12px; --vw-r-m:18px; --vw-r-l:24px; --vw-r-xl:26px; --vw-r-pildora:999px;
+  --vw-sombra:0 1px 2px rgba(15,15,14,.04),0 8px 24px -18px rgba(30,20,60,.25);
+  --vw-icono:22px;
+}
+/* Icono estándar: <svg class="vw-ico" …> lo genera viwaiIcono("nombre") */
+.vw-ico{width:var(--vw-icono);height:var(--vw-icono);flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
