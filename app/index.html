@@ -467,6 +467,56 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .lvt .st i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:var(--surface);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted)}
 .lvt .st.on i{background:#6A4CF5;color:#fff;box-shadow:none}.lvt .st.cur i{box-shadow:0 0 0 4px rgba(106,76,245,.22)}.lvt .st.on{color:var(--ink)}
 .lvt .st small{font-weight:800;color:#1A8A66}
+
+/* ===== Kit visual v2: tarjetas con icono, cuentas atrás, grupos y héroes en degradado ===== */
+.vh{border-radius:26px;padding:18px;display:flex;gap:16px;align-items:center;position:relative;overflow:hidden;background:linear-gradient(140deg,var(--vt,var(--lav)),var(--surface) 85%)}
+.vh:after{content:"";position:absolute;right:-50px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%);pointer-events:none}
+.vh .tx{display:flex;flex-direction:column;gap:2px;min-width:0;position:relative;z-index:1}
+.vh .k{font-size:12.5px;font-weight:700;color:var(--muted)}.vh .t{font-size:21px;font-weight:800;letter-spacing:-.03em;line-height:1.15}.vh .s{font-size:13px;color:var(--muted)}
+.vh .num{font-size:40px;font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.pills{display:flex;gap:6px;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 11px;font-size:12.5px;font-weight:800;background:var(--surface)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--c,currentColor)}
+.vg{display:flex;flex-direction:column;gap:8px}
+.vg-h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:6px 2px 0}
+.vg-h em{font-style:normal;background:var(--surface);border-radius:99px;padding:1px 8px;letter-spacing:0}
+.vi{background:var(--surface);border-radius:22px;padding:14px;display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;box-shadow:0 1px 2px rgba(15,15,14,.04),0 8px 24px -18px rgba(30,20,60,.25);text-align:left;width:100%;border:0;font:inherit;color:var(--ink)}
+.vi .ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:var(--p-ink)}.vi .ic svg{width:22px;height:22px}
+.vi .bd{display:flex;flex-direction:column;gap:3px;min-width:0}.vi .n{font-weight:800;font-size:15.5px;letter-spacing:-.01em;line-height:1.25}
+.vi .m{font-size:12.5px;color:var(--muted)}.vi .nt{font-size:13px;color:var(--muted);line-height:1.35}
+.vi .cd{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:54px;height:54px;border-radius:16px;font-variant-numeric:tabular-nums}
+.vi .cd b{font-size:20px;font-weight:800;line-height:1;letter-spacing:-.03em}.vi .cd small{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.vi .full{grid-column:1/-1;display:flex;flex-direction:column;gap:8px}
+.vi .btns .btn{padding:7px 13px;font-size:13px}
+.hb2{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}.hb2 i{display:block;height:100%;border-radius:99px}
+.ckb{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--bg);font-size:18px;font-weight:900;color:var(--muted);display:grid;place-items:center;transition:transform .15s,background .2s}
+.ckb:active{transform:scale(.9)}.ckb.on{background:#1FA37A;border-color:#1FA37A;color:#fff}
+.yr{display:grid;grid-template-columns:repeat(12,46px);gap:6px;overflow-x:auto;scrollbar-width:none;padding:3px 2px}.yr::-webkit-scrollbar{display:none}
+.yr button{border:0;background:var(--surface);border-radius:12px;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase}
+.yr button span{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;min-height:6px;max-width:28px}.yr button span i{width:6px;height:6px;border-radius:50%}
+.yr button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.yr button.hoy{box-shadow:inset 0 0 0 2px var(--ink)}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qa button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:700;color:var(--ink);text-align:center;line-height:1.2}
+.qa button i{width:56px;height:56px;border-radius:20px;display:grid;place-items:center;color:var(--p-ink);transition:transform .15s}.qa button:active i{transform:scale(.92)}.qa svg{width:24px;height:24px}
+.tl2{display:flex;flex-direction:column}
+.tl2 button{border:0;background:transparent;display:grid;grid-template-columns:40px 1fr 14px;gap:12px;align-items:start;text-align:left;font:inherit;color:var(--ink);padding:0;width:100%}
+.tl2 .rl{display:flex;flex-direction:column;align-items:center;align-self:stretch}
+.tl2 .rl i{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;color:var(--p-ink);flex:none}.tl2 .rl i svg{width:19px;height:19px}
+.tl2 .rl:after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0;min-height:10px}
+.tl2 button:last-child .rl:after{display:none}
+.tl2 .bd{padding:2px 0 14px;display:flex;flex-direction:column;gap:2px}.tl2 b{font-size:15px;line-height:1.3}.tl2 small{font-size:12.5px;color:var(--muted)}
+.tl2 em{font-style:normal;color:var(--muted);font-size:20px;padding-top:8px}
+.rail2{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;padding:2px 2px 6px}.rail2::-webkit-scrollbar{display:none}
+.sv{flex:none;width:170px;scroll-snap-align:start;border:0;border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:var(--p-ink)}
+.sv i{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.6);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
+.sv b{font-size:15.5px}.sv span{font-size:12.5px;opacity:.8}.sv strong{font-size:20px;letter-spacing:-.03em}
+.sv .go{align-self:flex-start;margin-top:4px;background:var(--ink);color:var(--bg);border-radius:99px;padding:7px 13px;font-size:12.5px;font-weight:800}
+.wx2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wx2>div{border-radius:20px;padding:12px 14px;display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center}
+.wx2 i{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.6);display:grid;place-items:center}.wx2 i svg{width:19px;height:19px}
+.wx2 b{display:block;font-size:14.5px;line-height:1.2}.wx2 small{font-size:11.5px;opacity:.75}
+.fb{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.fb:last-child{border-bottom:0}
+.fb .n{font-weight:800}.fb .m{font-size:12.5px;color:var(--muted)}.fb .p{font-size:20px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.fb .tr{grid-column:1/-1;height:10px;border-radius:99px;background:var(--sunk);overflow:hidden}.fb .tr i{display:block;height:100%;border-radius:99px}
 </style>
 </head>
 <body>
@@ -479,6 +529,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   </div>
 
   <section class="view" id="v-inicio">
+    <div class="qa" id="qa"></div>
     <div class="bento">
       <button class="tile wide" data-v="facturas"><span>Podrías ahorrar al año</span><span class="big" id="b-save">0 €</span><span id="b-save-sub">Revisa tu primera factura</span></button>
       <button class="tile t-lav" data-v="ayudas"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><span class="big" id="b-aids">0</span><span>ayudas que te pueden corresponder</span></button>
@@ -487,9 +538,9 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
       <button class="tile t-sky2" data-v="docs"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><span class="big" id="b-docd">28 d</span><span id="b-docn">para que venza tu seguro</span></button>
       <button class="tile wide dark" style="background:var(--ink);color:#FAFAF8" data-v="perfil"><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg></span><span id="b-lv-t">Nivel 1</span><span class="big" style="font-size:24px;color:#FAFAF8" id="b-lv">Invita a 1 amiga</span><span id="b-lv-s"></span></button>
     </div>
-    <div class="wx"><div><span class="small muted">Hoy</span><b>14° · lluvia a las 18 h</b><span class="small muted">Datos de AEMET</span></div><div><span class="small muted">Farmacia de guardia</span><b>A 600 m</b><span class="small muted">Abierta hasta las 22 h</span></div></div>
+    <div class="wx2" id="wx2"></div>
     <div id="home-dash" class="view"></div>
-    <div class="card"><div class="card-h"><h2>Ahorra un poco más</h2></div><div id="next"></div></div>
+    <div class="vg"><span class="vg-h">Ahorra un poco más</span><div id="next" class="rail2"></div></div>
   </section>
 
   <section class="view" id="v-facturas" hidden>
@@ -558,7 +609,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   </section>
 
   <section class="view" id="v-luz" hidden><div id="luz" class="view"></div></section>
-  <section class="view" id="v-gasolina" hidden><div class="card"><div class="card-h"><h2>Cerca de ti</h2><span class="small muted">Precio con tus tarjetas</span></div><div id="fuel"></div></div><span class="aff">Precios oficiales del Ministerio, actualizados cada día. Los descuentos dependen de las condiciones de cada tarjeta.</span></section>
+  <section class="view" id="v-gasolina" hidden><div id="fuel" class="view"></div></section>
   <section class="view" id="v-reembolso" hidden><div id="reemb" class="view"></div></section>
   <section class="view" id="v-docs" hidden><div id="docs-box" class="view"></div></section>
   <section class="view" id="v-pedidos" hidden><div id="peds-box" class="view"></div></section>
@@ -811,7 +862,8 @@ function renderHome(){
   $("#b-save").textContent=eur(tot);$("#b-save-sub").textContent=rev.length?`Con ${rev.length} ${rev.length===1?"factura revisada":"facturas revisadas"} · sigue revisando`:"Revisa tu primera factura";
   $("#b-bills").textContent=rev.length+"/"+vb.length;$("#b-aids").textContent=myAids().length;$("#b-offers").textContent=OFF.filter(forYou).length;
   const pend=vb.filter(([k])=>done[k]==null).slice(0,3);
-  $("#next").innerHTML=pend.map(([k,b])=>`<div class="opt" style="margin-bottom:8px"><span class="n">Revisa ${b.ins?"tu seguro de "+b.n.toLowerCase():"tu "+b.n.toLowerCase()}</span><span class="p muted small">1 min</span><div class="btns"><button class="btn" data-go-bill="${k}">Revisar</button></div></div>`).join("")||'<span class="muted">Has revisado todo. Te avisaremos si algo sube de precio.</span>';
+  $("#next").innerHTML=pend.length?pend.map(([k,b])=>{const m=Math.max(0,yr(b,Math.min(...b.opts.map(o=>o[1]))));return`<button class="sv" data-go-bill="${k}" style="background:var(--${{butter:"butter",sky:"sky",lilac:"lav",sage:"mint"}[b.c]||"lav"})"><i>${b.ic}</i><b>${b.ins?"Seguro de "+b.n.toLowerCase():b.n}</b><span>Podrías ahorrar hasta</span><strong>${eur(m)}/año</strong><span class="go">Revisar · 1 min</span></button>`}).join("")
+    :'<span class="muted">Has revisado todo. Te avisaremos si algo sube de precio.</span>';
 }
 
 
@@ -835,10 +887,22 @@ function renderLuz(){
 }
 const CARDS=S.get("cards",["club","super"]);
 const FUEL=[{n:"Gasolinera A",dir:"Av. Principal · 1,2 km",p:1.589,dsc:.05,card:"club"},{n:"Gasolinera B",dir:"Ronda Norte · 2,4 km",p:1.555,dsc:0},{n:"Gasolinera del súper",dir:"Junto al súper · 3,1 km",p:1.569,dsc:.02,card:"super"}];
+let fuelL=50;
 function renderFuel(){
   const f=FUEL.map(x=>({...x,real:x.p-(x.card&&CARDS.includes(x.card)?x.dsc:0)})).sort((a,b)=>a.real-b.real);
-  $("#fuel").innerHTML=f.map((x,i)=>`<div class="li"><span><span class="n">${x.n}</span>${i===0?' <span class="pl pl-o">La mejor</span>':""}<br><span class="m">${x.dir} · oficial ${x.p.toFixed(3).replace(".",",")} €${x.real<x.p?" · con tu tarjeta":""}</span></span><span style="font-weight:800">${x.real.toFixed(3).replace(".",",")} €</span></div>`).join("")+`<div class="btns" style="margin-top:6px"><button class="btn" data-toast="Se abriría el mapa con la ruta">Cómo llegar</button></div>`;
+  const best=f[0],peor=Math.max(...f.map(x=>x.p)),min=Math.min(...f.map(x=>x.real))-.02,max=peor;
+  const e3=v=>v.toFixed(3).replace(".",","),e2=v=>v.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+  $("#fuel").innerHTML=`<div class="vh" style="--vt:var(--sky)"><span class="ic" style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.7);display:grid;place-items:center;flex:none">${SVG(ICN.surtidor)}</span>
+     <span class="tx"><span class="k">Hoy, lo más barato para ti</span><span class="num">${e3(best.real)} €</span><span class="s">${best.n} · ${best.dir.split(" · ")[1]}${best.real<best.p?" · con tu tarjeta":""}</span></span></div>
+   <div class="card"><div class="card-h"><h2>Llenar el depósito</h2><div class="seg4" style="width:auto;grid-template-columns:repeat(3,auto)">${[40,50,60].map(l=>`<button data-fl="${l}" aria-pressed="${fuelL===l}">${l} l</button>`).join("")}</div></div>
+     <div class="cmp"><div><span class="small muted">Te cuesta</span><span class="big">${e2(best.real*fuelL)}</span></div><div style="background:var(--mint)"><span class="small">Ahorras frente a la más cara</span><span class="big">${e2((peor-best.real)*fuelL)}</span></div></div></div>
+   <div class="card"><div class="card-h"><h2>Cerca de ti</h2><span class="small muted">barra más larga = más barata</span></div>
+     ${f.map((x,i)=>`<div class="fb"><span><span class="n">${x.n}</span> ${i===0?'<span class="pl pl-o">La mejor</span>':""}<br><span class="m">${x.dir}${x.real<x.p?` · oficial ${e3(x.p)} €`:""}</span></span><span class="p">${e3(x.real)}</span>
+       <span class="tr"><i style="width:${Math.max(10,(max+.02-x.real)/(max+.02-min)*100)}%;background:${i===0?"#1FA37A":i===f.length-1?"#E0664F":"#E8A100"}"></i></span></div>`).join("")}
+     <div class="btns"><button class="btn" data-toast="Se abriría el mapa con la ruta a ${best.n}">Cómo llegar a la mejor</button><button class="btn" data-v="wallet">Mis tarjetas</button></div></div>
+   <span class="aff">Precios oficiales del Ministerio, actualizados cada día. Los descuentos dependen de las condiciones de cada tarjeta.</span>`;
 }
+document.addEventListener("click",e=>{const b=e.target.closest("[data-fl]");if(!b)return;fuelL=+b.dataset.fl;renderFuel()});
 const REEMB=[["Pienso para gato · Mascotas","0,76 €","Disponible"],["Sérum de vitamina C","0,36 €","Disponible"],["Escapada 2 noches · Viajes","3,56 €","Pendiente"],["Cambio de tarifa de luz","8,00 €","Disponible"],["Zapatillas de running","0,90 €","Disponible"],["Fibra y móvil","2,54 €","Pendiente"]];
 
 /* Panel de Ahorro: en qué se va el dinero cada mes y cuánto se puede ahorrar */
@@ -1456,13 +1520,34 @@ const DOC0=[
  {id:"d8",n:"Tarjeta del transporte de Leo",cat:"personas",who:"leo",v:45,nota:"La tarifa joven se renueva cada año."}
 ];
 let DOCX=S.get("docx",DOC0),docCat="todo",docNew=null;
+
+const SVG=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const ICN={coche:'<path d="M5 16V11l2-5h10l2 5v5"/><path d="M3 16h18v3H3zM7 19v1M17 19v1"/><circle cx="7.5" cy="13.5" r="1"/><circle cx="16.5" cy="13.5" r="1"/>',casa:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M10 21v-6h4v6"/>',personas:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',papeles:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+ calor:'<path d="M12 3c2 3 5 5 5 9a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-8z"/>',escudo:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>',olla:'<path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 10h20M9 6c0-1 1-2 3-2s3 1 3 2"/>',ropa:'<path d="M8 3 3 6l2 5 3-1v11h8V10l3 1 2-5-5-3a4 4 0 0 1-8 0z"/>',frio:'<path d="M12 2v20M4 6l16 12M20 6 4 18"/>',gota:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',sol:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>',
+ lluvia:'<path d="M7 15a5 5 0 1 1 9.6-2H17a3 3 0 0 1 0 6H7a3 3 0 0 1 0-6"/><path d="M9 20l-1 2M13 20l-1 2"/>',cruz:'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',subir:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',mas:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M12 9v7M8.5 12.5h7"/>',carro:'<circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M3 4h2l2.5 11h11L21 8H7"/>',regalo:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-3-5 0M12 8c2-4 6-3 5 0"/>',
+ surtidor:'<path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M14 9h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M6 8h6"/>'};
+const DCOL={coche:"sky",casa:"mint",personas:"lav",papeles:"butter"};
+const ZIC=z=>({"Calefacción":["calor","peach"],"Seguridad":["escudo","lav"],"Cocina":["olla","butter"],"Ropa":["ropa","sky"],"Coche":["coche","sky"],"Climatización":["frio","sky"],"Agua":["gota","sky"],"Agua caliente":["gota","peach"],"Exterior":["sol","mint"]}[z]||["casa","mint"]);
+const URGC=v=>v<=30?["var(--peach)","#B5452E"]:v<=90?["var(--butter)","#8A5A00"]:["var(--mint)","#17804B"];
+let docMes=null;
 function docsRender(){
   const box=$("#docs-box");if(!box)return;
-  const L=DOCX.filter(d=>docCat==="todo"||d.cat===docCat).sort((a,b)=>a.v-b.v);
+  const mesDe=v=>{const d=dOff(v);return (d.getFullYear()-D0.getFullYear())*12+d.getMonth()-D0.getMonth()};
+  const L=DOCX.filter(d=>(docCat==="todo"||d.cat===docCat)&&(docMes==null||mesDe(d.v)===docMes)).sort((a,b)=>a.v-b.v);
   const c30=DOCX.filter(d=>d.v<=30).length,c90=DOCX.filter(d=>d.v>30&&d.v<=90).length;
-  box.innerHTML=`<div class="kpis"><div style="background:var(--peach)"><b>${c30}</b><span>en 30 días</span></div><div style="background:var(--butter)"><b>${c90}</b><span>en 3 meses</span></div><div style="background:var(--mint)"><b>${DOCX.length-c30-c90}</b><span>al día</span></div></div>
-   <div class="chips"><button class="chip" data-dcat="todo" aria-pressed="${docCat==="todo"}">Todo</button>${Object.entries(DCAT).map(([k,l])=>`<button class="chip" data-dcat="${k}" aria-pressed="${docCat===k}">${l}</button>`).join("")}</div>
-   <div class="card">${L.map(d=>{const u=urg(d.v),m=d.who&&memOf(d.who);return`<div class="dr">${ring(1-Math.min(d.v,365)/365,UCOL[u],48,d.v<100?d.v+"d":"")}<span class="bd"><span class="n">${d.n}</span><span class="small ${u==="u"?"tk-w":"muted"}">${plazo(d.v)} · ${fechaC(d.v)}${m?" · "+m.n:""}</span><span class="small muted">${d.nota||""}</span>${d.acc?`<span class="btns"><button class="btn" style="padding:7px 12px" ${d.acc[1].startsWith("toast:")?`data-toast="${d.acc[1].slice(6)}"`:`data-v="${d.acc[1].slice(2)}"`}>${d.acc[0]}</button></span>`:""}</span></div>`}).join("")||'<span class="small muted">Nada en esta categoría.</span>'}</div>
+  const nx=DOCX.slice().sort((a,b)=>a.v-b.v)[0];
+  const meses=Array.from({length:12},(_,i)=>{const d=new Date(D0.getFullYear(),D0.getMonth()+i,1);return{i,l:MES[d.getMonth()].slice(0,3),docs:DOCX.filter(x=>mesDe(x.v)===i)}});
+  const cd=v=>{const [bg,fg]=URGC(v);return`<span class="cd" style="background:${bg};color:${fg}">${v<0?`<b>!</b><small>vencido</small>`:v<60?`<b>${v}</b><small>${v===1?"día":"días"}</small>`:v<365?`<b>${Math.round(v/30)}</b><small>meses</small>`:`<b>${Math.round(v/365)}</b><small>${Math.round(v/365)===1?"año":"años"}</small>`}</span>`};
+  const item=d=>{const m=d.who&&memOf(d.who);return`<div class="vi"><span class="ic" style="background:var(--${DCOL[d.cat]||"lav"})">${SVG(ICN[d.cat]||ICN.papeles)}</span>
+    <span class="bd"><span class="n">${d.n}</span><span class="m">${fechaC(d.v)}${m?" · "+m.n:""} · ${DCAT[d.cat]||""}</span></span>${cd(d.v)}
+    ${d.nota||d.acc?`<div class="full">${d.nota?`<span class="nt">${d.nota}</span>`:""}${d.acc?`<span class="btns"><button class="btn" ${d.acc[1].startsWith("toast:")?`data-toast="${d.acc[1].slice(6)}"`:`data-v="${d.acc[1].slice(2)}"`}>${d.acc[0]}</button></span>`:""}</div>`:""}</div>`};
+  const grupo=(t,arr)=>arr.length?`<div class="vg"><span class="vg-h">${t}<em>${arr.length}</em></span>${arr.map(item).join("")}</div>`:"";
+  box.innerHTML=`${nx?`<div class="vh" style="--vt:${URGC(nx.v)[0]}"><span class="tx"><span class="k">Lo próximo</span><span class="t">${nx.n}</span><span class="s">${plazo(nx.v)} · ${fechaC(nx.v)}</span>
+      <span class="pills" style="margin-top:8px"><span class="pill" style="--c:#B5452E"><i></i>${c30} este mes</span><span class="pill" style="--c:#C98A00"><i></i>${c90} en 3 meses</span><span class="pill" style="--c:#17804B"><i></i>${DOCX.length-c30-c90} al día</span></span></span></div>`:""}
+   <div class="yr" role="group" aria-label="Fechas por mes">${meses.map(x=>`<button data-dmes="${x.i}" aria-pressed="${docMes===x.i}" class="${x.i===0?"hoy":""}" aria-label="${x.l}: ${x.docs.length} fechas">${x.l}<span>${x.docs.map(d=>`<i style="background:${URGC(d.v)[1]}"></i>`).join("")}</span></button>`).join("")}</div>
+   <div class="chips"><button class="chip" data-dcat="todo" aria-pressed="${docCat==="todo"}">Todo · ${DOCX.length}</button>${Object.entries(DCAT).map(([k,l])=>`<button class="chip" data-dcat="${k}" aria-pressed="${docCat===k}">${l} · ${DOCX.filter(d=>d.cat===k).length}</button>`).join("")}</div>
+   ${docMes!=null?`<span class="small muted">Mostrando ${meses[docMes].l.toLowerCase()} · <button class="chip sm" data-dmes="x">Ver todo el año</button></span>`:""}
+   ${L.length?grupo("Este mes",L.filter(d=>d.v<=30))+grupo("En los próximos 3 meses",L.filter(d=>d.v>30&&d.v<=90))+grupo("Más adelante",L.filter(d=>d.v>90)):'<span class="small muted">Nada aquí.</span>'}
    ${docNew?`<div class="card"><h2>Nueva fecha</h2><div class="field"><span class="pk-l">Qué es</span><input id="dn-n" value="${docNew.n}" placeholder="Ej.: revisión de la caldera, carné de conducir" autocomplete="off"></div>
      <span class="pk-l">Tipo</span><div class="chips">${Object.entries(DCAT).map(([k,l])=>`<button class="chip" data-dnc="${k}" aria-pressed="${docNew.cat===k}">${l}</button>`).join("")}</div>
      <div class="field"><span class="pk-l">Vence el</span><input id="dn-d" type="date"></div>
@@ -1472,6 +1557,7 @@ function docsRender(){
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-docs"))return;const d=b.dataset;
   if(d.dcat){docCat=d.dcat;docsRender();return}
+  if(d.dmes){docMes=d.dmes==="x"||docMes===+d.dmes?null:+d.dmes;docsRender();return}
   if(b.id==="dn-new"){docNew={n:"",cat:"casa"};docsRender();$("#dn-n").focus();return}
   if(b.id==="dn-cancel"){docNew=null;docsRender();return}
   if(d.dnc){docNew.n=$("#dn-n").value;docNew.cat=d.dnc;docsRender();return}
@@ -1497,15 +1583,23 @@ function mantRender(){
   if(!MTX.length){box.innerHTML=`<div class="hero"><span class="lab">Mantenimiento</span><span class="big" style="font-size:30px">Configura tu casa en un minuto</span><span class="lab">Marca lo que tienes (caldera, coche, lavadora…) y te recordamos cada cosa cuando toque.</span></div><div class="btns"><button class="btn pri" id="mc-start">Empezar</button></div>`;return}
   const ZS=[...new Set(MTX.map(m=>m.z))],L=MTX.filter(m=>mtZ==="todo"||m.z===mtZ).sort((a,b)=>mtLeft(a)-mtLeft(b));
   const now=MTX.filter(m=>mtLeft(m)<=0).length,soon=MTX.filter(m=>mtLeft(m)>0&&mtLeft(m)<=14).length,avg=Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100);
-  box.innerHTML=`<div class="card" style="flex-direction:row;align-items:center;gap:16px">${ring(avg/100,avg>66?"var(--ok)":avg>33?"var(--warn)":"var(--warn)",84,avg+"%")}<span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:18px">${avg} % de la casa al día</b><span class="small muted">${now} ${now===1?"cosa toca":"cosas tocan"} ya · ${soon} en las próximas dos semanas</span><button class="btn" id="mc-start" style="padding:7px 12px;align-self:flex-start;margin-top:6px">Configurar mi casa</button></span></div>
+  const cada=m=>m.cada>=365?"cada año":m.cada>=180?"cada 6 meses":m.cada>=90?"cada 3 meses":m.cada>=60?"cada 2 meses":"cada mes";
+  const item=m=>{const l=mtLeft(m),h=mtHealth(m),[ic,col]=ZIC(m.z),hecho=l>m.cada-2;
+    return`<div class="vi"><span class="ic" style="background:var(--${col})">${SVG(ICN[ic])}</span>
+      <span class="bd"><span class="n">${m.n}</span><span class="m" style="${l<=0?"color:#B5452E;font-weight:700":""}">${hecho?"Hecho hoy":l<=0?(l===0?"Toca hoy":`Toca desde hace ${-l} días`):`En ${l} días`} · ${cada(m)}</span></span>
+      <button class="ckb ${hecho?"on":""}" data-mtdone="${m.id}" aria-label="Hecho: ${m.n}">✓</button>
+      <div class="full"><span class="hb2"><i style="width:${Math.max(4,h*100)}%;background:${h>.5?"linear-gradient(90deg,#1FA37A,#3DBE8B)":h>.15?"linear-gradient(90deg,#E8A100,#F5B400)":"linear-gradient(90deg,#E0664F,#F0745A)"}"></i></span>
+        <span class="nt">${m.tip}${m.who&&m.who!=="laura"?" · Se encarga "+memOf(m.who).n:""}</span>
+        ${mtEdit===m.id?mtEditHTML(m):""}
+        <span class="btns"><button class="btn" data-meopen="${m.id}">Ajustar</button>${m.tk?`<button class="btn" data-mttk="${m.id}">Pasarla a Tareas</button>`:""}${m.buy?`<button class="btn" data-v="ofertas">Comprar ${m.buy.toLowerCase()}</button>`:""}</span></div></div>`};
+  const ya=L.filter(m=>mtLeft(m)<=0),pr=L.filter(m=>mtLeft(m)>0&&mtLeft(m)<=30),ok=L.filter(m=>mtLeft(m)>30);
+  box.innerHTML=`<div class="vh" style="--vt:var(--mint)">${ring(avg/100,avg>66?"#1A8A66":"#C98A00",84,avg+"%")}<span class="tx"><span class="k">Tu casa</span><span class="t">${avg>=80?"Al día":avg>=50?"Casi al día":"Pide un repaso"}</span><span class="s">${now} ${now===1?"cosa toca":"cosas tocan"} ya · ${soon} en dos semanas</span><button class="btn" id="mc-start" style="padding:7px 12px;align-self:flex-start;margin-top:8px;background:var(--surface)">Configurar mi casa</button></span></div>
    <div class="chips"><button class="chip" data-mtz="todo" aria-pressed="${mtZ==="todo"}">Todo</button>${ZS.map(z=>`<button class="chip" data-mtz="${z}" aria-pressed="${mtZ===z}">${z}</button>`).join("")}</div>
-   <div class="card">${L.map(m=>{const l=mtLeft(m),h=mtHealth(m);return`<div class="mr"><div class="mh"><span><span class="n">${m.n}</span><br><span class="small ${l<=0?"tk-w":"muted"}">${l<=0?(l===0?"Toca hoy":`Toca desde hace ${-l} días`):`Dentro de ${l} días`} · ${m.z} · cada ${m.cada>=365?"año":m.cada>=180?"6 meses":m.cada>=90?"3 meses":m.cada>=60?"2 meses":"mes"}</span></span><span class="mta"><button class="ibtn" data-meopen="${m.id}" aria-label="Editar ${m.n}">✎</button><button class="box ${l>m.cada-2?"on":""}" data-mtdone="${m.id}" aria-label="Hecho: ${m.n}">✓</button></span></div>
-     <div class="hb"><i style="width:${h*100}%;background:${h>.5?"var(--ok)":h>.15?"var(--warn)":"var(--warn)"}"></i></div>
-     <span class="small muted">${m.tip}${m.who&&m.who!=="laura"?" · Se encarga "+memOf(m.who).n:""}</span>
-     ${mtEdit===m.id?mtEditHTML(m):""}
-     ${m.tk||m.buy?`<span class="btns">${m.tk?`<button class="btn" style="padding:7px 12px" data-mttk="${m.id}">Pasarla a Tareas</button>`:""}${m.buy?`<button class="btn" style="padding:7px 12px" data-v="ofertas">Comprar ${m.buy.toLowerCase()}</button>`:""}</span>`:""}</div>`}).join("")}</div>
+   ${ya.length?`<div class="vg"><span class="vg-h" style="color:#B5452E">Toca ya<em>${ya.length}</em></span>${ya.map(item).join("")}</div>`:""}
+   ${pr.length?`<div class="vg"><span class="vg-h">Este mes<em>${pr.length}</em></span>${pr.map(item).join("")}</div>`:""}
+   ${ok.length?`<details class="vg"><summary class="vg-h" style="cursor:pointer;list-style:none">Al día<em>${ok.length}</em> <span style="text-transform:none;letter-spacing:0;font-weight:600">· ver</span></summary><div class="vg" style="margin-top:8px">${ok.map(item).join("")}</div></details>`:""}
    <div class="card"><span class="pk-l">Añadir otra cosa</span><form class="addf" id="mt-add"><input id="mt-n" placeholder="Ej.: limpiar los canalones" autocomplete="off" aria-label="Qué"><select id="mt-f" aria-label="Cada cuánto">${FREQ.map(([d,l])=>`<option value="${d}" ${d===365?"selected":""}>${l}</option>`).join("")}</select><button class="btn pri" type="submit">Añadir</button></form></div>
-   <span class="aff">Las frecuencias son las habituales; tócalas con ✎ para ajustarlas a tus aparatos. Al marcar algo como hecho, el contador vuelve a empezar.</span>`;
+   <span class="aff">Las frecuencias son las habituales; ajústalas a tus aparatos. Al marcar algo como hecho, el contador vuelve a empezar.</span>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-mant"))return;const d=b.dataset;
   if(d.mtz){mtZ=d.mtz;mantRender();return}
@@ -1564,11 +1658,13 @@ function homeFeed(){
 const HIC={doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>',box:'<path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/>',food:'<path d="M4 10h16v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M2 10h20"/>',wash:'<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4"/>'};
 function homeDash(){
   const box=$("#home-dash");if(!box)return;
+  const qa=$("#qa");if(qa)qa.innerHTML=[["facturas","Subir factura","subir","lav"],["docs","Añadir fecha","mas","peach"],["menu","Lista de la compra","carro","mint"],["perfil","Invitar amigas","regalo","sky"]].map(([v,l,ic,c])=>`<button data-v="${v}"><i style="background:var(--${c})">${SVG(ICN[ic])}</i>${l}</button>`).join("");
+  const wx=$("#wx2");if(wx)wx.innerHTML=`<div style="background:var(--sky)"><i>${SVG(ICN.lluvia)}</i><span><small>Hoy</small><b>14° · lluvia a las 18 h</b><small>AEMET</small></span></div><div style="background:var(--mint)"><i>${SVG(ICN.cruz)}</i><span><small>Farmacia de guardia</small><b>A 600 m</b><small>hasta las 22 h</small></span></div>`;
   const f=homeFeed(),done=CLOG.filter(l=>l.d===DAY0&&l.c).length,todo=CH.filter(c=>nextOf(c)<=0||doneToday(c)).length;
   const nx=DOCX.slice().sort((a,b)=>a.v-b.v)[0];if(nx&&$("#b-docd")){$("#b-docd").textContent=nx.v+" d";$("#b-docn").textContent="para que venza: "+nx.n.toLowerCase()}
   const d=D0;
   box.innerHTML=`<div class="card"><div class="card-h"><h2>Hoy en casa</h2><span class="small muted">${DN[dowMon(d)]} ${d.getDate()} de ${MES[d.getMonth()]}</span></div>
-   ${f.slice(0,6).map(x=>`<button class="hf" data-v="${x.v}"><i style="background:var(--${x.col})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${HIC[x.ic]}</svg></i><span><b>${x.t}</b>${x.s?`<small>${x.s}</small>`:""}</span><em>›</em></button>`).join("")||'<span class="small muted">Todo en orden por hoy.</span>'}
+   <div class="tl2">${f.slice(0,6).map(x=>`<button data-v="${x.v}"><span class="rl"><i style="background:var(--${x.col})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${HIC[x.ic]}</svg></i></span><span class="bd"><b>${x.t}</b>${x.s?`<small>${x.s}</small>`:""}</span><em>›</em></button>`).join("")}</div>${f.length?"":'<span class="small muted">Todo en orden por hoy.</span>'}
    ${f.length>6?`<span class="small muted">Y ${f.length-6} cosas más en sus apartados.</span>`:""}</div>
    <div class="kpis k4"><button data-v="tareas" style="background:var(--butter);position:relative"><b>${done}/${todo}</b><span>tareas hechas hoy</span>${ring(todo?done/todo:0,"#C98A00",34)}</button><button data-v="pedidos" style="background:var(--sky)"><b>${PDX.filter(p=>p.st<3).length}</b><span>pedidos en camino</span></button><button data-v="docs" style="background:var(--peach)"><b>${DOCX.filter(x=>x.v<=90).length}</b><span>fechas en 3 meses</span></button><button data-v="mant" style="background:var(--mint);position:relative"><b>${Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100)} %</b><span>casa al día</span>${ring(MTX.filter(m=>mtLeft(m)>0).length/MTX.length,"#1A8A66",34)}</button></div>`;
 }
