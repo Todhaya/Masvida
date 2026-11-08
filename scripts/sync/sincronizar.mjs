@@ -174,10 +174,13 @@ export async function aplicaPropuestas(db, ruta = new URL("../../data/escaparate
 // que pasan el filtro automático y están sin revisar.
 async function exportaCandidatos(db, max) {
   const tiendas = await db.todo("tiendas?select=id&escaparate=is.true");
+  const porCategoria = Math.ceil(max / INTERES_CASA.size);
   for (const t of tiendas) {
-    const filas = await db.todo(`productos?select=id,titulo,precio,precio_tachado,categoria,categoria_tienda&tienda_id=eq.${encodeURIComponent(t.id)}&filtro_ok=is.true&curado=is.null&categoria=in.(${[...INTERES_CASA].join(",")})&order=categoria,precio.desc`);
-    console.log(`== candidatos ${t.id}: ${filas.length}`);
-    for (const f of filas.slice(0, max)) console.log("CAND " + JSON.stringify(f));
+    for (const cat of INTERES_CASA) {
+      const filas = await db.todo(`productos?select=id,titulo,precio,precio_tachado,categoria,categoria_tienda&tienda_id=eq.${encodeURIComponent(t.id)}&filtro_ok=is.true&curado=is.null&categoria=eq.${cat}&order=precio.desc`);
+      console.log(`== candidatos ${t.id} · ${cat}: ${filas.length}`);
+      for (const f of filas.slice(0, porCategoria)) console.log("CAND " + JSON.stringify(f));
+    }
   }
 }
 
