@@ -18,3 +18,10 @@
 - **Calendario:** fechas fiscales, legales, renovaciones y campañas.
 
 **Pendiente de conectar:** visitas desde Cloudflare Web Analytics (necesita un token como secreto y una función), importación automática de comisiones por API de cada red, envío real de push y correo.
+
+## Diseño (8 nov 2026)
+- **Hoy**: una frase con el estado (días para la próxima campaña, tiendas aprobadas y pendientes, comisión del mes) y «Qué toca hacer», que se calcula sola: cargas con error, retiradas por pagar, fechas que vencen, tiendas aprobadas sin comprobar el cashback, productos propuestos, ayudas por revisar y campaña próxima.
+- **Menú lateral con contadores** (se recalculan cada 5 minutos y al guardar). En el móvil, el menú es una tira arriba.
+- **Tablas**: buscador, filtros por estado con recuento, orden al pulsar la cabecera y cambio de estado de una tienda sin abrir el formulario.
+- **⌘K / Ctrl+K**: ir a una sección o buscar una tienda.
+- **Automático cada noche** (GitHub Actions): tiendas aprobadas, pendientes y rechazadas de Awin y Admitad; catálogos; comisiones de Awin y Admitad de los últimos 30 días.

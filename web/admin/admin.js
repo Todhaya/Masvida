@@ -38,7 +38,13 @@ async function ajustes() {
 }
 
 // ---------- Componentes ----------
-const kpi = (titulo, valor, sub = "") => `<div class="card kpi"><small>${esc(titulo)}</small><div class="v">${valor}</div><div class="s">${sub}</div></div>`;
+const kpi = (titulo, valor, sub = "", ir = "") => `<div class="cifra${ir ? " clic" : ""}" ${ir ? `data-ir="${ir}" role="link" tabindex="0"` : ""}><small>${esc(titulo)}</small><div class="v">${valor}</div><div class="s">${sub}</div></div>`;
+const cab = (titulo, texto = "", acciones = "") => `<div class="cab"><div><h1>${esc(titulo)}</h1>${texto ? `<p>${texto}</p>` : ""}</div>${acciones ? `<div class="acc">${acciones}</div>` : ""}</div>`;
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("ve");
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("ve"), 2600);
+}
+const quitaTags = (h) => String(h ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 function spark(serie) {
   if (!serie.length) return "";
@@ -51,28 +57,69 @@ function spark(serie) {
 
 function objetivos(lista) {
   return `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${lista.map((o) => `
-    <div class="card obj"><div class="t"><span>${esc(o.nombre)}</span><span>${o.pct} %</span></div>
+    <div class="caja obj"><div class="t"><span>${esc(o.nombre)}</span><span>${o.pct} %</span></div>
     <div class="prog"><i class="${o.pct >= 100 ? "full" : ""}" style="width:${o.pct}%"></i></div>
     <div class="note">${o.falta > 0 ? `Faltan <b>${eur(o.falta)}</b>${o.clave === "marca" ? "" : " al mes"} · meta ${eur(o.meta)}` : "¡Conseguido!"}<br>${esc(o.nota)}</div></div>`).join("")}</div>`;
 }
 
-// Tabla editable genérica: lista + diálogo de alta/edición.
+// Tabla editable genérica: buscador, filtros por estado, orden por columna, cambios en línea y diálogo de edición.
+// cfg.chips = { k: "estado", o: [[valor, texto], ...] }   cfg.inline = { k: "estado", o: [[valor, texto]], tag: (v) => clase }
 async function crud(el, cfg) {
-  const { tabla, titulo, campos, cols, orden, desc, nuevo = {}, filtrar, despues, sinAlta } = cfg;
+  const { tabla, titulo, campos, cols, orden, desc, nuevo = {}, filtrar, despues, sinAlta, chips, inline, clave = "id", porDefecto } = cfg;
   let filas = await cargar(tabla, { orden, desc }, true);
   if (filtrar) filas = filas.filter(filtrar);
   const columnas = cols || campos.slice(0, 5).map((c) => ({ l: c.l, v: (f) => esc(f[c.k]) }));
-  el.innerHTML = `<div class="row"><h3 style="margin:0">${esc(titulo)}</h3>${sinAlta ? "" : `<button class="btn sec" data-nuevo>+ Añadir</button>`}</div>
-    <div class="tw"><table><thead><tr>${columnas.map((c) => `<th class="${c.n ? "n" : ""}">${esc(c.l)}</th>`).join("")}</tr></thead>
-    <tbody>${filas.length ? filas.map((f, i) => `<tr class="clic" data-i="${i}">${columnas.map((c) => `<td class="${c.n ? "n" : ""}">${c.v(f)}</td>`).join("")}</tr>`).join("")
-    : `<tr><td colspan="${columnas.length}" class="vacio">Todavía no hay nada aquí.</td></tr>`}</tbody></table></div>`;
-  el.querySelector("[data-nuevo]")?.addEventListener("click", () => editar(cfg, { ...nuevo }, el, false));
-  el.querySelectorAll("tr[data-i]").forEach((tr) => tr.addEventListener("click", (e) => {
-    if (e.target.closest("a,button,input")) return;
-    editar(cfg, filas[+tr.dataset.i], el, true);
+  const st = el._st || (el._st = { q: "", chip: porDefecto ?? "", ord: null, dir: 1 });
+  el._cfg = cfg;
+  el.innerHTML = `<div class="herr"><h3>${esc(titulo)}</h3>
+      ${filas.length > 6 ? `<input type="search" placeholder="Buscar…" aria-label="Buscar en ${esc(titulo)}" value="${esc(st.q)}" data-q>` : ""}
+      ${sinAlta ? "" : `<button class="btn sec peq" data-nuevo>+ Añadir</button>`}</div>
+    ${chips ? `<div class="embudo" role="group" aria-label="Filtrar por ${esc(chips.k)}">${[["", "Todas"], ...chips.o].map(([v, t]) => {
+      const n = v === "" ? filas.length : filas.filter((f) => String(f[chips.k]) === v).length;
+      return n || v === "" ? `<button class="chip" data-chip="${esc(v)}" aria-pressed="${st.chip === v}">${esc(t)} <span class="c">${n}</span></button>` : "";
+    }).join("")}</div>` : ""}
+    <div class="tw"><table><thead><tr>${columnas.map((c, i) => `<th class="${c.n ? "n " : ""}${c.l ? "ord" : ""}" data-col="${i}" ${st.ord === i ? `aria-sort="${st.dir > 0 ? "ascending" : "descending"}"` : ""}>${esc(c.l)}</th>`).join("")}</tr></thead><tbody></tbody></table></div>
+    <div class="cuenta"></div>`;
+  const tbody = el.querySelector("tbody");
+  const pinta = () => {
+    let vis = filas.map((f, i) => [f, i]);
+    if (chips && st.chip !== "") vis = vis.filter(([f]) => String(f[chips.k]) === st.chip);
+    if (st.q) { const q = st.q.toLowerCase(); vis = vis.filter(([f]) => JSON.stringify(f).toLowerCase().includes(q)); }
+    if (st.ord != null) {
+      const c = columnas[st.ord], val = (f) => (c.s ? c.s(f) : quitaTags(c.v(f)));
+      vis.sort(([a], [b]) => { const x = val(a), y = val(b); return (typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y), "es", { numeric: true })) * st.dir; });
+    }
+    tbody.innerHTML = vis.length ? vis.map(([f, i]) => `<tr class="clic" data-i="${i}">${columnas.map((c) => `<td class="${c.n ? "n" : ""}">${c.v(f)}</td>`).join("")}</tr>`).join("")
+      : `<tr><td colspan="${columnas.length}" class="vacio">${filas.length ? "Nada coincide con el filtro." : "Todavía no hay nada aquí."}</td></tr>`;
+    el.querySelector(".cuenta").textContent = filas.length ? `${vis.length} de ${filas.length}` : "";
+  };
+  pinta();
+  el.querySelector("[data-q]")?.addEventListener("input", (e) => { st.q = e.target.value.trim(); pinta(); });
+  el.querySelectorAll("[data-chip]").forEach((b) => (b.onclick = () => {
+    st.chip = b.dataset.chip; el.querySelectorAll("[data-chip]").forEach((x) => x.setAttribute("aria-pressed", x === b)); pinta();
   }));
+  el.querySelectorAll("th.ord").forEach((th) => (th.onclick = () => {
+    const i = +th.dataset.col; st.dir = st.ord === i ? -st.dir : 1; st.ord = i;
+    el.querySelectorAll("th").forEach((x) => x.removeAttribute("aria-sort")); th.setAttribute("aria-sort", st.dir > 0 ? "ascending" : "descending"); pinta();
+  }));
+  el.querySelector("[data-nuevo]")?.addEventListener("click", () => editar(cfg, { ...nuevo }, el, false));
+  tbody.addEventListener("click", (e) => {
+    const tr = e.target.closest("tr[data-i]");
+    if (!tr || e.target.closest("a,button,input,select")) return;
+    editar(cfg, filas[+tr.dataset.i], el, true);
+  });
+  // Cambio rápido (p. ej. estado de una tienda) sin abrir el formulario
+  if (inline) tbody.addEventListener("change", async (e) => {
+    const sel = e.target.closest("select[data-inline]"); if (!sel) return;
+    const f = filas[+sel.closest("tr").dataset.i];
+    const { error } = await [].concat(clave).reduce((q, k) => q.eq(k, f[k]), sb.from(tabla).update({ [inline.k]: sel.value }));
+    if (error) return toast("No se ha guardado: " + error.message);
+    f[inline.k] = sel.value; sel.className = "mini " + (inline.tag?.(sel.value) || "");
+    toast("Guardado"); refrescaContadores();
+  });
   despues?.(el, filas);
 }
+const selInline = (inline, v) => `<select class="mini ${inline.tag?.(v) || ""}" data-inline aria-label="Cambiar ${esc(inline.k)}">${inline.o.map(([val, t]) => `<option value="${esc(val)}" ${val === v ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
 
 function campoHTML(c, v) {
   const id = "f_" + c.k;
@@ -112,7 +159,7 @@ function editar(cfg, fila, el, existe) {
   dlg.innerHTML = `<form method="dialog"><h3>${existe ? "Editar" : "Añadir"} · ${esc(titulo)}</h3>
     ${campos.map((c) => campoHTML(c, fila[c.k])).join("")}
     <p class="err w" id="dlgErr"></p>
-    <div class="acc">${existe ? `<button type="button" class="btn bad" data-borrar>Borrar</button>` : ""}<span style="flex:1"></span>
+    <div class="acc-f">${existe ? `<button type="button" class="btn bad" data-borrar>Borrar</button>` : ""}<span style="flex:1"></span>
     <button type="button" class="btn sec" data-cerrar>Cancelar</button><button class="btn" data-guardar>Guardar</button></div></form>`;
   dlg.showModal();
   dlg.querySelector("[data-cerrar]").onclick = () => dlg.close();
@@ -124,67 +171,129 @@ function editar(cfg, fila, el, existe) {
     const q = existe ? donde(sb.from(tabla).update(datos)) : sb.from(tabla).insert(datos);
     const { error } = await q;
     if (error) return ($("#dlgErr").textContent = error.message);
-    dlg.close(); limpiar(); crud(el, cfg);
+    dlg.close(); limpiar(); crud(el, cfg); toast(existe ? "Cambios guardados" : "Añadido"); refrescaContadores();
   };
   dlg.querySelector("[data-borrar]")?.addEventListener("click", async () => {
     if (!confirm("¿Seguro que quieres borrarlo?")) return;
     const { error } = await donde(sb.from(tabla).delete());
     if (error) return ($("#dlgErr").textContent = error.message);
-    dlg.close(); limpiar(); crud(el, cfg);
+    dlg.close(); limpiar(); crud(el, cfg); toast("Borrado"); refrescaContadores();
   });
 }
 
-// ---------- Pestañas ----------
+// ---------- Secciones ----------
+const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const TABS = [
-  ["resumen", "Resumen"], ["dinero", "Dinero y objetivos"], ["afiliados", "Afiliados"], ["campanas", "Campañas"],
-  ["envios", "Push y correo"], ["usuarias", "Usuarias"], ["reembolsos", "Reembolsos"], ["catalogo", "Catálogo y ayudas"], ["calendario", "Calendario"],
+  ["resumen", "Hoy", I('<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>')],
+  ["dinero", "Dinero y objetivos", I('<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 1 0 0 5M8 11h5M8 13h5"/>')],
+  ["afiliados", "Tiendas y redes", I('<path d="M4 7h16l-1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>')],
+  ["catalogo", "Escaparate y ayudas", I('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>')],
+  ["campanas", "Campañas", I('<path d="M4 10v4l12 5V5z"/><path d="M16 9a3 3 0 0 1 0 6"/>')],
+  ["envios", "Push y correo", I('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>')],
+  ["usuarias", "Usuarias", I('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>')],
+  ["reembolsos", "Reembolsos", I('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>')],
+  ["calendario", "Calendario", I('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>')],
 ];
 const V = {};
 
+// Qué está esperando a Alba. Lo usan el menú (contadores) y la portada (lista de tareas).
+async function pendientes() {
+  const hoyS = hoy();
+  const [propuestos, retiradas, calVencido, ayudasRev, tiendas, syncs, campanas] = await Promise.all([
+    cuenta("productos", (q) => q.eq("curado", "propuesto")),
+    cuenta("movimientos", (q) => q.eq("tipo", "retirada").eq("estado", "pendiente")),
+    cuenta("calendario", (q) => q.eq("hecho", false).lte("fecha", haceDias(-7))),
+    cuenta("ayudas", (q) => q.in("estado", ["pendiente", "revisar"])),
+    cargar("tiendas", { select: "id,nombre,estado,cashback,alta_auto,red_id" }, true),
+    cargar("sincronizaciones", { orden: "inicio", desc: true }, true),
+    cargar("campanas", { orden: "inicio" }),
+  ]);
+  const aprobadasSinCashback = tiendas.filter((t) => t.estado === "aprobada" && t.cashback == null).length;
+  const pedidas = tiendas.filter((t) => t.estado === "pedida").length;
+  const ultimaPorRed = Object.values(syncs.reduce((a, x) => (a[x.red] ??= x, a), {}));
+  const conError = ultimaPorRed.filter((x) => !x.ok);
+  const prox = campanas.find((c) => estadoCampana(c) === "próxima");
+  const enCurso = campanas.find((c) => estadoCampana(c) === "en curso");
+  return { propuestos, retiradas, calVencido, ayudasRev, aprobadasSinCashback, pedidas, conError, prox, enCurso, tiendas, syncs, hoyS };
+}
+let P = null;
+async function refrescaContadores() {
+  P = await pendientes().catch(() => P);
+  if (!P) return;
+  const badges = { catalogo: P.propuestos + P.ayudasRev, reembolsos: P.retiradas, calendario: P.calVencido, afiliados: P.aprobadasSinCashback + P.conError.length };
+  document.querySelectorAll("#tabs button").forEach((b) => {
+    const n = badges[b.dataset.t] || 0;
+    b.querySelector(".badge")?.remove();
+    if (n) b.insertAdjacentHTML("beforeend", `<span class="badge">${n}</span>`);
+  });
+  $("#act").textContent = "Actualizado a las " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+}
+
+const diasHasta = (f) => Math.round((new Date(f + "T12:00:00") - new Date(hoy() + "T12:00:00")) / 864e5);
+
 V.resumen = async (m) => {
-  const [aj, lista, comisiones, movimientos, gastos, metricas, campanas, cal, clics] = await Promise.all([
+  const [aj, lista, comisiones, movimientos, gastos, metricas, clics] = await Promise.all([
     ajustes(), cargar("lista_espera", { select: "id,consentimiento,origen", orden: "consentimiento" }),
     cargar("comisiones"), cargar("movimientos"), cargar("gastos"), cargar("metricas", { orden: "fecha", desc: true }),
-    cargar("campanas", { orden: "inicio" }), cargar("calendario", { orden: "fecha" }),
     cargar("clics", { select: "id,tienda_id,creado", desde: haceDias(90), campoFecha: "creado" }),
   ]);
+  P = await pendientes();
   const hogares = await cuenta("hogares");
   const desde30 = haceDias(30), desde7 = haceDias(7);
-  const serie = Array.from({ length: 30 }, (_, i) => {
-    const d = haceDias(29 - i);
-    return { d, v: lista.filter((x) => x.consentimiento.slice(0, 10) === d).length };
-  });
+  const serie = Array.from({ length: 30 }, (_, i) => { const d = haceDias(29 - i); return { d, v: lista.filter((x) => x.consentimiento.slice(0, 10) === d).length }; });
   const sum = (fuente, campo) => metricas.filter((x) => x.fuente === fuente && x.fecha >= desde30).reduce((s, x) => s + (x[campo] || 0), 0);
   const ym = hoy().slice(0, 7);
   const mes = resumenMes({ comisiones, movimientos, gastos }, ym, aj.reservas);
   const meses = ultimosMeses(new Date(), 12).map((y) => resumenMes({ comisiones, movimientos, gastos }, y, aj.reservas));
-  const enCurso = campanas.filter((c) => estadoCampana(c) === "en curso");
-  const proximas = campanas.filter((c) => estadoCampana(c) === "próxima").slice(0, 3);
-  const pend = cal.filter((c) => !c.hecho && c.fecha >= haceDias(7)).slice(0, 5);
-  const visitas = sum("web", "visitas"), inst = sum("app", "instalaciones");
-  m.innerHTML = `<h2>Resumen</h2>
-    <div class="grid">
-      ${kpi("Lista de espera", num(lista.length), `+${lista.filter((x) => x.consentimiento >= desde7).length} esta semana`)}
-      ${kpi("Visitas web · 30 días", visitas ? num(visitas) : "—", visitas ? `${num(sum("web", "visitantes"))} personas` : "Añádelas en Métricas")}
-      ${kpi("Instalaciones app · 30 días", inst ? num(inst) : "—", `${num(hogares)} casas con cuenta`)}
-      ${kpi("Clics a tiendas · 30 días", num(clics.filter((c) => c.creado >= desde30).length), "desde la web y la app")}
-      ${kpi("Comisión del mes", eur(mes.confirmada), `${eur(mes.pendiente)} pendiente de confirmar`)}
-      ${kpi("Disponible del mes", eur(mes.disponible), "ya apartados impuestos y gastos")}
+  const aprobadas = P.tiendas.filter((t) => t.estado === "aprobada").length;
+  const nuevasSemana = lista.filter((x) => x.consentimiento >= desde7).length;
+
+  // La frase de estado
+  const trozosFrase = [];
+  if (P.enCurso) trozosFrase.push(`<b>${esc(P.enCurso.nombre)}</b> está en marcha hasta el ${fecha(P.enCurso.fin)}`);
+  else if (P.prox) { const d = diasHasta(P.prox.inicio); trozosFrase.push(`Faltan <b>${d} ${d === 1 ? "día" : "días"}</b> para ${esc(P.prox.nombre)}`); }
+  trozosFrase.push(`tienes <b>${aprobadas} ${aprobadas === 1 ? "tienda aprobada" : "tiendas aprobadas"}</b> y ${P.pedidas} esperando respuesta`);
+  trozosFrase.push(mes.confirmada || mes.pendiente ? `este mes llevas <b>${eur(mes.confirmada)}</b> confirmados` : `todavía no hay comisiones este mes`);
+  const frase = trozosFrase.join(", ").replace(/^./, (c) => c.toUpperCase()) + ".";
+
+  // Lo que toca hacer
+  const t = [];
+  if (P.conError.length) t.push({ n: P.conError.length, urg: 1, txt: `La carga de ${P.conError.map((x) => x.red).join(", ")} ha fallado`, ir: "afiliados" });
+  if (P.retiradas) t.push({ n: P.retiradas, urg: 1, txt: "Retiradas de usuarias por pagar", ir: "reembolsos" });
+  if (P.calVencido) t.push({ n: P.calVencido, urg: 1, txt: "Fechas del calendario vencidas o en la próxima semana", ir: "calendario" });
+  if (P.aprobadasSinCashback) t.push({ n: P.aprobadasSinCashback, txt: "Tiendas aprobadas: mira si permiten cashback", ir: "afiliados" });
+  if (P.propuestos) t.push({ n: P.propuestos, txt: "Productos propuestos para el escaparate", ir: "catalogo" });
+  if (P.ayudasRev) t.push({ n: P.ayudasRev, txt: "Ayudas nuevas o por revisar", ir: "catalogo" });
+  if (P.prox && diasHasta(P.prox.inicio) <= 21) t.push({ n: diasHasta(P.prox.inicio) + " d", txt: `Prepara ${P.prox.nombre}: chollos y avisos`, ir: "campanas" });
+
+  m.innerHTML = `<section class="hoy">
+      <div><p class="fecha">${new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</p><p class="frase">${frase}</p>
+        <div class="cifras">
+          ${kpi("Lista de espera", num(lista.length), nuevasSemana ? `+${nuevasSemana} esta semana` : "sin altas esta semana", "usuarias")}
+          ${kpi("Disponible del mes", eur(mes.disponible), "ya apartados impuestos y gastos", "dinero")}
+        </div></div>
+      <div><b>Qué toca hacer</b>
+        <ul class="tareas" style="margin-top:10px">${t.length ? t.map((x) => `<li${x.urg ? ` class="urg"` : ""}><button data-ir="${x.ir}"><span class="n">${x.n}</span>${esc(x.txt)}<span class="ir">abrir</span></button></li>`).join("")
+          : `<li class="vacia">Nada pendiente. Todo al día.</li>`}</ul></div>
+    </section>
+    <div class="cifras">
+      ${kpi("Visitas web · 30 días", sum("web", "visitas") ? num(sum("web", "visitas")) : "—", sum("web", "visitas") ? `${num(sum("web", "visitantes"))} personas` : "se apuntan abajo, en Métricas")}
+      ${kpi("Casas con cuenta en la app", num(hogares), sum("app", "instalaciones") ? `${num(sum("app", "instalaciones"))} instalaciones en 30 días` : "")}
+      ${kpi("Clics a tiendas · 30 días", num(clics.filter((c) => c.creado >= desde30).length), "desde la web y la app", "afiliados")}
+      ${kpi("Comisión del mes", eur(mes.confirmada), `${eur(mes.pendiente)} pendiente de confirmar`, "dinero")}
+      ${kpi("Tiendas aprobadas", num(aprobadas), `${P.pedidas} pedidas`, "afiliados")}
     </div>
-    <div class="split" style="margin-top:16px">
-      <div class="card"><b>Altas en la lista de espera · 30 días</b>${spark(serie)}</div>
-      <div class="card"><b>Campañas</b>
-        ${enCurso.length ? enCurso.map((c) => `<div class="row"><span class="tag ok">en curso</span> ${esc(c.nombre)} <span class="note">hasta ${fecha(c.fin)}</span></div>`).join("") : `<p class="note">Ninguna en curso.</p>`}
-        ${proximas.map((c) => `<div class="row"><span class="tag info">próxima</span> ${esc(c.nombre)} <span class="note">${fecha(c.inicio)}</span></div>`).join("")}
-      </div>
+    <div class="dos">
+      <div class="caja"><b>Altas en la lista de espera · 30 días</b>${spark(serie)}</div>
+      <div class="caja"><b>Objetivos</b>${progresoObjetivos(meses, aj.objetivos).map((o) => `
+        <div class="obj" style="margin-top:12px"><div class="t"><span>${esc(o.nombre)}</span><span>${o.pct} %</span></div>
+        <div class="prog"><i class="${o.pct >= 100 ? "full" : ""}" style="width:${o.pct}%"></i></div></div>`).join("")}
+        <p class="note"><a href="#dinero">Ver el detalle</a></p></div>
     </div>
-    <h3>Objetivos</h3>${objetivos(progresoObjetivos(meses, aj.objetivos))}
-    <h3>Lo próximo en el calendario</h3>
-    <div class="card">${pend.length ? pend.map((c) => `<div class="row"><span class="tag ${c.fecha < hoy() ? "bad" : "lav"}">${fecha(c.fecha)}</span> ${esc(c.titulo)}</div>`).join("") : `<p class="note">Nada pendiente.</p>`}</div>
-    <div id="met"></div>
-    <p class="note">Las visitas exactas de la web están en Cloudflare → viwai-web → Métricas (Web Analytics). Mientras no las conectemos aquí, apunta el total de cada semana en Métricas.</p>`;
+    <details class="caja" style="margin-top:12px"><summary>Métricas que se apuntan a mano</summary><div id="met"></div>
+      <p class="note">Las visitas exactas de la web están en Cloudflare → viwai-web → Métricas. Mientras no las conectemos, apunta aquí el total de cada semana.</p></details>`;
   crud($("#met", m), {
-    tabla: "metricas", titulo: "Métricas que se apuntan a mano", clave: ["fecha", "fuente"], orden: "fecha", desc: true,
+    tabla: "metricas", titulo: "Métricas", clave: ["fecha", "fuente"], orden: "fecha", desc: true,
     nuevo: { fecha: hoy(), fuente: "web" },
     campos: [
       { k: "fecha", l: "Fecha", t: "date", req: true }, { k: "fuente", l: "Fuente", t: "select", o: ["web", "app", "instagram", "tiktok", "facebook", "email", "push"], req: true },
@@ -192,8 +301,8 @@ V.resumen = async (m) => {
       { k: "seguidores", l: "Seguidores", t: "number" }, { k: "clics", l: "Clics", t: "number" },
     ],
     cols: [
-      { l: "Fecha", v: (f) => fecha(f.fecha) }, { l: "Fuente", v: (f) => esc(f.fuente) }, { l: "Visitas", n: 1, v: (f) => num(f.visitas) },
-      { l: "Personas", n: 1, v: (f) => num(f.visitantes) }, { l: "Instal.", n: 1, v: (f) => num(f.instalaciones) }, { l: "Seguidores", n: 1, v: (f) => num(f.seguidores) },
+      { l: "Fecha", v: (f) => fecha(f.fecha), s: (f) => f.fecha }, { l: "Fuente", v: (f) => esc(f.fuente) }, { l: "Visitas", n: 1, v: (f) => num(f.visitas), s: (f) => f.visitas || 0 },
+      { l: "Personas", n: 1, v: (f) => num(f.visitantes), s: (f) => f.visitantes || 0 }, { l: "Instal.", n: 1, v: (f) => num(f.instalaciones), s: (f) => f.instalaciones || 0 }, { l: "Seguidores", n: 1, v: (f) => num(f.seguidores), s: (f) => f.seguidores || 0 },
     ],
   });
 };
@@ -205,8 +314,8 @@ V.dinero = async (m) => {
   const rep = reparto100(anyo);
   const res = aj.reservas || {}, obj = aj.objetivos || {};
   const bloques = rep ? [["usuarias", "A usuarias", "var(--mint)"], ["gastos", "Gastos", "var(--sky)"], ["irpf", "IRPF", "var(--peach)"], ["colchon", "Colchón", "var(--butter)"], ["tuyo", "Tuyo", "var(--lav)"]] : [];
-  m.innerHTML = `<h2>Dinero y objetivos</h2>
-    <div class="card"><b>De cada 100 € que pagan las tiendas (últimos 12 meses)</b>
+  m.innerHTML = `${cab("Dinero y objetivos", "Lo que pagan las tiendas, lo que devuelves a las usuarias y lo que te queda después de apartar impuestos y gastos.")}
+    <div class="caja"><b>De cada 100 € que pagan las tiendas (últimos 12 meses)</b>
       ${rep ? `<div class="reparto" style="margin-top:10px">${bloques.map(([k, , c]) => `<span style="flex:${Math.max(0, rep[k])};background:${c}">${rep[k] >= 8 ? rep[k].toFixed(0) + " €" : ""}</span>`).join("")}</div>
       <div class="leg">${bloques.map(([k, l, c]) => `<span><i style="background:${c}"></i>${l}: ${rep[k].toFixed(2)} €</span>`).join("")}</div>`
       : `<p class="note">Cuando entren las primeras comisiones confirmadas verás aquí el reparto real. Con tus ajustes: de cada beneficio apartas un ${res.irpf_pct ?? 0} % para IRPF y un ${res.colchon_pct ?? 0} % de colchón.</p>`}
@@ -217,7 +326,7 @@ V.dinero = async (m) => {
     <div class="tw"><table><thead><tr><th>Mes</th><th class="n">Comisión confirmada</th><th class="n">Pendiente</th><th class="n">A usuarias</th><th class="n">Gastos</th><th class="n">IRPF</th><th class="n">Colchón</th><th class="n">Disponible</th></tr></thead>
     <tbody>${meses.slice().reverse().map((r) => `<tr><td>${r.ym}</td><td class="n">${eur(r.confirmada)}</td><td class="n">${eur(r.pendiente)}</td><td class="n">${eur(r.aUsuarias)}</td><td class="n">${eur(r.gastos)}</td><td class="n">${eur(r.irpf)}</td><td class="n">${eur(r.colchon)}</td><td class="n"><b>${eur(r.disponible)}</b></td></tr>`).join("")}</tbody></table></div>
     <h3>Ajustes</h3>
-    <form id="fAj" class="card grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+    <form id="fAj" class="caja grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
       <label class="f">Coste de registrar la marca (€)<input type="number" step="any" name="marca_oepm" value="${obj.marca_oepm ?? ""}"></label>
       <label class="f">Cuota de autónoma al mes (€)<input type="number" step="any" name="cuota_autonoma" value="${obj.cuota_autonoma ?? ""}"></label>
       <label class="f">Neto que quieres al mes (€)<input type="number" step="any" name="neto_mensual" value="${obj.neto_mensual ?? ""}"></label>
@@ -228,7 +337,7 @@ V.dinero = async (m) => {
     </form>
     <div id="gastos"></div>
     <h3>Comisiones</h3>
-    <div class="card"><p class="note">Mientras no se importan solas: exporta el informe de transacciones de cada red en CSV y pégalo aquí. Columnas: red, ref_red, tienda_id, importe_venta, comision, estado (pendiente/confirmada/anulada/pagada), fecha (AAAA-MM-DD). Si una transacción ya existe, se actualiza.</p>
+    <div class="caja"><p class="note">Mientras no se importan solas: exporta el informe de transacciones de cada red en CSV y pégalo aquí. Columnas: red, ref_red, tienda_id, importe_venta, comision, estado (pendiente/confirmada/anulada/pagada), fecha (AAAA-MM-DD). Si una transacción ya existe, se actualiza.</p>
       <textarea id="csv" placeholder="red;ref_red;tienda_id;importe_venta;comision;estado;fecha"></textarea>
       <div class="row"><button class="btn" id="imp">Importar</button><span class="note" id="impMsg"></span></div></div>
     <div id="com"></div>`;
@@ -274,46 +383,60 @@ const cfgComisiones = {
 const TAGS = { confirmada: "ok", pagada: "ok", aprobada: "ok", alta: "ok", enviado: "ok", "en curso": "ok", pendiente: "warn", pedida: "warn", revision: "warn", programado: "info", programada: "info", "próxima": "info", anulada: "bad", rechazada: "bad", cancelado: "bad" };
 const tagEstado = (e) => `<span class="tag ${TAGS[e] || ""}">${esc(e)}</span>`;
 
+const ESTADOS_TIENDA = [["por_pedir", "Por pedir"], ["pedida", "Pedida"], ["aprobada", "Aprobada"], ["rechazada", "Rechazada"], ["pausada", "Pausada"]];
+const tagTienda = (v) => ({ aprobada: "ok", pedida: "warn", rechazada: "bad", pausada: "", por_pedir: "lav" }[v] || "");
 V.afiliados = async (m) => {
   const [redes, clics, comisiones] = await Promise.all([
     cargar("redes", { orden: "nombre" }, true), cargar("clics", { select: "id,tienda_id,creado", desde: haceDias(90), campoFecha: "creado" }), cargar("comisiones"),
   ]);
   const porTienda = (id) => kpis(clics.filter((c) => c.tienda_id === id), comisiones.filter((c) => c.tienda_id === id && c.fecha >= haceDias(90)));
-  await cargar("tiendas", {}, true);
+  const tiendas = await cargar("tiendas", {}, true);
   const [syncs, nProductos] = await Promise.all([cargar("sincronizaciones", { orden: "inicio", desc: true }, true), cuenta("productos")]);
+  const ultimas = Object.values(syncs.reduce((a, x) => (a[x.red] ??= x, a), {}));
+  const fallan = ultimas.filter((x) => !x.ok);
   const ult = syncs[0];
-  m.innerHTML = `<h2>Afiliados</h2>
-    <div class="card"><b>Catálogo automático</b>
-      <p class="note">Cada madrugada se comprueba qué tiendas te han aprobado en cada red y se descargan sus productos. Las tiendas nuevas aparecen solas como «aprobada» (marcadas como alta automática).</p>
-      ${ult ? `<div class="row">${ult.ok ? `<span class="tag ok">bien</span>` : `<span class="tag bad">con errores</span>`} Última: ${new Date(ult.inicio).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })} · ${num(nProductos)} productos en el catálogo</div>` : `<p class="note">Todavía no se ha ejecutado ninguna sincronización.</p>`}
-      ${syncs.slice(0, 8).map((x) => `<div class="row"><span class="tag ${x.ok ? "ok" : "bad"}">${esc(x.red)}</span> ${fecha(x.inicio)} · ${num(x.productos)} productos${x.tiendas_nuevas?.length ? ` · nuevas: <b>${esc(x.tiendas_nuevas.join(", "))}</b>` : ""}${x.mensaje ? `<br><span class="note">${esc(x.mensaje).replace(/\n/g, "<br>")}</span>` : ""}</div>`).join("")}
-      <p class="note"><a href="/ofertas/" target="_blank" rel="noopener">Ver el buscador de la web ↗</a> · Lanzar a mano: GitHub → Actions → «Catálogo de tiendas» → Run workflow.</p>
+  const n = (e) => tiendas.filter((t) => t.estado === e).length;
+  m.innerHTML = `${cab("Tiendas y redes", "Cada noche se comprueba en cada red qué tiendas te aprueban, cuáles siguen pendientes y qué comisiones hay. Lo nuevo entra solo.",
+      `<a class="btn sec" href="/ofertas/" target="_blank" rel="noopener">Ver el buscador</a>`)}
+    <div class="cifras">
+      ${kpi("Aprobadas", num(n("aprobada")), "venden ya en Viwai")}${kpi("Esperando respuesta", num(n("pedida")), "solicitudes enviadas")}
+      ${kpi("Rechazadas", num(n("rechazada")), "se pueden volver a pedir")}${kpi("Productos en el catálogo", num(nProductos), ult ? "carga del " + fecha(ult.inicio) : "")}
     </div>
-    <div id="redes"></div><div id="tiendas"></div>
-    <p class="note">Clics, ventas, conversión y € por clic de los últimos 90 días. «Cashback» indica si la tienda permite devolver parte a las usuarias (sin comprobar = no se devuelve nada).</p>`;
-  crud($("#redes", m), {
-    tabla: "redes", titulo: "Redes", clave: "id", orden: "nombre", nuevo: { estado: "pendiente" },
-    campos: [{ k: "id", l: "Id (minúsculas)", req: true }, { k: "nombre", l: "Nombre", req: true }, { k: "panel_url", l: "Enlace al panel", t: "url", w: 1 },
-      { k: "estado", l: "Estado", t: "select", o: [["pendiente", "pendiente"], ["revision", "en revisión"], ["alta", "dada de alta"], ["rechazada", "rechazada"]], req: true }, { k: "notas", l: "Notas", t: "textarea" }],
-    cols: [{ l: "Red", v: (f) => `<b>${esc(f.nombre)}</b>` }, { l: "Estado", v: (f) => tagEstado(f.estado) },
-      { l: "Tiendas", n: 1, v: (f) => num((cache["tiendas*"] || []).filter((t) => t.red_id === f.id && t.estado === "aprobada").length) },
-      { l: "Comisión 90 d", n: 1, v: (f) => eur(comisiones.filter((c) => c.red === f.id && c.estado !== "anulada" && c.fecha >= haceDias(90)).reduce((s, c) => s + Number(c.comision), 0)) },
-      { l: "Panel", v: (f) => (f.panel_url ? `<a href="${esc(f.panel_url)}" target="_blank" rel="noopener">Abrir ↗</a>` : "") }],
-  });
+    ${fallan.length ? `<div class="aviso" style="background:var(--badbg)"><b>La última carga ha fallado en ${fallan.map((x) => esc(x.red)).join(", ")}.</b><br>${fallan.map((x) => esc(x.mensaje || "")).join("<br>")}</div>` : ""}
+    <div id="tiendas"></div>
+    <div id="redes"></div>
+    <details class="caja" style="margin-top:12px"><summary>Historial de cargas</summary>
+      ${syncs.slice(0, 12).map((x) => `<div class="row"><span class="tag ${x.ok ? "ok" : "bad"}">${esc(x.red)}</span> ${new Date(x.inicio).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })} · ${num(x.productos)} productos${x.tiendas_nuevas?.length ? ` · nuevas: <b>${esc(x.tiendas_nuevas.join(", "))}</b>` : ""}${x.mensaje ? `<br><span class="note">${esc(x.mensaje).replace(/\n/g, "<br>")}</span>` : ""}</div>`).join("") || `<p class="note">Todavía no se ha ejecutado ninguna carga.</p>`}
+      <p class="note">Para lanzarla a mano: GitHub → Actions → «Catálogo de tiendas» → Run workflow.</p></details>`;
+  const inline = { k: "estado", o: ESTADOS_TIENDA, tag: tagTienda };
   crud($("#tiendas", m), {
     tabla: "tiendas", titulo: "Tiendas", clave: "id", orden: "nombre", nuevo: { estado: "por_pedir" },
+    chips: { k: "estado", o: ESTADOS_TIENDA }, inline,
     campos: [{ k: "id", l: "Id (el de los enlaces /ir)", req: true }, { k: "nombre", l: "Nombre", req: true },
       { k: "red_id", l: "Red", t: "select", o: () => redes.map((r) => [r.id, r.nombre]) }, { k: "categoria", l: "Categoría" },
-      { k: "estado", l: "Estado", t: "select", o: [["por_pedir", "por pedir"], ["pedida", "pedida"], ["aprobada", "aprobada"], ["rechazada", "rechazada"], ["pausada", "pausada"]], req: true },
+      { k: "estado", l: "Estado", t: "select", o: ESTADOS_TIENDA, req: true },
       { k: "cashback", l: "Permite cashback (comprobado)", t: "bool" }, { k: "comision_texto", l: "Comisión (tal como la da la tienda)", w: 1 },
       { k: "programa_url", l: "Ficha del programa en la red", t: "url", w: 1 }, { k: "web_url", l: "Web de la tienda", t: "url", w: 1 },
       { k: "catalogo", l: "Mostrar su catálogo en la web", t: "bool" }, { k: "escaparate", l: "Solo lo que yo apruebe (escaparate)", t: "bool" }, { k: "max_productos", l: "Máximo de productos", t: "number" },
       { k: "programa_id", l: "Id del programa en la red" }, { k: "notas", l: "Notas", t: "textarea" }],
-    cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b>${f.alta_auto ? ` <span class="tag info">auto</span>` : ""}<br><span class="note">${esc(f.categoria)}${f.sincronizada ? ` · catálogo ${fecha(f.sincronizada)}` : ""}</span>` }, { l: "Red", v: (f) => esc(f.red_id) },
-      { l: "Estado", v: (f) => tagEstado(f.estado === "por_pedir" ? "por pedir" : f.estado) }, { l: "Cashback", v: (f) => (f.cashback ? "sí" : f.cashback === false ? "no" : "sin comprobar") },
-      { l: "Clics", n: 1, v: (f) => num(porTienda(f.id).clics) }, { l: "Ventas", n: 1, v: (f) => num(porTienda(f.id).ventas) },
-      { l: "Conv.", n: 1, v: (f) => porTienda(f.id).conversion + " %" }, { l: "€/clic", n: 1, v: (f) => eur(porTienda(f.id).epc) }, { l: "Comisión", n: 1, v: (f) => eur(porTienda(f.id).comision) },
-      { l: "Enlaces", v: (f) => [f.programa_url && `<a href="${esc(f.programa_url)}" target="_blank" rel="noopener">programa ↗</a>`, f.web_url && `<a href="${esc(f.web_url)}" target="_blank" rel="noopener">web ↗</a>`].filter(Boolean).join("<br>") }],
+    cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b>${f.alta_auto ? ` <span class="tag info">auto</span>` : ""}${f.sincronizada ? `<br><span class="note">catálogo ${fecha(f.sincronizada)}</span>` : ""}`, s: (f) => f.nombre.toLowerCase() },
+      { l: "Red", v: (f) => esc(f.red_id) },
+      { l: "Estado", v: (f) => selInline(inline, f.estado), s: (f) => f.estado },
+      { l: "Cashback", v: (f) => (f.cashback ? `<span class="tag ok">sí</span>` : f.cashback === false ? `<span class="tag">no</span>` : f.estado === "aprobada" ? `<span class="tag warn">comprobar</span>` : ""), s: (f) => String(f.cashback) },
+      { l: "Clics", n: 1, v: (f) => num(porTienda(f.id).clics), s: (f) => porTienda(f.id).clics }, { l: "Ventas", n: 1, v: (f) => num(porTienda(f.id).ventas), s: (f) => porTienda(f.id).ventas },
+      { l: "€/clic", n: 1, v: (f) => eur(porTienda(f.id).epc), s: (f) => porTienda(f.id).epc }, { l: "Comisión", n: 1, v: (f) => eur(porTienda(f.id).comision), s: (f) => porTienda(f.id).comision },
+      { l: "", v: (f) => [f.programa_url && `<a href="${esc(f.programa_url)}" target="_blank" rel="noopener">programa</a>`, f.web_url && `<a href="${esc(f.web_url)}" target="_blank" rel="noopener">web</a>`].filter(Boolean).join(" · ") }],
+  });
+  crud($("#redes", m), {
+    tabla: "redes", titulo: "Redes de afiliación", clave: "id", orden: "nombre", nuevo: { estado: "pendiente" },
+    campos: [{ k: "id", l: "Id (minúsculas)", req: true }, { k: "nombre", l: "Nombre", req: true }, { k: "panel_url", l: "Enlace al panel", t: "url", w: 1 },
+      { k: "estado", l: "Estado", t: "select", o: [["pendiente", "pendiente"], ["revision", "en revisión"], ["alta", "dada de alta"], ["rechazada", "rechazada"]], req: true }, { k: "notas", l: "Notas", t: "textarea" }],
+    cols: [{ l: "Red", v: (f) => `<b>${esc(f.nombre)}</b>${f.notas ? `<br><span class="note">${esc(f.notas.slice(0, 90))}</span>` : ""}`, s: (f) => f.nombre },
+      { l: "Estado", v: (f) => tagEstado(f.estado) },
+      { l: "Aprobadas", n: 1, v: (f) => num(tiendas.filter((t) => t.red_id === f.id && t.estado === "aprobada").length), s: (f) => tiendas.filter((t) => t.red_id === f.id && t.estado === "aprobada").length },
+      { l: "Pedidas", n: 1, v: (f) => num(tiendas.filter((t) => t.red_id === f.id && t.estado === "pedida").length), s: (f) => tiendas.filter((t) => t.red_id === f.id && t.estado === "pedida").length },
+      { l: "Comisión 90 d", n: 1, v: (f) => eur(comisiones.filter((c) => c.red === f.id && c.estado !== "anulada" && c.fecha >= haceDias(90)).reduce((s, c) => s + Number(c.comision), 0)) },
+      { l: "", v: (f) => (f.panel_url ? `<a href="${esc(f.panel_url)}" target="_blank" rel="noopener">Abrir panel</a>` : "") }],
   });
 };
 
@@ -345,8 +468,7 @@ V.campanas = async (m) => {
     const enTienda = (t) => !c.tiendas?.length || c.tiendas.includes(t);
     return kpis(clics.filter((x) => dentro(x.creado) && enTienda(x.tienda_id)), comisiones.filter((x) => dentro(x.fecha) && enTienda(x.tienda_id)));
   };
-  m.innerHTML = `<h2>Campañas</h2>
-    <div class="aviso">Una campaña <b>programada</b> aparece sola en la web (y en la app) entre su inicio y su fin: tarjeta en portada y colección de ofertas filtrada por sus categorías, palabras y tiendas. En <b>borrador</b> o <b>pausada</b> no se ve.</div>
+  m.innerHTML = `${cab("Campañas", "Una campaña programada sale sola en la web y en la app entre su inicio y su fin.")}
     <div class="row"><button class="btn sec" id="gen">Crear las campañas de ${new Date().getFullYear() + 1} como borrador</button><span class="note" id="genMsg"></span></div>
     <div id="lista"></div>`;
   $("#gen", m).onclick = async () => {
@@ -374,8 +496,7 @@ const PUBLICOS = [["todas", "Todas"], ["lista_espera", "Lista de espera"], ["sol
 V.envios = async (m) => {
   const campanas = await cargar("campanas", { orden: "inicio" });
   const pct = (a, b) => (b ? Math.round((a || 0) / b * 1000) / 10 + " %" : "—");
-  m.innerHTML = `<h2>Push y correo</h2>
-    <div class="aviso">Aquí se preparan y programan los avisos. El envío automático se conecta cuando la app tenga cuentas (push) y elijamos el servicio de correo; hasta entonces, apunta a mano los resultados de lo que envíes.</div>
+  m.innerHTML = `${cab("Push y correo", "Prepara y programa los avisos. El envío automático se conecta cuando la app esté publicada; mientras, apunta a mano los resultados.")}
     <div id="push"></div><div id="mail"></div>`;
   const base = (canal, titulo) => ({
     tabla: "envios", titulo, orden: "programado", desc: true, filtrar: (f) => f.canal === canal, nuevo: { canal, estado: "borrador", publico: "todas" },
@@ -403,15 +524,15 @@ V.usuarias = async (m) => {
   const porProv = Object.entries(lista.filter((x) => x.codigo_postal).reduce((a, x) => ((a[x.codigo_postal.slice(0, 2)] = (a[x.codigo_postal.slice(0, 2)] || 0) + 1), a), {})).sort((a, b) => b[1] - a[1]).slice(0, 8);
   const conPeques = new Set(personas.filter((p) => p.es_peque).map((p) => p.hogar_id)).size;
   const invitadoras = Object.entries(invit.reduce((a, x) => ((a[x.hogar_invita] = (a[x.hogar_invita] || 0) + 1), a), {})).sort((a, b) => b[1] - a[1]).slice(0, 10);
-  m.innerHTML = `<h2>Usuarias</h2>
-    <div class="grid">${kpi("Lista de espera", num(lista.length))}${kpi("Casas con cuenta", num(hogares), `${num(cuentas)} personas con acceso`)}
+  m.innerHTML = `${cab("Usuarias", "Quién se apunta, desde dónde y quién invita a más gente.")}
+    <div class="cifras">${kpi("Lista de espera", num(lista.length))}${kpi("Casas con cuenta", num(hogares), `${num(cuentas)} personas con acceso`)}
       ${kpi("Casas con peques", num(conPeques))}${kpi("Invitaciones", num(invit.length), `${num(invit.filter((i) => i.activada).length)} activadas`)}</div>
-    <div class="split" style="margin-top:16px">
-      <div class="card"><b>De dónde vienen</b>${porOrigen.map(([o, n]) => `<div class="row"><span class="tag lav">${esc(o)}</span> ${num(n)}</div>`).join("") || `<p class="note">Sin datos.</p>`}</div>
-      <div class="card"><b>Provincias (por código postal)</b>${porProv.map(([p, n]) => `<div class="row"><span class="tag info">${esc(p)}</span> ${num(n)}</div>`).join("") || `<p class="note">Sin datos.</p>`}</div>
+    <div class="dos">
+      <div class="caja"><b>De dónde vienen</b>${porOrigen.map(([o, n]) => `<div class="row"><span class="tag lav">${esc(o)}</span> ${num(n)}</div>`).join("") || `<p class="note">Sin datos.</p>`}</div>
+      <div class="caja"><b>Provincias (por código postal)</b>${porProv.map(([p, n]) => `<div class="row"><span class="tag info">${esc(p)}</span> ${num(n)}</div>`).join("") || `<p class="note">Sin datos.</p>`}</div>
     </div>
     <h3>Quién invita más</h3>
-    <div class="card">${invitadoras.length ? invitadoras.map(([h, n]) => `<div class="row"><code>${esc(h.slice(0, 8))}</code> ${num(n)} invitaciones ${n >= 10 ? `<span class="tag bad">revisar</span>` : ""}</div>`).join("") : `<p class="note">Aún no hay invitaciones.</p>`}
+    <div class="caja">${invitadoras.length ? invitadoras.map(([h, n]) => `<div class="row"><code>${esc(h.slice(0, 8))}</code> ${num(n)} invitaciones ${n >= 10 ? `<span class="tag bad">revisar</span>` : ""}</div>`).join("") : `<p class="note">Aún no hay invitaciones.</p>`}
       <p class="note">Más de 10 invitaciones de una misma casa en poco tiempo puede ser fraude (cuentas falsas). Los premios se pueden anular en Reembolsos.</p></div>
     <h3>Lista de espera</h3>
     <div class="row"><input id="busca" placeholder="Buscar correo…" style="max-width:320px"><button class="btn sec" id="csvL">Descargar CSV</button></div>
@@ -432,10 +553,10 @@ V.reembolsos = async (m) => {
   const s = (f) => movs.filter(f).reduce((t, x) => t + Number(x.importe), 0);
   const deuda = s((x) => x.tipo !== "retirada" && x.estado === "confirmada") - s((x) => x.tipo === "retirada" && x.estado === "confirmada");
   const retiradas = movs.filter((x) => x.tipo === "retirada" && x.estado === "pendiente");
-  m.innerHTML = `<h2>Reembolsos</h2>
-    <div class="grid">${kpi("Saldo de usuarias", eur(deuda), "confirmado y aún no retirado")}${kpi("Pendiente de confirmar", eur(s((x) => x.tipo !== "retirada" && x.estado === "pendiente")), "hasta que la tienda confirme")}
+  m.innerHTML = `${cab("Reembolsos", "El dinero que les devuelves a las usuarias. Su saldo es suyo: tenlo siempre apartado.")}
+    <div class="cifras">${kpi("Saldo de usuarias", eur(deuda), "confirmado y aún no retirado")}${kpi("Pendiente de confirmar", eur(s((x) => x.tipo !== "retirada" && x.estado === "pendiente")), "hasta que la tienda confirme")}
       ${kpi("Retiradas por pagar", num(retiradas.length), eur(retiradas.reduce((t, x) => t + Number(x.importe), 0)))}</div>
-    <div class="aviso">El saldo de usuarias es dinero que les debes: tenlo siempre apartado. Retirada mínima: 10 €.</div>
+    <p class="note">Retirada mínima: 10 €.</p>
     <h3>Retiradas por pagar</h3>
     <div class="tw"><table><thead><tr><th>Fecha</th><th>Casa</th><th class="n">Importe</th><th>Concepto</th><th></th></tr></thead><tbody>
     ${retiradas.map((x) => `<tr><td>${fecha(x.creado)}</td><td><code>${esc(x.hogar_id.slice(0, 8))}</code></td><td class="n">${eur(x.importe)}</td><td>${esc(x.concepto)}</td>
@@ -458,7 +579,7 @@ V.reembolsos = async (m) => {
 
 V.catalogo = async (m) => {
   const [campanas, tiendas] = await Promise.all([cargar("campanas", { orden: "inicio" }), cargar("tiendas", { orden: "nombre" })]);
-  m.innerHTML = `<h2>Catálogo y ayudas</h2><div id="esc"></div><div id="of"></div><div id="ay"></div>`;
+  m.innerHTML = `${cab("Escaparate y ayudas", "Qué productos salen en el buscador de la web, fichas de oferta para campañas y las ayudas que ve cada casa.")}<div id="esc"></div><div id="of"></div><div id="ay"></div>`;
   escaparate($("#esc", m), tiendas);
   crud($("#of", m), {
     tabla: "ofertas", titulo: "Fichas de oferta", orden: "comprobada", desc: true, nuevo: { activa: true, comprobada: hoy() },
@@ -514,7 +635,7 @@ function escaparate(el, tiendas) {
     if (error) { $("#e-l", el).innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
     $("#e-n", el).textContent = `${num(count)} productos · página ${st.pag + 1} de ${Math.max(1, Math.ceil(count / POR_PAGINA))}`;
     $("#e-ant", el).disabled = st.pag === 0; $("#e-sig", el).disabled = (st.pag + 1) * POR_PAGINA >= count;
-    $("#e-l", el).innerHTML = (data || []).map((p) => `<div class="card prod" data-id="${esc(p.id)}">
+    $("#e-l", el).innerHTML = (data || []).map((p) => `<div class="caja prod" data-id="${esc(p.id)}">
       ${p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy">` : ""}
       <div class="note" title="${esc(p.titulo)}">${esc(p.titulo.slice(0, 90))}</div>
       <input class="t-es" value="${esc(p.titulo_es || "")}" placeholder="Título en español" aria-label="Título en español">
@@ -549,7 +670,7 @@ function escaparate(el, tiendas) {
 }
 
 V.calendario = async (m) => {
-  m.innerHTML = `<h2>Calendario</h2><div class="aviso">Fechas de impuestos, temas legales, renovaciones y campañas. Las de IVA y pagos fraccionados solo te tocan cuando te des de alta en Hacienda; confírmalas con la gestoría.</div><div id="cal"></div>`;
+  m.innerHTML = `${cab("Calendario", "Impuestos, temas legales, renovaciones y campañas. Las de IVA y pagos fraccionados solo te tocan cuando te des de alta en Hacienda; confírmalas con la gestoría.")}<div id="cal"></div>`;
   crud($("#cal", m), {
     tabla: "calendario", titulo: "Fechas", orden: "fecha", nuevo: { fecha: hoy(), tipo: "fiscal", hecho: false },
     campos: [{ k: "titulo", l: "Qué", req: true, w: 1 }, { k: "fecha", l: "Fecha", t: "date", req: true },
@@ -559,15 +680,47 @@ V.calendario = async (m) => {
   });
 };
 
-// ---------- Navegación y sesión ----------
+// ---------- Navegación, buscador ⌘K y sesión ----------
 async function ir(id) {
   if (!V[id]) id = "resumen";
   if (location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
-  document.querySelectorAll("#tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.t === id));
+  document.querySelectorAll("#tabs button").forEach((b) => (b.dataset.t === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   const m = $("#vista");
-  m.innerHTML = `<p class="note">Cargando…</p>`;
+  m.innerHTML = `<p class="cargando">Cargando…</p>`;
   await cargar("redes");
   try { await V[id](m); } catch (e) { m.innerHTML = `<p class="err">No se ha podido cargar: ${esc(e.message)}</p>`; console.error(e); }
+  m.focus?.();
+}
+// Cifras y tareas que llevan a otra sección
+document.addEventListener("click", (e) => { const x = e.target.closest("[data-ir]"); if (x) ir(x.dataset.ir); });
+document.addEventListener("keydown", (e) => {
+  const x = e.target.closest?.("[data-ir][role=link]"); if (x && e.key === "Enter") ir(x.dataset.ir);
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && !$("#app").hidden) { e.preventDefault(); abrePaleta(); }
+});
+
+async function abrePaleta() {
+  const dlg = $("#paleta"), inp = $("#pq"), ul = $("#pl");
+  const tiendas = await cargar("tiendas", { select: "id,nombre,estado,red_id" });
+  const base = TABS.map(([id, t]) => ({ t, sub: "sección", go: () => ir(id) }));
+  let sel = 0, res = base;
+  const pinta = () => {
+    const q = inp.value.trim().toLowerCase();
+    res = q ? [...base.filter((x) => x.t.toLowerCase().includes(q)),
+      ...tiendas.filter((t) => t.nombre.toLowerCase().includes(q)).slice(0, 12).map((t) => ({ t: t.nombre, sub: `${t.red_id || ""} · ${t.estado.replace("_", " ")}`,
+        go: async () => { await ir("afiliados"); const box = $("#tiendas"); if (box) { box._st.q = t.nombre; crud(box, box._cfg); } } }))] : base;
+    sel = Math.min(sel, res.length - 1);
+    ul.innerHTML = res.map((x, i) => `<li><button role="option" data-i="${i}" aria-selected="${i === sel}">${esc(x.t)}<span>${esc(x.sub)}</span></button></li>`).join("") || `<li class="vacio">Nada con ese nombre.</li>`;
+  };
+  const elegir = (i) => { dlg.close(); res[i]?.go(); };
+  inp.value = ""; pinta(); dlg.showModal(); inp.focus();
+  inp.oninput = () => { sel = 0; pinta(); };
+  inp.onkeydown = (e) => {
+    if (e.key === "ArrowDown") { sel = Math.min(sel + 1, res.length - 1); pinta(); e.preventDefault(); }
+    if (e.key === "ArrowUp") { sel = Math.max(sel - 1, 0); pinta(); e.preventDefault(); }
+    if (e.key === "Enter") elegir(sel);
+  };
+  ul.onclick = (e) => { const b = e.target.closest("button[data-i]"); if (b) elegir(+b.dataset.i); };
+  dlg.onclick = (e) => { if (e.target === dlg) dlg.close(); };
 }
 
 async function arrancar() {
@@ -582,9 +735,13 @@ async function arrancar() {
   }
   $("#login").hidden = true; $("#app").hidden = false;
   $("#yo").textContent = session.user.email;
-  $("#tabs").innerHTML = TABS.map(([id, t]) => `<button role="tab" data-t="${id}">${t}</button>`).join("");
+  $("#tabs").innerHTML = TABS.map(([id, t, ic]) => `<button data-t="${id}">${ic}<span>${t}</span></button>`).join("");
   $("#tabs").onclick = (e) => { const b = e.target.closest("button"); if (b) ir(b.dataset.t); };
+  $("#abrirPaleta").onclick = abrePaleta;
+  $("#refrescar").onclick = () => { limpiar(); refrescaContadores(); ir(location.hash.slice(1)); toast("Datos actualizados"); };
   ir(location.hash.slice(1));
+  refrescaContadores();
+  setInterval(() => { if (document.visibilityState === "visible") refrescaContadores(); }, 5 * 60e3);
 }
 
 $("#enviar").onclick = async () => {
