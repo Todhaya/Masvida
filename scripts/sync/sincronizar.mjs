@@ -78,6 +78,38 @@ async function sincronizaRed(db, red, mod) {
       avisos.push(`${t.nombre} ya no aparece aprobada en ${red}: la pauso.`);
       if (!SECO) await db.actualiza("tiendas", `id=eq.${encodeURIComponent(t.id)}`, { estado: "pausada" });
     }
+    // Solicitudes pendientes o rechazadas: el panel muestra en qué punto está cada tienda
+    if (mod.solicitudes) {
+      try {
+        for (const sol of await mod.solicitudes(tk)) {
+          const t = buscaTienda(tiendas, red, sol);
+          if (t) {
+            if (t.estado !== "aprobada" && t.estado !== "pausada" && t.estado !== sol.estado) {
+              if (!SECO) await db.actualiza("tiendas", `id=eq.${encodeURIComponent(t.id)}`, { estado: sol.estado, programa_id: sol.programa_id });
+              t.estado = sol.estado;
+            }
+          } else {
+            let id = slug(sol.nombre);
+            if (ids.has(id)) id = `${id}-${red}`;
+            ids.add(id);
+            const nueva = { id, nombre: limpiaNombre(sol.nombre), red_id: red, programa_id: sol.programa_id, web_url: sol.web_url || null,
+              estado: sol.estado, alta_auto: true, catalogo: true, max_productos: 3000, notas: `Solicitud vista en ${red} el ${hoy}.` };
+            if (!SECO) await db.inserta("tiendas", [nueva]);
+            tiendas.push(nueva);
+          }
+        }
+      } catch (e) { avisos.push(`Solicitudes: ${e.message}`); }
+    }
+    // Comisiones de los últimos 30 días (nuevas y cambios de estado)
+    if (mod.comisiones) {
+      try {
+        const porPrograma = new Map(tiendas.filter((t) => t.red_id === red && t.programa_id).map((t) => [String(t.programa_id), t.id]));
+        const filas = (await mod.comisiones(tk)).map((c) => ({ ...c, tienda_id: porPrograma.get(String(c.programa_id)) || `${red}-${c.programa_id}` }))
+          .map(({ programa_id, ...c }) => c);
+        if (!SECO) for (const tr of trozos(filas, 500)) await db.inserta("comisiones", tr, "red,ref_red");
+        console.log(`   ${red}: ${filas.length} comisiones de los últimos 30 días`);
+      } catch (e) { avisos.push(`Comisiones: ${e.message}`); }
+    }
     // Catálogos
     for (const [t, prog] of activas) {
       if (t.estado !== "aprobada" || t.catalogo === false) continue;

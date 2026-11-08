@@ -38,3 +38,11 @@ test("Awin: la lista nueva trae la dirección de descarga de cada catálogo", ()
   const csv = 'Advertiser ID,Advertiser Name,Membership Status,Feed ID,Language,URL\n21707,Samsung ES,active,111,es,https://ui.awin.com/x/111.csv.gz\n';
   assert.deepEqual(feedsPorTienda(csv).get("21707"), ["https://ui.awin.com/x/111.csv.gz"]);
 });
+
+test("Awin y Admitad: comisiones al formato del panel", async () => {
+  const { aComision } = await import("../scripts/sync/awin.mjs");
+  const c = aComision({ id: 9, advertiserId: 21707, commissionAmount: { amount: 4.2 }, saleAmount: { amount: 120 }, commissionStatus: "approved", transactionDate: "2026-11-27T10:00:00", clickRefs: { clickRef: "0e8f6c1a-1b2c-4d3e-8f90-123456789abc" } });
+  assert.deepEqual([c.red, c.ref_red, c.programa_id, c.estado, c.comision, c.clic_id], ["awin", "9", "21707", "confirmada", 4.2, "0e8f6c1a-1b2c-4d3e-8f90-123456789abc"]);
+  const ad = (await import("../scripts/sync/admitad.mjs")).aComision({ action_id: 5, advcampaign_id: 6115, payment: "1.50", cart: "30", status: "declined", action_date: "2026-11-27 12:00:00", subid: "x" });
+  assert.deepEqual([ad.red, ad.estado, ad.comision, ad.clic_id], ["admitad", "anulada", 1.5, null]);
+});

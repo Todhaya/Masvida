@@ -158,3 +158,37 @@ export async function sinAdherir(pais = "ES") {
   if (!r.ok) throw new Error(`Awin sin adherir: ${r.status}`);
   return (await r.json()).map((p) => ({ id: p.id, nombre: p.name, sector: p.primarySector || "", web: p.displayUrl || "" }));
 }
+
+// Solicitudes: pendientes y rechazadas (las aceptadas ya vienen en programas())
+export async function solicitudes() {
+  const out = [];
+  for (const [rel, estado] of [["pending", "pedida"], ["rejected", "rechazada"], ["suspended", "pausada"]]) {
+    const r = await fetch(`${API}/publishers/${process.env.AWIN_PUBLISHER_ID}/programmes?relationship=${rel}&accessToken=${encodeURIComponent(process.env.AWIN_TOKEN)}`);
+    if (!r.ok) throw new Error(`Awin ${rel}: ${r.status}`);
+    for (const p of await r.json()) out.push({ programa_id: String(p.id), nombre: p.name, web_url: p.displayUrl || null, estado });
+  }
+  return out;
+}
+
+// Comisiones de los últimos `dias` (Awin deja pedir como mucho 31 días por consulta)
+export async function comisiones(_tk, dias = 30, ahora = new Date()) {
+  const fmt = (d) => d.toISOString().slice(0, 19);
+  const desde = new Date(ahora.getTime() - dias * 864e5);
+  const r = await fetch(`${API}/publishers/${process.env.AWIN_PUBLISHER_ID}/transactions/?startDate=${fmt(desde)}&endDate=${fmt(ahora)}&timezone=Europe/Madrid&accessToken=${encodeURIComponent(process.env.AWIN_TOKEN)}`);
+  if (!r.ok) throw new Error(`Awin transacciones: ${r.status} ${(await r.text()).slice(0, 200)}`);
+  return (await r.json()).map(aComision).filter(Boolean);
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export function aComision(t) {
+  if (!t?.id) return null;
+  const estado = t.paidToPublisher ? "pagada"
+    : { pending: "pendiente", approved: "confirmada", declined: "anulada", deleted: "anulada" }[t.commissionStatus] || "pendiente";
+  const ref = t.clickRefs?.clickRef || t.clickRef || null;
+  return {
+    red: "awin", ref_red: String(t.id), programa_id: String(t.advertiserId),
+    clic_id: ref && UUID.test(ref) ? ref : null,
+    importe_venta: t.saleAmount?.amount ?? null, comision: Number(t.commissionAmount?.amount) || 0,
+    estado, fecha: t.transactionDate,
+  };
+}
