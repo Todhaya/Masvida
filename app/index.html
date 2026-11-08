@@ -789,13 +789,13 @@ function renderLuz(){
   if(!luzOn){$("#luz").innerHTML=`<div class="hero"><span class="lab">Conecta tu luz una vez</span><span class="big" style="font-size:30px">Y vemos tu consumo hora a hora</span><span class="lab">Con Datadis, la plataforma oficial de las distribuidoras. Gratis y sin cambiar nada.</span></div>
    <div class="card"><h2>Cómo funciona</h2><div class="li"><span><span class="n">1. Autorizas a Viwai en Datadis</span><br><span class="m">Con tu DNI y el código de tu contrato (CUPS), que sale en la factura</span></span></div><div class="li"><span><span class="n">2. Leemos tu consumo de cada hora</span><br><span class="m">Llega con un día de retraso</span></span></div><div class="li"><span><span class="n">3. Te decimos qué tarifa te conviene</span><br><span class="m">Y te avisamos si cambia algo</span></span></div>
    <div class="btns"><button class="btn pri" id="luz-on">Conectar mi luz</button></div></div>`;return}
-  const mx=Math.max(...KWH),col=h=>(h<8)?"var(--mint)":((h>=10&&h<14)||(h>=18&&h<22))?"var(--peach)":"var(--butter)";
+  const mx=Math.max(...KWH),col=h=>(h<8)?"var(--vw-g2)":((h>=10&&h<14)||(h>=18&&h<22))?"var(--vw-g5)":"var(--vw-g3)";
   const tot=KWH.reduce((a,b)=>a+b,0),val=KWH.slice(0,8).reduce((a,b)=>a+b,0),pun=KWH.filter((_,h)=>(h>=10&&h<14)||(h>=18&&h<22)).reduce((a,b)=>a+b,0),lla=tot-val-pun;
   const pc=v=>Math.round(v/tot*100);
   $("#luz").innerHTML=`<div class="card"><div class="card-h"><h2>Ayer gastaste ${tot.toFixed(1).replace(".",",")} kWh</h2><span class="small muted">≈ ${(tot*.16).toFixed(2).replace(".",",")} €</span></div>
    <div class="kwh">${KWH.map((v,h)=>`<i style="height:${v/mx*100}%;background:${col(h)}"></i>`).join("")}</div><div class="kwh-x"><span>0 h</span><span>6 h</span><span>12 h</span><span>18 h</span><span>23 h</span></div>
-   <div class="split"><i style="width:${pc(val)}%;background:var(--mint)"></i><i style="width:${pc(lla)}%;background:var(--butter)"></i><i style="width:${pc(pun)}%;background:var(--peach)"></i></div>
-   <div class="leg"><span style="--c:var(--mint)">Valle ${pc(val)} %</span><span style="--c:var(--butter)">Llano ${pc(lla)} %</span><span style="--c:var(--peach)">Punta ${pc(pun)} %</span></div></div>
+   <div class="split"><i style="width:${pc(val)}%;background:var(--vw-g2)"></i><i style="width:${pc(lla)}%;background:var(--vw-g3)"></i><i style="width:${pc(pun)}%;background:var(--vw-g5)"></i></div>
+   <div class="leg"><span style="--c:var(--vw-g2)">Valle ${pc(val)} %</span><span style="--c:var(--vw-g3)">Llano ${pc(lla)} %</span><span style="--c:var(--vw-g5)">Punta ${pc(pun)} %</span></div></div>
    <div class="hero"><span class="lab">Nuestra propuesta</span><span class="big" style="font-size:32px">156 € menos al año</span><span class="lab">Gastas mucho en horas punta (de 18 a 22 h). Con una tarifa por tramos y poniendo la lavadora después de las 22 h, pagarías bastante menos.</span></div>
    <div class="btns"><button class="btn pri" data-v="facturas">Ver la tarifa</button><button class="btn" id="luz-off">Desconectar</button></div>
    <span class="aff">Datos de ejemplo. En la app real vendrían de Datadis con tu permiso.</span>`;
