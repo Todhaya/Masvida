@@ -105,11 +105,6 @@ test("Admitad: si hay catálogo de España, solo ese", async () => {
   assert.equal(feedsParaEspana([{ name: "Global", xml_link: "https://a" }]).length, 1);
 });
 
-test("Admitad: sin catálogo de España, los más vendidos", async () => {
-  const { feedsParaEspana } = await import("../scripts/sync/admitad.mjs");
-  assert.deepEqual(feedsParaEspana([{ name: "10-25$", xml_link: "https://a" }, { name: "hot products", xml_link: "https://h" }]), ["https://h/?currency=EUR"]);
-});
-
 test("primer filtro: fuera recambios, coche y céntimos", async () => {
   const { pasaFiltro } = await import("../scripts/sync/filtro.mjs");
   const img = "https://i/x.jpg";

@@ -12,6 +12,8 @@ import { pasaFiltro } from "./filtro.mjs";
 import { readFile } from "node:fs/promises";
 
 const SECO = !!process.env.DRY_RUN;
+const LEER_ESCAPARATE = 60000;
+export const INTERES_CASA = new Set(["hogar", "cocina", "electrodomesticos", "tecnologia", "belleza", "peques", "mascotas", "deporte"]);
 const hoy = new Date().toISOString().slice(0, 10);
 const limpiaNombre = (n) => String(n).replace(/\s+(WW|ES|EU|INT|Many GEOs?|Global|CPS|CPA)\b.*$/i, "").replace(/\s*\[.*?\]\s*/g, " ").trim();
 
@@ -45,7 +47,7 @@ async function sincronizaRed(db, red, mod) {
   try {
     const tk = red === "admitad" ? await admitad.token() : null;
     const progs = await (red === "admitad" ? admitad.programas(tk) : cj.programas());
-    const tiendas = await db.todo("tiendas?select=id,nombre,red_id,programa_id,estado,catalogo,max_productos,categoria,cashback");
+    const tiendas = await db.todo("tiendas?select=id,nombre,red_id,programa_id,estado,catalogo,escaparate,max_productos,categoria,cashback");
     const ids = new Set(tiendas.map((t) => t.id));
     const activas = [];
     for (const prog of progs) {
@@ -108,8 +110,12 @@ async function sincronizaCatalogo(db, t, mod, prog) {
     n += lote.length; lote = [];
   };
   const vistos = new Set();
-  for await (const o of mod.productos(prog, max)) {
+  // En las tiendas «solo escaparate» se recorre mucho más catálogo y solo se guarda lo que interesa en casa
+  // (de ahí sale la selección); en las demás, los primeros `max`.
+  for await (const o of mod.productos(prog, t.escaparate ? LEER_ESCAPARATE : max)) {
     const fila = filaProducto(t, o, visto);
+    if (t.escaparate && !(fila.filtro_ok && INTERES_CASA.has(fila.categoria))) continue;
+    if (n + lote.length >= max) break;
     if (vistos.has(fila.id)) continue;
     vistos.add(fila.id);
     lote.push(fila);

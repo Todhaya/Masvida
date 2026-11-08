@@ -43,14 +43,12 @@ export function aPrograma(p) {
   };
 }
 
-// Si la tienda tiene catálogos por país, solo los de España (títulos en español); si no, los más vendidos; si no, todos.
+// Si la tienda tiene catálogos por país, solo los de España (títulos en español); si no, todos.
 const ES = /(^|[^a-z])(es|esp|spain|españa|espana|spanish|español)([^a-z]|$)/i;
 export function feedsParaEspana(info) {
   const con = info.filter((f) => f.xml_link);
   const es = con.filter((f) => ES.test(f.name || ""));
-  // Sin catálogo de España: mejor los más vendidos que todo el catálogo mundial
-  const top = con.filter((f) => /hot|top|best|popular/i.test(f.name || ""));
-  return (es.length ? es : top.length ? top : con).map((f) => enEuros(f.xml_link));
+  return (es.length ? es : con).map((f) => enEuros(f.xml_link));
 }
 
 // Admitad convierte los precios del catálogo a la moneda que se le pida (algunas tiendas lo dan en dólares)
@@ -58,18 +56,26 @@ export function enEuros(url) {
   try { const u = new URL(url); u.searchParams.set("currency", "EUR"); return u.toString(); } catch { return url; }
 }
 
-// Productos del catálogo de un programa (hasta `max`). El enlace del feed ya lleva nuestro seguimiento.
+// Productos del catálogo de un programa (hasta `max`, repartidos entre sus catálogos).
+// El enlace del feed ya lleva nuestro seguimiento. Un catálogo que falla no tumba a los demás.
 export async function* productos(prog, max) {
-  let n = 0;
+  console.log(`   ${prog.nombre}: usa ${prog.feeds.length} de [${(prog.catalogos || []).join(" | ")}]`);
+  const porCatalogo = Math.ceil(max / Math.max(1, prog.feeds.length));
+  let n = 0, fallos = [];
   for (const feed of prog.feeds) {
-    if (n === 0) console.log(`   ${prog.nombre}: usa ${prog.feeds.length} de [${(prog.catalogos || []).join(" | ")}]`);
     if (n >= max) return;
-    const r = await fetch(feed, { signal: AbortSignal.timeout(10 * 60e3) }); // máx. 10 min por catálogo
-    if (!r.ok || !r.body) {
-      // El motivo viene en el cuerpo (sin la dirección del feed, que lleva nuestro identificador)
-      const motivo = (await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 300);
-      throw new Error(`Admitad feed ${prog.nombre}: ${r.status} ${motivo}`);
+    let k = 0;
+    try {
+      const r = await fetch(feed, { signal: AbortSignal.timeout(6 * 60e3) }); // máx. 6 min por catálogo
+      if (!r.ok || !r.body) {
+        // El motivo viene en el cuerpo (sin la dirección del feed, que lleva nuestro identificador)
+        const motivo = (await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 300);
+        throw new Error(`${r.status} ${motivo}`);
+      }
+      for await (const o of ofertasDeFlujo(textoDeRespuesta(r), Math.min(porCatalogo, max - n))) { n++; k++; yield o; }
+    } catch (e) {
+      if (k === 0) fallos.push(e.message); // si ya había leído algo, el corte (p. ej. por tiempo) no es un fallo
     }
-    for await (const o of ofertasDeFlujo(textoDeRespuesta(r), max - n)) { n++; yield o; }
   }
+  if (!n && fallos.length) throw new Error(`Admitad feed ${prog.nombre}: ${fallos[0]}`);
 }
