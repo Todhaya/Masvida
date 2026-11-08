@@ -3,6 +3,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 import {
   resumenMes, reparto100, progresoObjetivos, ultimosMeses, kpis, descuentoReal, estadoCampana, parseComisionesCSV,
 } from "./calculos.js";
+import { PAL, GRIS, donut, lineas, barras, ranking, anillo, mini, delta, pintaDonut } from "./graficos.js";
 
 const sb = createClient(window.VIWAI.supabaseUrl, window.VIWAI.supabaseAnonKey);
 const $ = (s, el = document) => el.querySelector(s);
@@ -38,8 +39,31 @@ async function ajustes() {
 }
 
 // ---------- Componentes ----------
-const kpi = (titulo, valor, sub = "", ir = "") => `<div class="cifra${ir ? " clic" : ""}" ${ir ? `data-ir="${ir}" role="link" tabindex="0"` : ""}><small>${esc(titulo)}</small><div class="v">${valor}</div><div class="s">${sub}</div></div>`;
-const cab = (titulo, texto = "", acciones = "") => `<div class="cab"><div><h1>${esc(titulo)}</h1>${texto ? `<p>${texto}</p>` : ""}</div>${acciones ? `<div class="acc">${acciones}</div>` : ""}</div>`;
+// Ficha de cifra con icono. o = { ico, tono: [fondo, color], spark: [números], delta: html }
+const kpi = (titulo, valor, sub = "", ir = "", o = {}) => `<div class="tile${ir ? " clic" : ""}" ${ir ? `data-ir="${ir}" role="link" tabindex="0"` : ""}>
+  <div class="top"><span class="ico" ${o.tono ? `style="--tc:${o.tono[0]};--ic:${o.tono[1]}"` : ""}>${ICO[o.ico] || ICO.punto}</span><small>${esc(titulo)}</small></div>
+  <div class="v">${valor}</div><div class="s">${o.delta || ""}${sub}</div>${o.spark ? mini(o.spark, o.tono?.[1]) : ""}</div>`;
+// Portada de sección: degradado del color de la sección, título, explicación y acciones
+const cab = (titulo, texto = "", acciones = "", extra = "") => `<section class="hero">${acciones ? `<div class="acc" style="float:right;display:flex;gap:8px;flex-wrap:wrap">${acciones}</div>` : ""}
+  <h1>${esc(titulo)}</h1>${texto ? `<p class="sub">${texto}</p>` : ""}${extra}</section>`;
+const TONO = { lav: ["#EEE9FF", "#6A4CF5"], mint: ["#DDF5EA", "#1A8A66"], sky: ["#E1EDFF", "#2F6FD6"], butter: ["#FFF4C9", "#A26F00"], peach: ["#FFE6DC", "#C4503A"], rosa: ["#FBE3F1", "#A93C86"] };
+const ico = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICO = {
+  punto: ico('<circle cx="12" cy="12" r="4"/>'),
+  gente: ico('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>'),
+  euro: ico('<path d="M17 6.5A7 7 0 1 0 17 17.5M4 10h9M4 14h9"/>'),
+  tienda: ico('<path d="M4 7h16l-1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>'),
+  clic: ico('<path d="m9 9 11 4-5 2-2 5z"/><path d="M5 5l2 2M3 10h2M10 3v2"/>'),
+  ojo: ico('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+  movil: ico('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18h2"/>'),
+  caja: ico('<path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/>'),
+  reloj: ico('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+  casa: ico('<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>'),
+  ok: ico('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>'),
+  x: ico('<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>'),
+  hucha: ico('<path d="M5 11a7 6 0 0 1 13-2h2v4l-2 1a7 7 0 0 1-3 3v3h-3v-2h-2v2H7v-3a6 6 0 0 1-2-6z"/><circle cx="15" cy="10" r=".6" fill="currentColor"/>'),
+  regalo: ico('<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13M12 8c-2-4-6-3-5 0M12 8c2-4 6-3 5 0"/>'),
+};
 function toast(msg) {
   const t = $("#toast"); t.textContent = msg; t.classList.add("ve");
   clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("ve"), 2600);
@@ -185,6 +209,7 @@ function editar(cfg, fila, el, existe) {
 const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const TABS = [
   ["resumen", "Hoy", I('<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>')],
+  ["kpis", "Cuadro de mando", I('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')],
   ["dinero", "Dinero y objetivos", I('<circle cx="12" cy="12" r="9"/><path d="M15 9.5a3 3 0 1 0 0 5M8 11h5M8 13h5"/>')],
   ["afiliados", "Tiendas y redes", I('<path d="M4 7h16l-1 13H5z"/><path d="M9 7a3 3 0 0 1 6 0"/>')],
   ["catalogo", "Escaparate y ayudas", I('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>')],
@@ -231,22 +256,34 @@ async function refrescaContadores() {
 
 const diasHasta = (f) => Math.round((new Date(f + "T12:00:00") - new Date(hoy() + "T12:00:00")) / 864e5);
 
+// Serie diaria de los últimos n días a partir de filas con fecha
+const diario = (n, filas, campoF, valor = () => 1) => Array.from({ length: n }, (_, i) => {
+  const d = haceDias(n - 1 - i); return filas.filter((x) => String(x[campoF] || "").slice(0, 10) === d).reduce((s, x) => s + (valor(x) || 0), 0);
+});
+const dias = (n) => Array.from({ length: n }, (_, i) => haceDias(n - 1 - i));
+const ESTADOS_COLOR = { aprobada: "#1FA37A", pedida: "#E8A100", por_pedir: "#6A4CF5", rechazada: "#E0664F", pausada: GRIS };
+const donutTiendas = (tiendas, filtra = "") => donut(
+  [["aprobada", "Aprobadas"], ["pedida", "Esperando"], ["por_pedir", "Por pedir"], ["rechazada", "Rechazadas"], ["pausada", "Pausadas"]]
+    .map(([k, l]) => ({ k, l, v: tiendas.filter((t) => t.estado === k).length, c: ESTADOS_COLOR[k] })), { centro: "tiendas", filtra });
+
 V.resumen = async (m) => {
   const [aj, lista, comisiones, movimientos, gastos, metricas, clics] = await Promise.all([
     ajustes(), cargar("lista_espera", { select: "id,consentimiento,origen", orden: "consentimiento" }),
     cargar("comisiones"), cargar("movimientos"), cargar("gastos"), cargar("metricas", { orden: "fecha", desc: true }),
-    cargar("clics", { select: "id,tienda_id,creado", desde: haceDias(90), campoFecha: "creado" }),
+    cargar("clics", { select: "id,tienda_id,creado", desde: haceDias(180), campoFecha: "creado" }),
   ]);
   P = await pendientes();
   const hogares = await cuenta("hogares");
-  const desde30 = haceDias(30), desde7 = haceDias(7);
-  const serie = Array.from({ length: 30 }, (_, i) => { const d = haceDias(29 - i); return { d, v: lista.filter((x) => x.consentimiento.slice(0, 10) === d).length }; });
-  const sum = (fuente, campo) => metricas.filter((x) => x.fuente === fuente && x.fecha >= desde30).reduce((s, x) => s + (x[campo] || 0), 0);
+  const desde7 = haceDias(7);
   const ym = hoy().slice(0, 7);
   const mes = resumenMes({ comisiones, movimientos, gastos }, ym, aj.reservas);
   const meses = ultimosMeses(new Date(), 12).map((y) => resumenMes({ comisiones, movimientos, gastos }, y, aj.reservas));
   const aprobadas = P.tiendas.filter((t) => t.estado === "aprobada").length;
   const nuevasSemana = lista.filter((x) => x.consentimiento >= desde7).length;
+  const met = (fuente, campo) => metricas.filter((x) => x.fuente === fuente);
+  const serieMet = (n, fuente, campo) => diario(n, met(fuente), "fecha", (x) => x[campo]);
+  const suma = (a) => a.reduce((x, y) => x + y, 0);
+  const periodo = (n, f) => { const a = f(2 * n); return [suma(a.slice(n)), suma(a.slice(0, n))]; }; // [este periodo, el anterior]
 
   // La frase de estado
   const trozosFrase = [];
@@ -266,45 +303,138 @@ V.resumen = async (m) => {
   if (P.ayudasRev) t.push({ n: P.ayudasRev, txt: "Ayudas nuevas o por revisar", ir: "catalogo" });
   if (P.prox && diasHasta(P.prox.inicio) <= 21) t.push({ n: diasHasta(P.prox.inicio) + " d", txt: `Prepara ${P.prox.nombre}: chollos y avisos`, ir: "campanas" });
 
-  m.innerHTML = `<section class="hoy">
-      <div><p class="fecha">${new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</p><p class="frase">${frase}</p>
-        <div class="cifras">
-          ${kpi("Lista de espera", num(lista.length), nuevasSemana ? `+${nuevasSemana} esta semana` : "sin altas esta semana", "usuarias")}
-          ${kpi("Disponible del mes", eur(mes.disponible), "ya apartados impuestos y gastos", "dinero")}
-        </div></div>
-      <div><b>Qué toca hacer</b>
-        <ul class="tareas" style="margin-top:10px">${t.length ? t.map((x) => `<li${x.urg ? ` class="urg"` : ""}><button data-ir="${x.ir}"><span class="n">${x.n}</span>${esc(x.txt)}<span class="ir">abrir</span></button></li>`).join("")
-          : `<li class="vacia">Nada pendiente. Todo al día.</li>`}</ul></div>
+  const [vis, visAnt] = periodo(30, (n) => serieMet(n, "web", "visitas"));
+  const [ape, apeAnt] = periodo(30, (n) => serieMet(n, "app", "aperturas"));
+  const [cl, clAnt] = periodo(30, (n) => diario(n, clics, "creado"));
+  const inst30 = suma(serieMet(30, "app", "instalaciones"));
+  const comMeses = meses.map((r) => r.confirmada + r.pendiente);
+
+  m.innerHTML = `<section class="hero hoy">
+      <div><p class="fecha" style="color:var(--muted);font-weight:700;margin:0 0 10px;text-transform:capitalize">${new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" })}</p>
+        <p class="frase" style="font-size:clamp(22px,2.6vw,30px);font-weight:700;letter-spacing:-.025em;line-height:1.25;margin:0">${frase}</p>
+        <div class="row" style="margin-top:16px;gap:16px">
+          <div><div class="gran" style="margin:0">${num(lista.length)}</div><span class="note">en la lista de espera ${nuevasSemana ? `· <b style="color:var(--ok)">+${nuevasSemana}</b> esta semana` : ""}</span></div>
+          <div><div class="gran" style="margin:0">${eur(mes.disponible)}</div><span class="note">disponible este mes</span></div></div></div>
+      <div style="position:relative;z-index:1"><b>Qué toca hacer</b>
+        <ul class="tareas" style="margin-top:10px">${t.length ? t.map((x) => `<li${x.urg ? ` class="urg"` : ""}><button data-ir="${x.ir}"><span class="n">${x.n}</span>${esc(x.txt)}<span class="ir">abrir →</span></button></li>`).join("")
+          : `<li class="vacia">Nada pendiente. Todo al día ✨</li>`}</ul></div>
     </section>
-    <div class="cifras">
-      ${kpi("Visitas web · 30 días", sum("web", "visitas") ? num(sum("web", "visitas")) : "—", sum("web", "visitas") ? `${num(sum("web", "visitantes"))} personas` : "se apuntan abajo, en Métricas")}
-      ${kpi("Casas con cuenta en la app", num(hogares), sum("app", "instalaciones") ? `${num(sum("app", "instalaciones"))} instalaciones en 30 días` : "")}
-      ${kpi("Clics a tiendas · 30 días", num(clics.filter((c) => c.creado >= desde30).length), "desde la web y la app", "afiliados")}
-      ${kpi("Comisión del mes", eur(mes.confirmada), `${eur(mes.pendiente)} pendiente de confirmar`, "dinero")}
-      ${kpi("Tiendas aprobadas", num(aprobadas), `${P.pedidas} pedidas`, "afiliados")}
+    <div class="tiles">
+      ${kpi("Visitas a la web · 30 días", num(vis), "", "", { ico: "ojo", tono: TONO.lav, spark: serieMet(30, "web", "visitas"), delta: delta(vis, visAnt) })}
+      ${kpi("Aperturas de la app · 30 días", num(ape), inst30 ? `${num(inst30)} instalaciones` : "", "usuarias", { ico: "movil", tono: TONO.sky, spark: serieMet(30, "app", "aperturas"), delta: delta(ape, apeAnt) })}
+      ${kpi("Clics a tiendas · 30 días", num(cl), "", "afiliados", { ico: "clic", tono: TONO.peach, spark: diario(30, clics, "creado"), delta: delta(cl, clAnt) })}
+      ${kpi("Comisión del mes", eur(mes.confirmada), `${eur(mes.pendiente)} por confirmar`, "dinero", { ico: "euro", tono: TONO.mint, spark: comMeses })}
+      ${kpi("Casas con cuenta", num(hogares), "en la app", "usuarias", { ico: "casa", tono: TONO.butter })}
     </div>
-    <div class="dos">
-      <div class="caja"><b>Altas en la lista de espera · 30 días</b>${spark(serie)}</div>
-      <div class="caja"><b>Objetivos</b>${progresoObjetivos(meses, aj.objetivos).map((o) => `
-        <div class="obj" style="margin-top:12px"><div class="t"><span>${esc(o.nombre)}</span><span>${o.pct} %</span></div>
-        <div class="prog"><i class="${o.pct >= 100 ? "full" : ""}" style="width:${o.pct}%"></i></div></div>`).join("")}
-        <p class="note"><a href="#dinero">Ver el detalle</a></p></div>
+    <div class="g2">
+      <div class="caja"><div class="ch"><b>Tráfico</b><span class="note">pasa el ratón por la gráfica</span>
+        <div class="seg" role="group" aria-label="Periodo">${[7, 30, 90].map((n) => `<button data-per="${n}" aria-pressed="${n === 30}">${n} días</button>`).join("")}</div></div>
+        <div id="traf"></div></div>
+      <div class="caja"><div class="ch"><b>Tus tiendas</b><a href="#afiliados" style="font-size:13px">ver todas</a></div>${donutTiendas(P.tiendas, "ir-tiendas")}</div>
     </div>
-    <details class="caja" style="margin-top:12px"><summary>Métricas que se apuntan a mano</summary><div id="met"></div>
-      <p class="note">Las visitas exactas de la web están en Cloudflare → viwai-web → Métricas. Mientras no las conectemos, apunta aquí el total de cada semana.</p></details>`;
+    <div class="g2i">
+      <div class="caja"><div class="ch"><b>Objetivos</b><a href="#dinero" style="font-size:13px">detalle</a></div>
+        <div class="rings">${progresoObjetivos(meses, aj.objetivos).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#6A4CF5" })}<div><b>${esc(o.nombre)}</b><span>${o.falta > 0 ? `faltan ${eur(o.falta)}` : "¡conseguido!"}</span></div></div>`).join("")}</div></div>
+      <div class="caja"><div class="ch"><b>Altas en la lista de espera</b><span class="note">14 días</span></div>
+        ${barras(dias(14).map((d) => ({ l: String(+d.slice(8)), v: lista.filter((x) => x.consentimiento.slice(0, 10) === d).length })), { c: "#6A4CF5", alto: 120 })}</div>
+    </div>
+    <details class="caja"><summary>Seguidores en redes y otras métricas a mano</summary><div id="met"></div>
+      <p class="note">Las visitas de la web y las aperturas e instalaciones de la app se cuentan solas (sin cookies). Aquí solo hace falta apuntar los seguidores de cada red de vez en cuando.</p></details>`;
+  const traf = (n) => ($("#traf", m).innerHTML = lineas([
+    { n: "Visitas web", c: PAL[0], v: serieMet(n, "web", "visitas") },
+    { n: "Aperturas app", c: PAL[3], v: serieMet(n, "app", "aperturas") },
+    { n: "Clics a tiendas", c: PAL[4], v: diario(n, clics, "creado") },
+  ], dias(n)));
+  traf(30);
+  m.querySelectorAll("[data-per]").forEach((b) => (b.onclick = () => { m.querySelectorAll("[data-per]").forEach((x) => x.setAttribute("aria-pressed", x === b)); traf(+b.dataset.per); }));
+  m.addEventListener("viwai:filtra", (e) => { if (e.detail.valor) { FILTRO_TIENDAS = e.detail.valor; ir("afiliados"); } });
   crud($("#met", m), {
     tabla: "metricas", titulo: "Métricas", clave: ["fecha", "fuente"], orden: "fecha", desc: true,
-    nuevo: { fecha: hoy(), fuente: "web" },
+    nuevo: { fecha: hoy(), fuente: "instagram" },
     campos: [
       { k: "fecha", l: "Fecha", t: "date", req: true }, { k: "fuente", l: "Fuente", t: "select", o: ["web", "app", "instagram", "tiktok", "facebook", "email", "push"], req: true },
-      { k: "visitas", l: "Visitas", t: "number" }, { k: "visitantes", l: "Personas", t: "number" }, { k: "instalaciones", l: "Instalaciones", t: "number" },
-      { k: "seguidores", l: "Seguidores", t: "number" }, { k: "clics", l: "Clics", t: "number" },
+      { k: "seguidores", l: "Seguidores", t: "number" }, { k: "visitas", l: "Visitas", t: "number" }, { k: "clics", l: "Clics", t: "number" },
     ],
     cols: [
-      { l: "Fecha", v: (f) => fecha(f.fecha), s: (f) => f.fecha }, { l: "Fuente", v: (f) => esc(f.fuente) }, { l: "Visitas", n: 1, v: (f) => num(f.visitas), s: (f) => f.visitas || 0 },
-      { l: "Personas", n: 1, v: (f) => num(f.visitantes), s: (f) => f.visitantes || 0 }, { l: "Instal.", n: 1, v: (f) => num(f.instalaciones), s: (f) => f.instalaciones || 0 }, { l: "Seguidores", n: 1, v: (f) => num(f.seguidores), s: (f) => f.seguidores || 0 },
+      { l: "Fecha", v: (f) => fecha(f.fecha), s: (f) => f.fecha }, { l: "Fuente", v: (f) => `<span class="tag lav">${esc(f.fuente)}</span>` }, { l: "Visitas", n: 1, v: (f) => num(f.visitas), s: (f) => f.visitas || 0 },
+      { l: "Aperturas", n: 1, v: (f) => num(f.aperturas), s: (f) => f.aperturas || 0 }, { l: "Instal.", n: 1, v: (f) => num(f.instalaciones), s: (f) => f.instalaciones || 0 }, { l: "Seguidores", n: 1, v: (f) => num(f.seguidores), s: (f) => f.seguidores || 0 },
     ],
   });
+};
+let FILTRO_TIENDAS = null;
+
+// ---------- Cuadro de mando: todos los indicadores, con el periodo que elijas ----------
+V.kpis = async (m) => {
+  const n = (V.kpis.n ||= 30);
+  const [aj, lista, comisiones, movimientos, gastos, metricas, clics, tiendas, envios] = await Promise.all([
+    ajustes(), cargar("lista_espera", { select: "id,consentimiento,origen", orden: "consentimiento" }), cargar("comisiones"), cargar("movimientos"), cargar("gastos"),
+    cargar("metricas", { orden: "fecha" }), cargar("clics", { select: "id,tienda_id,creado", desde: haceDias(400), campoFecha: "creado" }),
+    cargar("tiendas", { select: "id,nombre,estado,red_id" }, true), cargar("envios"),
+  ]);
+  const [hogares, nProductos] = await Promise.all([cuenta("hogares"), cuenta("productos")]);
+  const suma = (a) => a.reduce((x, y) => x + (y || 0), 0);
+  const ser = (fuente, campo, k = n) => diario(k, metricas.filter((x) => x.fuente === fuente), "fecha", (x) => x[campo]);
+  const par = (f) => { const a = f(2 * n); return [suma(a.slice(n)), suma(a.slice(0, n)), a.slice(n)]; };
+  const enPeriodo = (f, desdeN, hastaN = 0) => f >= haceDias(desdeN) && f < haceDias(hastaN - 1);
+  const comP = (a, b) => comisiones.filter((c) => c.estado !== "anulada" && enPeriodo(String(c.fecha).slice(0, 10), a, b));
+  const [vis, visA, visS] = par((k) => ser("web", "visitas", k));
+  const [ape, apeA, apeS] = par((k) => ser("app", "aperturas", k));
+  const [ins, insA, insS] = par((k) => ser("app", "instalaciones", k));
+  const [cl, clA, clS] = par((k) => diario(k, clics, "creado"));
+  const [alt, altA, altS] = par((k) => diario(k, lista, "consentimiento"));
+  const c1 = comP(n, 0), c0 = comP(2 * n, n);
+  const com = suma(c1.map((c) => Number(c.comision))), comA = suma(c0.map((c) => Number(c.comision)));
+  const ventas = c1.length, ventasA = c0.length;
+  const conv = cl ? (ventas / cl) * 100 : 0, convA = clA ? (ventasA / clA) * 100 : 0;
+  const epc = cl ? com / cl : 0, epcA = clA ? comA / clA : 0;
+  const ventasImp = suma(c1.map((c) => Number(c.importe_venta || 0)));
+  const s = (f) => movimientos.filter(f).reduce((t, x) => t + Number(x.importe), 0);
+  const saldoUsuarias = s((x) => x.tipo !== "retirada" && x.estado === "confirmada") - s((x) => x.tipo === "retirada" && x.estado === "confirmada");
+  const mes = resumenMes({ comisiones, movimientos, gastos }, hoy().slice(0, 7), aj.reservas);
+  const redesSoc = ["instagram", "tiktok", "facebook"].map((r) => { const f = metricas.filter((x) => x.fuente === r && x.seguidores != null); return { r, ult: f.at(-1)?.seguidores || 0, antes: f.filter((x) => x.fecha <= haceDias(n)).at(-1)?.seguidores || 0, serie: f.slice(-12).map((x) => x.seguidores) }; });
+  const enviosP = envios.filter((e) => e.estado === "enviado" && String(e.programado || "").slice(0, 10) >= haceDias(n));
+  const env = suma(enviosP.map((e) => e.enviados)), abr = suma(enviosP.map((e) => e.abiertos)), clE = suma(enviosP.map((e) => e.clics));
+  const topT = Object.entries(clics.filter((c) => c.creado >= haceDias(n)).reduce((a, c) => ((a[c.tienda_id] = (a[c.tienda_id] || 0) + 1), a), {})).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const nombreT = (id) => tiendas.find((t) => t.id === id)?.nombre || id;
+  const pct = (x) => (Math.round(x * 10) / 10).toLocaleString("es-ES") + " %";
+  const g = (titulo, cuerpo) => `<h3>${titulo}</h3><div class="tiles">${cuerpo}</div>`;
+
+  m.innerHTML = `${cab("Cuadro de mando", `Todos los indicadores de Viwai de los últimos <b>${n} días</b>, comparados con los ${n} anteriores. Se actualizan solos cada noche y cada vez que alguien visita la web o abre la app.`,
+      `<div class="seg" role="group" aria-label="Periodo">${[7, 30, 90].map((k) => `<button data-per="${k}" aria-pressed="${k === n}">${k} días</button>`).join("")}</div>`,
+      `<div class="row" style="gap:30px;margin-top:10px">
+        <div><div class="gran">${num(vis)}</div><span class="note">visitas a la web ${delta(vis, visA)}</span></div>
+        <div><div class="gran">${num(cl)}</div><span class="note">clics a tiendas ${delta(cl, clA)}</span></div>
+        <div><div class="gran">${eur(com)}</div><span class="note">comisión generada ${delta(com, comA)}</span></div></div>`)}
+    <div class="caja" style="margin-bottom:6px"><div class="ch"><b>Embudo del periodo</b><span class="note">de quien llega a lo que se gana</span></div>
+      ${ranking([{ l: "Visitas web", v: vis, c: PAL[0] }, { l: "Aperturas app", v: ape, c: PAL[3] }, { l: "Clics a tiendas", v: cl, c: PAL[4] }, { l: "Ventas", v: ventas, c: PAL[1] }], { max: Math.max(1, vis, ape) })}</div>
+    ${g("Crecimiento", `
+      ${kpi("Altas en la lista de espera", num(alt), `${num(lista.length)} en total`, "usuarias", { ico: "gente", tono: TONO.lav, spark: altS, delta: delta(alt, altA) })}
+      ${kpi("Instalaciones de la app", num(ins), "", "", { ico: "movil", tono: TONO.sky, spark: insS, delta: delta(ins, insA) })}
+      ${kpi("Aperturas de la app", num(ape), "", "", { ico: "movil", tono: TONO.sky, spark: apeS, delta: delta(ape, apeA) })}
+      ${kpi("Casas con cuenta", num(hogares), "total", "usuarias", { ico: "casa", tono: TONO.butter })}`)}
+    ${g("Tráfico y conversión", `
+      ${kpi("Visitas a la web", num(vis), "", "", { ico: "ojo", tono: TONO.lav, spark: visS, delta: delta(vis, visA) })}
+      ${kpi("Clics a tiendas", num(cl), vis ? `${pct((cl / vis) * 100)} de las visitas` : "", "afiliados", { ico: "clic", tono: TONO.peach, spark: clS, delta: delta(cl, clA) })}
+      ${kpi("Ventas", num(ventas), `${pct(conv)} de los clics`, "dinero", { ico: "regalo", tono: TONO.mint, delta: delta(conv, convA) })}
+      ${kpi("Ganancia por clic", eur(epc), "lo que vale cada clic", "", { ico: "euro", tono: TONO.mint, delta: delta(epc, epcA) })}`)}
+    ${g("Dinero", `
+      ${kpi("Comisión generada", eur(com), `sobre ${eur(ventasImp)} en ventas`, "dinero", { ico: "euro", tono: TONO.mint, delta: delta(com, comA) })}
+      ${kpi("Confirmada este mes", eur(mes.confirmada), `${eur(mes.pendiente)} por confirmar`, "dinero", { ico: "ok", tono: TONO.mint })}
+      ${kpi("Disponible este mes", eur(mes.disponible), "ya apartados impuestos y gastos", "dinero", { ico: "hucha", tono: TONO.butter })}
+      ${kpi("Saldo de usuarias", eur(saldoUsuarias), "suyo: tenlo apartado", "reembolsos", { ico: "gente", tono: TONO.rosa })}`)}
+    ${g("Tiendas", `
+      ${kpi("Aprobadas", num(tiendas.filter((t) => t.estado === "aprobada").length), "", "afiliados", { ico: "ok", tono: TONO.mint })}
+      ${kpi("Esperando respuesta", num(tiendas.filter((t) => t.estado === "pedida").length), "", "afiliados", { ico: "reloj", tono: TONO.butter })}
+      ${kpi("Productos en el catálogo", num(nProductos), "", "catalogo", { ico: "caja", tono: TONO.sky })}`)}
+    ${g("Redes y avisos", `
+      ${redesSoc.map((x) => kpi("Seguidores en " + x.r.replace(/^./, (c) => c.toUpperCase()), x.ult ? num(x.ult) : "—", x.ult ? "" : "apúntalos en Hoy → métricas", "", { ico: "gente", tono: x.r === "instagram" ? TONO.rosa : x.r === "tiktok" ? TONO.lav : TONO.sky, spark: x.serie, delta: x.ult ? delta(x.ult, x.antes) : "" })).join("")}
+      ${kpi("Avisos enviados", num(env), env ? `${pct((abr / env) * 100)} abiertos · ${pct((clE / env) * 100)} con clic` : "push y correo", "envios", { ico: "punto", tono: TONO.peach })}`)}
+    <div class="g2i" style="margin-top:14px">
+      <div class="caja"><div class="ch"><b>Tiendas con más clics</b></div>${ranking(topT.map(([id, v], i) => ({ l: nombreT(id), v, c: PAL[i % PAL.length] })))}</div>
+      <div class="caja"><div class="ch"><b>Evolución</b><span class="note">pasa el ratón</span></div><div id="evo"></div></div>
+    </div>`;
+  $("#evo", m).innerHTML = lineas([{ n: "Visitas web", c: PAL[0], v: visS }, { n: "Aperturas app", c: PAL[3], v: apeS }, { n: "Clics", c: PAL[4], v: clS }], dias(n));
+  m.querySelectorAll("[data-per]").forEach((b) => (b.onclick = () => { V.kpis.n = +b.dataset.per; V.kpis(m); }));
 };
 
 V.dinero = async (m) => {
@@ -314,18 +444,31 @@ V.dinero = async (m) => {
   const rep = reparto100(anyo);
   const res = aj.reservas || {}, obj = aj.objetivos || {};
   const bloques = rep ? [["usuarias", "A usuarias", "var(--mint)"], ["gastos", "Gastos", "var(--sky)"], ["irpf", "IRPF", "var(--peach)"], ["colchon", "Colchón", "var(--butter)"], ["tuyo", "Tuyo", "var(--lav)"]] : [];
-  m.innerHTML = `${cab("Dinero y objetivos", "Lo que pagan las tiendas, lo que devuelves a las usuarias y lo que te queda después de apartar impuestos y gastos.")}
-    <div class="caja"><b>De cada 100 € que pagan las tiendas (últimos 12 meses)</b>
-      ${rep ? `<div class="reparto" style="margin-top:10px">${bloques.map(([k, , c]) => `<span style="flex:${Math.max(0, rep[k])};background:${c}">${rep[k] >= 8 ? rep[k].toFixed(0) + " €" : ""}</span>`).join("")}</div>
-      <div class="leg">${bloques.map(([k, l, c]) => `<span><i style="background:${c}"></i>${l}: ${rep[k].toFixed(2)} €</span>`).join("")}</div>`
-      : `<p class="note">Cuando entren las primeras comisiones confirmadas verás aquí el reparto real. Con tus ajustes: de cada beneficio apartas un ${res.irpf_pct ?? 0} % para IRPF y un ${res.colchon_pct ?? 0} % de colchón.</p>`}
-      <p class="note">El IVA no entra en estas cuentas: si alguna red te paga IVA aparte, ese dinero es de Hacienda entero. Esto es una guía para apartar dinero, no asesoramiento fiscal.</p>
+  const mesAct = meses[meses.length - 1];
+  const porRed = Object.entries(comisiones.filter((c) => c.estado !== "anulada" && c.fecha >= haceDias(365)).reduce((acc, c) => ((acc[c.red] = (acc[c.red] || 0) + Number(c.comision || 0)), acc), {})).sort((x, y) => y[1] - x[1]);
+  const segRed = porRed.slice(0, 5).map(([k, v], i) => ({ k, l: (cache["redes*"] || []).find((r) => r.id === k)?.nombre || k, v, c: PAL[i] }));
+  if (porRed.length > 5) segRed.push({ k: "otras", l: "Otras", v: porRed.slice(5).reduce((x, [, v]) => x + v, 0), c: GRIS });
+  m.innerHTML = `${cab("Dinero y objetivos", "Lo que pagan las tiendas, lo que devuelves a las usuarias y lo que te queda después de apartar impuestos y gastos.", "",
+      `<div class="row" style="gap:28px;margin-top:8px"><div><div class="gran">${eur(mesAct.disponible)}</div><span class="note">disponible este mes</span></div>
+       <div><div class="gran" style="font-size:30px;color:var(--ok)">${eur(mesAct.confirmada)}</div><span class="note">comisión confirmada</span></div>
+       <div><div class="gran" style="font-size:30px;color:var(--warn)">${eur(mesAct.pendiente)}</div><span class="note">por confirmar</span></div></div>`)}
+    <div class="g2">
+      <div class="caja"><div class="ch"><b>Comisiones · últimos 12 meses</b></div>
+        ${barras(meses.map((r) => ({ l: r.ym.slice(5), v: r.confirmada, v2: r.pendiente })), { fmt: eur, c: "#1FA37A", n1: "confirmada", n2: "por confirmar", alto: 170 })}</div>
+      <div class="caja"><div class="ch"><b>Por red · 12 meses</b></div>${donut(segRed, { centro: "comisión", fmt: eur, vacio: "Aún no hay comisiones" })}</div>
     </div>
-    <h3>Objetivos</h3>${objetivos(progresoObjetivos(meses, obj))}
-    <h3>Mes a mes</h3>
+    <div class="g2i">
+      <div class="caja"><div class="ch"><b>De cada 100 € que pagan las tiendas</b><span class="note">toca un trozo</span></div>
+      ${rep ? donut(bloques.map(([k, l], i) => ({ k, l, v: Math.max(0, rep[k]), c: [PAL[1], PAL[3], PAL[4], PAL[2], PAL[0]][i] })), { centro: "de 100 €", fmt: (v) => v.toFixed(2) + " €" })
+      : `<p class="note">Cuando entren las primeras comisiones confirmadas verás aquí el reparto real. Con tus ajustes: de cada beneficio apartas un ${res.irpf_pct ?? 0} % para IRPF y un ${res.colchon_pct ?? 0} % de colchón.</p>`}
+      <p class="note">El IVA no entra en estas cuentas: si alguna red te paga IVA aparte, ese dinero es de Hacienda entero. Esto es una guía para apartar dinero, no asesoramiento fiscal.</p></div>
+      <div class="caja"><div class="ch"><b>Objetivos</b></div><div class="rings">${progresoObjetivos(meses, obj).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#1FA37A" })}<div><b>${esc(o.nombre)}</b><span>${o.falta > 0 ? `faltan ${eur(o.falta)}${o.clave === "marca" ? "" : " al mes"}` : "¡conseguido!"}</span><br><span>${esc(o.nota)}</span></div></div>`).join("")}</div></div>
+    </div>
+    <details class="caja" style="margin-top:12px"><summary>Mes a mes</summary><div style="margin-top:10px">
     <div class="tw"><table><thead><tr><th>Mes</th><th class="n">Comisión confirmada</th><th class="n">Pendiente</th><th class="n">A usuarias</th><th class="n">Gastos</th><th class="n">IRPF</th><th class="n">Colchón</th><th class="n">Disponible</th></tr></thead>
     <tbody>${meses.slice().reverse().map((r) => `<tr><td>${r.ym}</td><td class="n">${eur(r.confirmada)}</td><td class="n">${eur(r.pendiente)}</td><td class="n">${eur(r.aUsuarias)}</td><td class="n">${eur(r.gastos)}</td><td class="n">${eur(r.irpf)}</td><td class="n">${eur(r.colchon)}</td><td class="n"><b>${eur(r.disponible)}</b></td></tr>`).join("")}</tbody></table></div>
-    <h3>Ajustes</h3>
+    </div></details>
+    <details class="caja" style="margin-top:12px"><summary>Ajustes de objetivos y reservas</summary><div style="margin-top:10px">
     <form id="fAj" class="caja grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
       <label class="f">Coste de registrar la marca (€)<input type="number" step="any" name="marca_oepm" value="${obj.marca_oepm ?? ""}"></label>
       <label class="f">Cuota de autónoma al mes (€)<input type="number" step="any" name="cuota_autonoma" value="${obj.cuota_autonoma ?? ""}"></label>
@@ -334,12 +477,11 @@ V.dinero = async (m) => {
       <label class="f">Reserva IRPF (% del beneficio)<input type="number" step="any" name="irpf_pct" value="${res.irpf_pct ?? ""}"></label>
       <label class="f">Colchón (% del beneficio)<input type="number" step="any" name="colchon_pct" value="${res.colchon_pct ?? ""}"></label>
       <div class="row"><button class="btn">Guardar ajustes</button><span class="note" id="ajMsg"></span></div>
-    </form>
+    </form></div></details>
     <div id="gastos"></div>
-    <h3>Comisiones</h3>
-    <div class="caja"><p class="note">Mientras no se importan solas: exporta el informe de transacciones de cada red en CSV y pégalo aquí. Columnas: red, ref_red, tienda_id, importe_venta, comision, estado (pendiente/confirmada/anulada/pagada), fecha (AAAA-MM-DD). Si una transacción ya existe, se actualiza.</p>
+    <details class="caja" style="margin-top:12px"><summary>Importar comisiones a mano (CSV)</summary><p class="note">Mientras no se importan solas: exporta el informe de transacciones de cada red en CSV y pégalo aquí. Columnas: red, ref_red, tienda_id, importe_venta, comision, estado (pendiente/confirmada/anulada/pagada), fecha (AAAA-MM-DD). Si una transacción ya existe, se actualiza.</p>
       <textarea id="csv" placeholder="red;ref_red;tienda_id;importe_venta;comision;estado;fecha"></textarea>
-      <div class="row"><button class="btn" id="imp">Importar</button><span class="note" id="impMsg"></span></div></div>
+      <div class="row"><button class="btn" id="imp">Importar</button><span class="note" id="impMsg"></span></div></details>
     <div id="com"></div>`;
   $("#fAj", m).onsubmit = async (e) => {
     e.preventDefault();
@@ -398,9 +540,17 @@ V.afiliados = async (m) => {
   const n = (e) => tiendas.filter((t) => t.estado === e).length;
   m.innerHTML = `${cab("Tiendas y redes", "Cada noche se comprueba en cada red qué tiendas te aprueban, cuáles siguen pendientes y qué comisiones hay. Lo nuevo entra solo.",
       `<a class="btn sec" href="/ofertas/" target="_blank" rel="noopener">Ver el buscador</a>`)}
-    <div class="cifras">
-      ${kpi("Aprobadas", num(n("aprobada")), "venden ya en Viwai")}${kpi("Esperando respuesta", num(n("pedida")), "solicitudes enviadas")}
-      ${kpi("Rechazadas", num(n("rechazada")), "se pueden volver a pedir")}${kpi("Productos en el catálogo", num(nProductos), ult ? "carga del " + fecha(ult.inicio) : "")}
+    <div class="tiles">
+      ${kpi("Aprobadas", num(n("aprobada")), "venden ya en Viwai", "", { ico: "ok", tono: TONO.mint })}${kpi("Esperando respuesta", num(n("pedida")), "solicitudes enviadas", "", { ico: "reloj", tono: TONO.butter })}
+      ${kpi("Rechazadas", num(n("rechazada")), "se pueden volver a pedir", "", { ico: "x", tono: TONO.peach })}${kpi("Productos en el catálogo", num(nProductos), ult ? "carga del " + fecha(ult.inicio) : "", "catalogo", { ico: "caja", tono: TONO.sky })}
+      ${kpi("Clics · 90 días", num(clics.length), "a todas las tiendas", "", { ico: "clic", tono: TONO.lav, spark: diario(30, clics, "creado") })}
+    </div>
+    <div class="g2i">
+      <div class="caja"><div class="ch"><b>Tiendas por estado</b><span class="note">toca un trozo para filtrar la lista</span></div>${donutTiendas(tiendas, "tiendas")}</div>
+      <div class="caja"><div class="ch"><b>Por red</b><span class="note">aprobadas · esperando</span></div>
+        ${ranking(redes.map((r) => ({ l: r.nombre, v: tiendas.filter((t) => t.red_id === r.id && t.estado === "aprobada").length, p: tiendas.filter((t) => t.red_id === r.id && t.estado === "pedida").length }))
+          .filter((x) => x.v || x.p).sort((a, b) => b.v + b.p - a.v - a.p).map((x) => ({ l: x.l, v: x.v + x.p, c: "#3B82F6", txt: x })), { fmt: (v) => num(v) })}
+        <p class="note">Total de tiendas aprobadas y esperando en cada red.</p></div>
     </div>
     ${fallan.length ? `<div class="aviso" style="background:var(--badbg)"><b>La última carga ha fallado en ${fallan.map((x) => esc(x.red)).join(", ")}.</b><br>${fallan.map((x) => esc(x.mensaje || "")).join("<br>")}</div>` : ""}
     <div id="tiendas"></div>
@@ -409,6 +559,9 @@ V.afiliados = async (m) => {
       ${syncs.slice(0, 12).map((x) => `<div class="row"><span class="tag ${x.ok ? "ok" : "bad"}">${esc(x.red)}</span> ${new Date(x.inicio).toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" })} · ${num(x.productos)} productos${x.tiendas_nuevas?.length ? ` · nuevas: <b>${esc(x.tiendas_nuevas.join(", "))}</b>` : ""}${x.mensaje ? `<br><span class="note">${esc(x.mensaje).replace(/\n/g, "<br>")}</span>` : ""}</div>`).join("") || `<p class="note">Todavía no se ha ejecutado ninguna carga.</p>`}
       <p class="note">Para lanzarla a mano: GitHub → Actions → «Catálogo de tiendas» → Run workflow.</p></details>`;
   const inline = { k: "estado", o: ESTADOS_TIENDA, tag: tagTienda };
+  // El donut filtra la tabla de tiendas
+  m.addEventListener("viwai:filtra", (e) => { const box = $("#tiendas", m); if (box?._st) { box._st.chip = e.detail.valor; crud(box, box._cfg); } });
+  if (FILTRO_TIENDAS) { const v = FILTRO_TIENDAS; FILTRO_TIENDAS = null; setTimeout(() => { const box = $("#tiendas", m); box._st.chip = v; crud(box, box._cfg); const d = m.querySelector("[data-donut]"); if (d) pintaDonut(d, v); box.scrollIntoView({ behavior: "smooth" }); }, 0); }
   crud($("#tiendas", m), {
     tabla: "tiendas", titulo: "Tiendas", clave: "id", orden: "nombre", nuevo: { estado: "por_pedir" },
     chips: { k: "estado", o: ESTADOS_TIENDA }, inline,
@@ -419,7 +572,7 @@ V.afiliados = async (m) => {
       { k: "programa_url", l: "Ficha del programa en la red", t: "url", w: 1 }, { k: "web_url", l: "Web de la tienda", t: "url", w: 1 },
       { k: "catalogo", l: "Mostrar su catálogo en la web", t: "bool" }, { k: "escaparate", l: "Solo lo que yo apruebe (escaparate)", t: "bool" }, { k: "max_productos", l: "Máximo de productos", t: "number" },
       { k: "programa_id", l: "Id del programa en la red" }, { k: "notas", l: "Notas", t: "textarea" }],
-    cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b>${f.alta_auto ? ` <span class="tag info">auto</span>` : ""}${f.sincronizada ? `<br><span class="note">catálogo ${fecha(f.sincronizada)}</span>` : ""}`, s: (f) => f.nombre.toLowerCase() },
+    cols: [{ l: "Tienda", v: (f) => `<b>${esc(f.nombre)}</b>${f.alta_auto ? ` <span class="tag info">auto</span>` : ""}${/^REGLAS/.test(f.notas || "") ? ` <span class="tag warn" title="${esc(f.notas)}">reglas</span>` : ""}${f.sincronizada ? `<br><span class="note">catálogo ${fecha(f.sincronizada)}</span>` : ""}`, s: (f) => f.nombre.toLowerCase() },
       { l: "Red", v: (f) => esc(f.red_id) },
       { l: "Estado", v: (f) => selInline(inline, f.estado), s: (f) => f.estado },
       { l: "Cashback", v: (f) => (f.cashback ? `<span class="tag ok">sí</span>` : f.cashback === false ? `<span class="tag">no</span>` : f.estado === "aprobada" ? `<span class="tag warn">comprobar</span>` : ""), s: (f) => String(f.cashback) },
@@ -469,6 +622,7 @@ V.campanas = async (m) => {
     return kpis(clics.filter((x) => dentro(x.creado) && enTienda(x.tienda_id)), comisiones.filter((x) => dentro(x.fecha) && enTienda(x.tienda_id)));
   };
   m.innerHTML = `${cab("Campañas", "Una campaña programada sale sola en la web y en la app entre su inicio y su fin.")}
+    <div class="caja" style="margin-bottom:12px"><div class="ch"><b>Tu año</b><span class="note">toca una campaña para editarla</span></div><div id="anyo"></div></div>
     <div class="row"><button class="btn sec" id="gen">Crear las campañas de ${new Date().getFullYear() + 1} como borrador</button><span class="note" id="genMsg"></span></div>
     <div id="lista"></div>`;
   $("#gen", m).onclick = async () => {
@@ -489,7 +643,17 @@ V.campanas = async (m) => {
       { l: "Conv.", n: 1, v: (f) => kc(f).conversion + " %" }, { l: "Comisión", n: 1, v: (f) => eur(kc(f).comision) },
       { l: "Avisos", n: 1, v: (f) => num(envios.filter((e) => e.campana_id === f.id).length) }],
   };
-  crud($("#lista", m), cfg);
+  crud($("#lista", m), { ...cfg, despues: (el, filas) => {
+    const y = new Date().getFullYear(), ini = Date.UTC(y, 0, 1), fin = Date.UTC(y + 1, 0, 1), pos = (f) => Math.max(0, Math.min(100, ((Date.parse(f) - ini) / (fin - ini)) * 100));
+    const delAnyo = filas.map((c, i) => [c, i]).filter(([c]) => c.fin >= `${y}-01-01` && c.inicio <= `${y}-12-31`);
+    const col = { "en curso": TONO.mint, programada: TONO.lav, "próxima": TONO.lav, borrador: TONO.butter, pausada: [GRIS + "55", "#555"], terminada: ["#EEEAF6", "#8C86A6"] };
+    $("#anyo", m).innerHTML = `<div class="anyo"><div class="meses">${["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"].map((x) => `<span>${x}</span>`).join("")}</div>
+      ${delAnyo.map(([c, i]) => { const e = estadoCampana(c), [bg, fg] = col[e] || TONO.lav, a = pos(c.inicio), b = pos(c.fin + "T23:59");
+        return `<div class="fila"><span class="cp" data-i="${i}" title="${esc(c.nombre)} · ${fecha(c.inicio)} → ${fecha(c.fin)} · ${esc(e)}" style="left:${a}%;width:max(${b - a}%,10px);background:${fg}"></span>
+          <span class="cpl" data-i="${i}" style="${b > 72 ? `right:${100 - a}%;text-align:right;padding-right:8px` : `left:${b}%;padding-left:8px`}"><b>${esc(c.nombre)}</b> · ${esc(e)}</span></div>`; }).join("") || `<p class="note">Sin campañas este año.</p>`}
+      <span class="hoyl" style="left:${pos(hoy())}%" title="Hoy"></span></div>`;
+    $("#anyo", m).onclick = (e) => { const b = e.target.closest(".cp,.cpl"); if (b) editar(cfg, filas[+b.dataset.i], el, true); };
+  } });
 };
 
 const PUBLICOS = [["todas", "Todas"], ["lista_espera", "Lista de espera"], ["sola", "Viven solas"], ["pareja", "En pareja"], ["peques", "Con peques"], ["compartido", "Piso compartido"], ["sin_actividad_30d", "Sin entrar en 30 días"]];
@@ -515,6 +679,7 @@ V.envios = async (m) => {
   crud($("#mail", m), base("email", "Correos"));
 };
 
+const PROVINCIAS = { "01": "Álava", "02": "Albacete", "03": "Alicante", "04": "Almería", "05": "Ávila", "06": "Badajoz", "07": "Baleares", "08": "Barcelona", "09": "Burgos", "10": "Cáceres", "11": "Cádiz", "12": "Castellón", "13": "Ciudad Real", "14": "Córdoba", "15": "A Coruña", "16": "Cuenca", "17": "Girona", "18": "Granada", "19": "Guadalajara", "20": "Gipuzkoa", "21": "Huelva", "22": "Huesca", "23": "Jaén", "24": "León", "25": "Lleida", "26": "La Rioja", "27": "Lugo", "28": "Madrid", "29": "Málaga", "30": "Murcia", "31": "Navarra", "32": "Ourense", "33": "Asturias", "34": "Palencia", "35": "Las Palmas", "36": "Pontevedra", "37": "Salamanca", "38": "S. C. Tenerife", "39": "Cantabria", "40": "Segovia", "41": "Sevilla", "42": "Soria", "43": "Tarragona", "44": "Teruel", "45": "Toledo", "46": "Valencia", "47": "Valladolid", "48": "Bizkaia", "49": "Zamora", "50": "Zaragoza", "51": "Ceuta", "52": "Melilla" };
 V.usuarias = async (m) => {
   const [lista, invit, personas] = await Promise.all([
     cargar("lista_espera", { orden: "consentimiento", desc: true }), cargar("invitaciones"), cargar("personas", { select: "hogar_id,es_peque" }),
@@ -525,11 +690,12 @@ V.usuarias = async (m) => {
   const conPeques = new Set(personas.filter((p) => p.es_peque).map((p) => p.hogar_id)).size;
   const invitadoras = Object.entries(invit.reduce((a, x) => ((a[x.hogar_invita] = (a[x.hogar_invita] || 0) + 1), a), {})).sort((a, b) => b[1] - a[1]).slice(0, 10);
   m.innerHTML = `${cab("Usuarias", "Quién se apunta, desde dónde y quién invita a más gente.")}
-    <div class="cifras">${kpi("Lista de espera", num(lista.length))}${kpi("Casas con cuenta", num(hogares), `${num(cuentas)} personas con acceso`)}
-      ${kpi("Casas con peques", num(conPeques))}${kpi("Invitaciones", num(invit.length), `${num(invit.filter((i) => i.activada).length)} activadas`)}</div>
-    <div class="dos">
-      <div class="caja"><b>De dónde vienen</b>${porOrigen.map(([o, n]) => `<div class="row"><span class="tag lav">${esc(o)}</span> ${num(n)}</div>`).join("") || `<p class="note">Sin datos.</p>`}</div>
-      <div class="caja"><b>Provincias (por código postal)</b>${porProv.map(([p, n]) => `<div class="row"><span class="tag info">${esc(p)}</span> ${num(n)}</div>`).join("") || `<p class="note">Sin datos.</p>`}</div>
+    <div class="tiles">${kpi("Lista de espera", num(lista.length), "", "", { ico: "gente", tono: TONO.lav, spark: diario(30, lista, "consentimiento") })}${kpi("Casas con cuenta", num(hogares), `${num(cuentas)} personas con acceso`, "", { ico: "casa", tono: TONO.butter })}
+      ${kpi("Casas con peques", num(conPeques), "", "", { ico: "regalo", tono: TONO.peach })}${kpi("Invitaciones", num(invit.length), `${num(invit.filter((i) => i.activada).length)} activadas`, "", { ico: "movil", tono: TONO.sky })}</div>
+    <div class="caja" style="margin-bottom:12px"><div class="ch"><b>Altas en la lista de espera · 30 días</b></div>${barras(dias(30).map((d) => ({ l: String(+d.slice(8)), v: lista.filter((x) => x.consentimiento.slice(0, 10) === d).length })), { c: "#6A4CF5", alto: 120 })}</div>
+    <div class="g2i">
+      <div class="caja"><div class="ch"><b>De dónde vienen</b></div>${ranking(porOrigen.map(([o, n], i) => ({ l: o, v: n, c: PAL[i % PAL.length] })))}</div>
+      <div class="caja"><div class="ch"><b>Provincias</b><span class="note">por código postal</span></div>${ranking(porProv.map(([p, n]) => ({ l: PROVINCIAS[p] || p, v: n, c: "#3B82F6" })))}</div>
     </div>
     <h3>Quién invita más</h3>
     <div class="caja">${invitadoras.length ? invitadoras.map(([h, n]) => `<div class="row"><code>${esc(h.slice(0, 8))}</code> ${num(n)} invitaciones ${n >= 10 ? `<span class="tag bad">revisar</span>` : ""}</div>`).join("") : `<p class="note">Aún no hay invitaciones.</p>`}
@@ -669,15 +835,45 @@ function escaparate(el, tiendas) {
   pinta();
 }
 
+const TIPO_CAL = { fiscal: ["Impuestos", TONO.mint], legal: ["Legal", TONO.lav], renovacion: ["Renovación", TONO.sky], campana: ["Campaña", TONO.peach], otro: ["Otro", TONO.butter] };
 V.calendario = async (m) => {
-  m.innerHTML = `${cab("Calendario", "Impuestos, temas legales, renovaciones y campañas. Las de IVA y pagos fraccionados solo te tocan cuando te des de alta en Hacienda; confírmalas con la gestoría.")}<div id="cal"></div>`;
-  crud($("#cal", m), {
+  const filas = await cargar("calendario", { orden: "fecha" }, true);
+  const st = V.calendario.st ||= { tipo: "", verHechas: false };
+  const venc = filas.filter((f) => !f.hecho && f.fecha < hoy()).length, prox = filas.filter((f) => !f.hecho && f.fecha >= hoy() && f.fecha <= haceDias(-30)).length;
+  m.innerHTML = `${cab("Calendario", "Impuestos, temas legales, renovaciones y campañas. Las de IVA y pagos fraccionados solo te tocan cuando te des de alta en Hacienda; confírmalas con la gestoría.", `<button class="btn" id="calNuevo">+ Añadir fecha</button>`)}
+    <div class="tiles">${kpi("Vencidas sin hacer", num(venc), "", "", { ico: "x", tono: TONO.peach })}${kpi("En los próximos 30 días", num(prox), "", "", { ico: "reloj", tono: TONO.butter })}${kpi("Hechas", num(filas.filter((f) => f.hecho).length), "", "", { ico: "ok", tono: TONO.mint })}</div>
+    <div class="row"><div class="embudo" style="margin:0">${[["", "Todas"], ...Object.entries(TIPO_CAL).map(([k, [l]]) => [k, l])].map(([k, l]) => `<button class="chip" data-tipo="${k}" aria-pressed="${st.tipo === k}">${k ? `<span class="p" style="color:${TIPO_CAL[k][1][1]}"></span>` : ""}${l} <span class="c">${filas.filter((f) => !k || f.tipo === k).length}</span></button>`).join("")}</div>
+      <label class="c" style="margin-left:auto"><input type="checkbox" id="calHechas" ${st.verHechas ? "checked" : ""}> Ver también las hechas</label></div>
+    <div class="tl" id="tl"></div><div id="cal" hidden></div>`;
+  const cfg = {
     tabla: "calendario", titulo: "Fechas", orden: "fecha", nuevo: { fecha: hoy(), tipo: "fiscal", hecho: false },
     campos: [{ k: "titulo", l: "Qué", req: true, w: 1 }, { k: "fecha", l: "Fecha", t: "date", req: true },
       { k: "tipo", l: "Tipo", t: "select", o: ["fiscal", "legal", "renovacion", "campana", "otro"], req: true }, { k: "notas", l: "Notas", t: "textarea" }, { k: "hecho", l: "Hecho", t: "bool" }],
-    cols: [{ l: "Fecha", v: (f) => `${fecha(f.fecha)} ${f.hecho ? `<span class="tag ok">hecho</span>` : f.fecha < hoy() ? `<span class="tag bad">vencida</span>` : f.fecha <= haceDias(-15) ? `<span class="tag warn">pronto</span>` : ""}` },
-      { l: "Qué", v: (f) => `<b>${esc(f.titulo)}</b><br><span class="note">${esc(f.notas)}</span>` }, { l: "Tipo", v: (f) => `<span class="tag lav">${esc(f.tipo)}</span>` }],
-  });
+    despues: () => V.calendario(m),
+  };
+  const caja = $("#cal", m); caja._cfg = cfg;
+  const vis = filas.filter((f) => (!st.tipo || f.tipo === st.tipo) && (st.verHechas || !f.hecho));
+  const grupos = vis.reduce((a, f) => ((a[f.fecha.slice(0, 7)] ||= []).push(f), a), {});
+  $("#tl", m).innerHTML = Object.entries(grupos).map(([ym, fs]) => `<div class="tlm"><h4>${new Date(ym + "-15").toLocaleDateString("es-ES", { month: "long", year: "numeric" })}</h4>
+    ${fs.map((f) => { const [l, tono] = TIPO_CAL[f.tipo] || TIPO_CAL.otro, d = diasHasta(f.fecha);
+      return `<div class="tli${f.hecho ? " hecho" : ""}" data-id="${f.id}" style="--tc:${tono[0]};--ic:${tono[1]}">
+        <div class="dia"><b>${+f.fecha.slice(8)}</b><span>${new Date(f.fecha + "T12:00").toLocaleDateString("es-ES", { weekday: "short" })}</span></div>
+        <div><div class="q">${esc(f.titulo)}</div><p class="note">${esc(l)}${f.hecho ? "" : d < 0 ? ` · <b style="color:var(--bad)">vencida hace ${-d} d</b>` : d === 0 ? " · <b>hoy</b>" : d <= 15 ? ` · <b style="color:var(--warn)">en ${d} d</b>` : ` · en ${d} d`}${f.notas ? " · " + esc(f.notas.slice(0, 90)) : ""}</p></div>
+        <button class="ok-btn" data-hecho aria-pressed="${!!f.hecho}" title="${f.hecho ? "Marcar sin hacer" : "Marcar hecha"}">✓</button></div>`; }).join("")}</div>`).join("")
+    || `<p class="vacio">No hay fechas con este filtro.</p>`;
+  m.querySelectorAll("[data-tipo]").forEach((b) => (b.onclick = () => { st.tipo = b.dataset.tipo; V.calendario(m); }));
+  $("#calHechas", m).onchange = (e) => { st.verHechas = e.target.checked; V.calendario(m); };
+  $("#calNuevo", m).onclick = () => editar(cfg, { ...cfg.nuevo }, caja, false);
+  $("#tl", m).onclick = async (e) => {
+    const it = e.target.closest(".tli"); if (!it) return;
+    const f = filas.find((x) => String(x.id) === it.dataset.id);
+    if (e.target.closest("[data-hecho]")) {
+      const { error } = await sb.from("calendario").update({ hecho: !f.hecho }).eq("id", f.id);
+      if (error) return toast("No se ha guardado: " + error.message);
+      toast(f.hecho ? "Vuelve a estar pendiente" : "¡Hecho!"); refrescaContadores(); return V.calendario(m);
+    }
+    editar(cfg, f, caja, true);
+  };
 };
 
 // ---------- Navegación, buscador ⌘K y sesión ----------
@@ -686,9 +882,11 @@ async function ir(id) {
   if (location.hash.slice(1) !== id) history.replaceState(null, "", "#" + id);
   document.querySelectorAll("#tabs button").forEach((b) => (b.dataset.t === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   const m = $("#vista");
+  document.body.dataset.sec = id;
+  m.classList.remove("vista-entra");
   m.innerHTML = `<p class="cargando">Cargando…</p>`;
   await cargar("redes");
-  try { await V[id](m); } catch (e) { m.innerHTML = `<p class="err">No se ha podido cargar: ${esc(e.message)}</p>`; console.error(e); }
+  try { await V[id](m); void m.offsetWidth; m.classList.add("vista-entra"); } catch (e) { m.innerHTML = `<p class="err">No se ha podido cargar: ${esc(e.message)}</p>`; console.error(e); }
   m.focus?.();
 }
 // Cifras y tareas que llevan a otra sección
