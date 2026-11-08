@@ -27,4 +27,9 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 5. Importación diaria de comisiones de las redes.
 6. **Tiempo (pendiente, decidido el 8 nov 2026):** conectar la tarjeta «Hoy» de la app a AEMET OpenData. La consulta se haría desde el servidor, cada pocas horas y por municipio (según el código postal de la casa), y se guardaría en Supabase citando a AEMET. Hasta entonces la app muestra datos de ejemplo. Necesita la clave de Alba (punto 6 de arriba).
 7. **Farmacias de guardia (pendiente, decidido el 8 nov 2026):** no hay servicio nacional; cada Colegio de Farmacéuticos publica las suyas. Primera fase: la tarjeta abre la página oficial de guardias del colegio de la provincia de la casa. Más adelante: conectar las provincias con datos abiertos, empezando por las que tengan más usuarias. No copiar automáticamente webs que no lo permitan.
-8. Pasar al sistema de diseño (`diseno/`) las pantallas que faltan: Pedidos, Wallet, Calendario, Tareas, Armario, Menú y Luz.
+9. **Seguimiento de pedidos (pendiente, decidido el 8 nov 2026):**
+   - pegar o escanear el número de seguimiento, consultando el estado en un servicio de seguimiento (elegir entre 17TRACK, AfterShip u otro según precio);
+   - «Compartir con Viwai», con la app instalada como destino;
+   - pedidos automáticos a partir de las compras hechas desde Viwai.
+   Conectar el correo, más adelante.
+8. Pasar al sistema de diseño (`diseno/`) las pantallas que faltan: Calendario, Armario, Menú y Luz (Pedidos, Wallet y Tareas ya están).

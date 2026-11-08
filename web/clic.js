@@ -25,21 +25,33 @@ export function conSubid(url, id) {
 
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)));
 
-function apunta(a) {
-  const C = window.VIWAI, tienda = a.dataset.tienda;
-  if (!C || !tienda || navigator.webdriver) return;
+// Marca el enlace con un id nuevo y devuelve el id (lo apunta quien llama)
+export function marca(a) {
   const original = a.dataset.href || (a.dataset.href = a.href);
   const id = uuid();
   a.href = conSubid(original, id);
+  return id;
+}
+
+// En la web el clic se apunta sin sesión. La app usa su propia función (con la casa) y pone VIWAI_CLICS_MANUAL.
+function apuntaAnonimo(id, tienda, origen) {
+  const C = window.VIWAI; if (!C) return;
   fetch(C.supabaseUrl + "/rest/v1/rpc/registra_clic", {
     method: "POST", keepalive: true,
     headers: { apikey: C.supabaseAnonKey, Authorization: "Bearer " + C.supabaseAnonKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ p_id: id, p_tienda: tienda, p_origen: a.dataset.origen || "web" + location.pathname.replace(/\/$/, "").replace(/\//g, "-") }),
+    body: JSON.stringify({ p_id: id, p_tienda: tienda, p_origen: origen }),
   }).catch(() => {});
 }
 
-if (typeof document !== "undefined") {
-  const al = (e) => { if (e.button > 1) return; const a = e.target.closest?.('a[rel~="sponsored"][data-tienda]'); if (a) apunta(a); };
+export function escuchaClics(apunta = apuntaAnonimo) {
+  const al = (e) => {
+    if (e.button > 1) return;
+    const a = e.target.closest?.('a[rel~="sponsored"][data-tienda]');
+    if (!a || navigator.webdriver) return;
+    apunta(marca(a), a.dataset.tienda, a.dataset.origen || "web" + location.pathname.replace(/\/$/, "").replace(/\//g, "-"));
+  };
   document.addEventListener("click", al, true);
   document.addEventListener("auxclick", al, true);
 }
+
+if (typeof document !== "undefined" && !globalThis.VIWAI_CLICS_MANUAL) escuchaClics();

@@ -43,4 +43,6 @@ for (const destino of ["app/diseno", "web/diseno"]) {
   fs.mkdirSync(path.join(raiz, destino), { recursive: true });
   for (const f of ["tokens.css", "componentes.css", "graficos.css", "iconos.js"]) fs.copyFileSync(path.join(raiz, "diseno", f), path.join(raiz, destino, f));
 }
-console.log("Copiado a app/diseno y web/diseno");
+// Lógica compartida entre la web y la app (cada una se publica por separado)
+fs.copyFileSync(path.join(raiz, "web/clic.js"), path.join(raiz, "app/js/clic.js"));
+console.log("Copiado a app/diseno y web/diseno (y web/clic.js → app/js/clic.js)");

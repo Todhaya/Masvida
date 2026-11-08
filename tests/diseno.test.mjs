@@ -16,6 +16,8 @@ test("las copias del sistema de diseño están al día (ejecuta «node tools/dis
   for (const d of ["app/diseno", "web/diseno"]) for (const f of ARCHIVOS) assert.equal(lee(`${d}/${f}`), lee(`diseno/${f}`), `${d}/${f} no coincide con diseno/${f}`);
 });
 
+test("la app usa la misma lógica de clics que la web", () => assert.equal(lee("app/js/clic.js"), lee("web/clic.js")));
+
 test("todos los iconos que se usan existen en la biblioteca", () => {
   const mapa = JSON.parse(lee("diseno/iconos.json"));
   const js = lee("diseno/iconos.js");

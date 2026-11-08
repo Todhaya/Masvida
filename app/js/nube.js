@@ -7,6 +7,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 import { bienvenida, estadoInicial } from "./bienvenida.js";
 import { perfilAyudas, misAyudas } from "./ayudas.js";
+import { escuchaClics } from "./clic.js";
 
 const C = window.VIWAI || {};
 const PREF = "pj2-";
@@ -142,7 +143,22 @@ async function arranca() {
     lvl: a.nivel === "si" ? "yes" : "maybe", t: () => (a.nivel === "si" ? "yes" : "maybe"),
   }));
   globalThis.renderAids = () => pintaAyudas(lista);
+  // Ofertas reales del catálogo (las de ejemplo solo se ven en el prototipo) y clics apuntados a la casa
+  await ofertasReales();
+  escuchaClics((id, tienda, origen) => { sb.rpc("registra_clic", { p_id: id, p_tienda: tienda, p_origen: origen }).then(() => {}, () => {}); });
   if (typeof renderAll === "function") renderAll(false);
+}
+
+// Catálogo de la web → formato de las ofertas de la app (categorías de la app: super, belleza, mascotas, ninos, moda, deporte, tecnologia, hogar)
+const CAT_APP = { alimentacion: "super", belleza: "belleza", mascotas: "mascotas", peques: "ninos", moda: "moda", deporte: "deporte", tecnologia: "tecnologia", hogar: "hogar", cocina: "hogar", electrodomesticos: "hogar" };
+async function ofertasReales() {
+  if (typeof OFF === "undefined") return;
+  const lotes = await Promise.all(Object.keys(CAT_APP).map((cat) => sb.rpc("buscar_productos", { cat, limite: 8 }).then((r) => r.data || [], () => [])));
+  const reales = lotes.flat().map((p) => ({
+    c: CAT_APP[p.categoria] || "hogar", n: p.titulo, s: p.tienda, t: p.tienda_id, url: p.url, img: p.imagen,
+    p: Number(p.precio), o: Number(p.precio_min_30d) > Number(p.precio) ? Number(p.precio_min_30d) : Number(p.precio), real: 1,
+  })).filter((o) => o.p > 0);
+  OFF.length = 0; OFF.push(...reales);
 }
 
 sb?.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_OUT") { sessionStorage.removeItem("viwai-cargado"); location.reload(); } });
