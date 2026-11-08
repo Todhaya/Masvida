@@ -1338,7 +1338,14 @@ function evCard(e,off){
 function calRender(){
   const box=$("#cal-box");if(!box)return;
   const kidsAway=off=>MEM.filter(m=>m.kid&&awayOn(m,off));
-  const head=`<div class="seg4" style="grid-template-columns:repeat(2,1fr)"><button data-calv="semana" aria-pressed="${calView==="semana"}">Semana</button><button data-calv="mes" aria-pressed="${calView==="mes"}">Mes</button></div>
+  // Cabecera: lo próximo de hoy (o de los próximos días) y cuántas cosas hay esta semana
+  let prox=null;for(let o=0;o<14&&!prox;o++){const ev=evOn(o).filter(e=>calWho==="todos"||e.who.includes(calWho)).sort((x,y)=>(x.h||"").localeCompare(y.h||""));if(ev.length)prox={o,e:ev[0]}}
+  const semana=[...Array(7)].reduce((n,_,i)=>n+evOn(i).length,0);
+  const quien=prox&&memOf(prox.e.who[0]||prox.e.lleva);
+  const cab=prox?`<div class="vh" style="--vt:var(--mint)"><span class="cd" style="background:rgba(255,255,255,.75);border-radius:18px;min-width:66px;height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none"><b style="font-size:24px;line-height:1">${prox.o===0?"Hoy":dOff(prox.o).getDate()}</b><small style="font-size:11px;font-weight:800;text-transform:uppercase">${prox.o===0?(prox.e.h||""):MES[dOff(prox.o).getMonth()].slice(0,3)}</small></span>
+    <span class="tx"><span class="k">Lo próximo${prox.o===1?" · mañana":""}</span><span class="t">${prox.e.h&&prox.o!==0?prox.e.h+" · ":""}${prox.e.t}</span><span class="s">${quien?quien.n:""}${prox.e.lleva&&prox.e.lleva!==(prox.e.who[0])?" · lleva "+memOf(prox.e.lleva).n:""}${prox.e.note?" · "+prox.e.note:""}</span>
+    <span class="pills" style="margin-top:8px"><span class="pill" style="--c:var(--vw-g2)"><i></i>${semana} esta semana</span></span></span></div>`:"";
+  const head=cab+`<div class="seg4" style="grid-template-columns:repeat(2,1fr)"><button data-calv="semana" aria-pressed="${calView==="semana"}">Semana</button><button data-calv="mes" aria-pressed="${calView==="mes"}">Mes</button></div>
    <div class="chips"><button class="chip" data-calwho="todos" aria-pressed="${calWho==="todos"}">Todos</button>${MEM.map(m=>`<button class="chip" data-calwho="${m.id}" aria-pressed="${calWho===m.id}"><span class="tdot" style="background:var(--${m.c})"></span>${m.n}</button>`).join("")}</div>`;
   let grid;
   if(calView==="semana"){
