@@ -1134,7 +1134,10 @@ function tkRender(){
     const filt=CH.filter(c=>tkWho==="todos"||c.who===tkWho).sort((a,b)=>nextOf(a)-nextOf(b));
     const due=filt.filter(c=>nextOf(c)<=0||doneToday(c)),later=filt.filter(c=>!(nextOf(c)<=0||doneToday(c)));
     const left=due.filter(c=>!doneToday(c)).length;
-    box.innerHTML=`<div class="chips">${[["todos","Todos"],...MEM.map(m=>[m.id,m.n])].map(([k,l])=>`<button class="chip" data-tkfil="${k}" aria-pressed="${tkWho===k}">${l}</button>`).join("")}<button class="chip" data-v="familia">+ Miembro</button></div>
+    const hechasHoy=due.filter(doneToday).length;
+    box.innerHTML=`<div class="vh" style="--vt:var(--butter)">${ring(due.length?hechasHoy/due.length:1,"var(--vw-g3)",84,hechasHoy+"/"+due.length)}<span class="tx"><span class="k">Tareas de hoy</span><span class="t">${left?`Quedan ${left}`:"¡Todo hecho!"}</span>
+       <span class="pills" style="margin-top:8px">${MEM.map(m=>`<span class="pill">${av(m,20)} ${STARS[m.id]??0} ★</span>`).join("")}</span></span></div>
+     <div class="chips">${[["todos","Todos"],...MEM.map(m=>[m.id,m.n])].map(([k,l])=>`<button class="chip" data-tkfil="${k}" aria-pressed="${tkWho===k}">${l}</button>`).join("")}<button class="chip" data-v="familia">+ Miembro</button></div>
      <div class="card"><div class="card-h"><h2>Toca ya</h2><span class="small muted">${left?left+" por hacer":"Todo hecho"}</span></div>
       ${due.length?due.map(tkRow).join(""):'<span class="small muted">La casa está al día. 🎉</span>'}</div>
      ${later.length?`<div class="card"><div class="card-h"><h2>Próximas</h2></div>${later.map(tkRow).join("")}</div>`:""}
@@ -1527,25 +1530,32 @@ let PDX=S.get("pdx",PD0);
 function pedsRender(){
   const box=$("#peds-box");if(!box)return;
   const act=PDX.filter(p=>p.st<3),dev=PDX.filter(p=>p.st===3&&p.dev>0),mes=PDX.reduce((s,p)=>s+p.precio,0);
-  const row=p=>`<div class="pr"><div class="mh"><span><span class="n">${p.n}</span><br><span class="small muted">${p.t} · ${p.tr}</span></span><span class="pl ${p.st===2?"pl-o":p.st===3?"pl-i":"pl-u"}">${p.st===3?(p.dev>0?`Devolver: ${p.dev} días`:"Entregado"):p.v===0?"Llega hoy":"Llega "+(p.v===1?"mañana":fechaC(p.v))}</span></div>
-    <div class="stp4">${PST.map((s,i)=>`<span class="${i<=p.st?"on":""}"><i></i>${s}</span>`).join("")}</div>
-    ${p.cb?`<span class="small" style="color:var(--ok)">Comprado desde Viwai · reembolso pendiente de confirmar</span>`:""}
-    ${p.st===3&&p.dev>0?`<span class="btns"><button class="btn" style="padding:7px 12px" data-toast="Te llevaríamos a la devolución de la tienda con el número de pedido ya copiado">Devolver</button><button class="btn" style="padding:7px 12px" data-pdok="${p.id}">Me lo quedo</button></span>`:""}</div>`;
-  box.innerHTML=`<div class="kpis"><div style="background:var(--sky)"><b>${act.length}</b><span>en camino</span></div><div style="background:var(--peach)"><b>${dev.length}</b><span>por devolver</span></div><div style="background:var(--mint)"><b>${eur(mes)}</b><span>este mes</span></div></div>
-   ${act.length?`<div class="card"><h2>En camino</h2>${act.sort((a,b)=>a.v-b.v).map(row).join("")}</div>`:""}
-   ${dev.length?`<div class="card"><h2>Plazo para devolver</h2>${dev.map(row).join("")}</div>`:""}
+  const llega=p=>p.st===3?(p.dev>0?`<b>${p.dev}</b><small>días</small>`:`<b>✓</b><small>entregado</small>`):p.v===0?`<b>Hoy</b><small>llega</small>`:p.v===1?`<b>Mañ.</b><small>llega</small>`:`<b>${dOff(p.v).getDate()}</b><small>${MES[dOff(p.v).getMonth()].slice(0,3)}</small>`;
+  const tono=p=>p.st===3&&p.dev>0?(p.dev<=3?["var(--peach)","var(--vw-urgente)"]:["var(--butter)","var(--vw-atencion)"]):p.v===0?["var(--mint)","var(--vw-bien)"]:["var(--sky)","var(--vw-tinta)"];
+  const row=p=>{const [bg,fg]=tono(p);return`<div class="vi"><span class="ic" style="background:var(--${p.st===3?"butter":"sky"})">${viwaiIcono(p.st===3?"paquete-devolver":p.st===2?"camion":"pedidos")}</span>
+    <span class="bd"><span class="n">${p.n}</span><span class="m">${p.t} · ${p.tr}</span></span><span class="cd" style="background:${bg};color:${fg}">${llega(p)}</span>
+    <div class="full"><span class="hb2"><i style="width:${(p.st+1)/4*100}%;background:linear-gradient(90deg,var(--vw-g4),var(--vw-g2))"></i></span>
+      <span class="stp4" style="margin-top:-2px">${PST.map((x,i)=>`<span class="${i<=p.st?"on":""}" style="gap:0">${x}</span>`).join("")}</span>
+      ${p.cb?`<span class="small" style="color:var(--ok)">Comprado desde Viwai · reembolso pendiente de confirmar</span>`:""}
+      ${p.st===3&&p.dev>0?`<span class="btns"><button class="btn" data-toast="Te llevaríamos a la devolución de la tienda con el número de pedido ya copiado">Devolver</button><button class="btn" data-pdok="${p.id}">Me lo quedo</button></span>`:""}</div></div>`};
+  const hoyP=act.filter(p=>p.v===0);
+  box.innerHTML=`<div class="vh" style="--vt:var(--sky)"><span class="ic" style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.7);display:grid;place-items:center;flex:none">${viwaiIcono("camion")}</span>
+     <span class="tx"><span class="k">Pedidos</span><span class="t">${hoyP.length?`${hoyP.length===1?"Llega hoy":"Llegan hoy "+hoyP.length}: ${hoyP[0].n.toLowerCase()}`:act.length?`${act.length} en camino`:"Nada en camino"}</span>
+     <span class="pills" style="margin-top:8px"><span class="pill" style="--c:var(--vw-g4)"><i></i>${act.length} en camino</span><span class="pill" style="--c:var(--vw-urgente)"><i></i>${dev.length} por devolver</span><span class="pill" style="--c:var(--vw-g2)"><i></i>${eur(mes)} este mes</span></span></span></div>
+   ${act.length?`<div class="vg"><span class="vg-h">En camino<em>${act.length}</em></span>${act.sort((a,b)=>a.v-b.v).map(row).join("")}</div>`:""}
+   ${dev.length?`<div class="vg"><span class="vg-h" style="color:var(--vw-urgente)">Plazo para devolver<em>${dev.length}</em></span>${dev.map(row).join("")}</div>`:""}
    <span class="aff">Reenvía los correos de tus pedidos a tu buzón de Viwai y aparecen aquí solos, con el seguimiento de la empresa de transporte.</span>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-pedidos"))return;if(b.dataset.pdok){PDX.find(p=>p.id===b.dataset.pdok).dev=0;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome()}});
 
 /* Wallet: tarjetas con su código listo para la caja */
-const WL0=[{n:"Gasolinera",s:"Club · 5 cts/l de descuento",c:"peach",code:"7712 0458 9931"},{n:"Súper del barrio",s:"Tarjeta cliente · 3 % en tu cuenta",c:"mint",code:"2210 7781 0042"},{n:"Biblioteca",s:"Carné de Noa",c:"sky",code:"0042 7719"},{n:"Cine · sábado 18:30",s:"2 entradas · sala 4",c:"lav",code:"CN-88213"}];
+const WL0=[{n:"Gasolinera",s:"Club · 5 cts/l de descuento",c:"peach",code:"7712 0458 9931",ic:"gasolina"},{n:"Súper del barrio",s:"Tarjeta cliente · 3 % en tu cuenta",c:"mint",code:"2210 7781 0042",ic:"compra"},{n:"Biblioteca",s:"Carné de Noa",c:"sky",code:"0042 7719",ic:"libro"},{n:"Cine · sábado 18:30",s:"2 entradas · sala 4",c:"lav",code:"CN-88213",ic:"entrada"}];
 let wlOpen=null;
 const bars=code=>{let x=0,out="";for(const ch of code.replace(/\s/g,"")){const v=ch.charCodeAt(0);for(let k=0;k<3;k++){const w=1+((v>>k)&1)*2;out+=`<rect x="${x}" width="${w}" height="44" fill="currentColor"/>`;x+=w+1+((v>>(k+2))&1)}}return`<svg viewBox="0 0 ${x} 44" preserveAspectRatio="none" class="bc" aria-hidden="true">${out}</svg>`};
 function walRender(){
   const box=$("#wal-box");if(!box)return;
-  box.innerHTML=`<div class="wl">${WL0.map((w,i)=>`<button class="wcard" style="background:var(--${w.c})" data-wl="${i}" aria-expanded="${wlOpen===i}"><b>${w.n}</b><small>${w.s}</small>${wlOpen===i?`<span class="bcw">${bars(w.code)}<span>${w.code}</span></span><small>Sube el brillo y enséñalo en caja</small>`:""}</button>`).join("")}</div>
-   <div class="btns"><button class="btn pri" data-toast="Escanearías el código de barras de la tarjeta con la cámara">Añadir tarjeta</button></div>`;
+  box.innerHTML=`<div class="wl">${WL0.map((w,i)=>`<button class="wcard" style="background:linear-gradient(135deg,var(--${w.c}),var(--surface) 140%)" data-wl="${i}" aria-expanded="${wlOpen===i}"><span class="wtop"><span class="wic">${viwaiIcono(w.ic)}</span><span class="wnum">•••• ${w.code.replace(/\D/g,"").slice(-4)||w.code.slice(-4)}</span></span><b>${w.n}</b><small>${w.s}</small>${wlOpen===i?`<span class="bcw">${bars(w.code)}<span>${w.code}</span></span><small>Sube el brillo y enséñalo en caja</small>`:""}</button>`).join("")}</div>
+   <span class="small muted">Toca una tarjeta para enseñar su código en caja.</span><div class="btns"><button class="btn pri" data-toast="Escanearías el código de barras de la tarjeta con la cámara">Añadir tarjeta</button></div>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-wallet"))return;if(b.dataset.wl!=null){const i=+b.dataset.wl;wlOpen=wlOpen===i?null:i;walRender()}});
 

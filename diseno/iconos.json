@@ -85,5 +85,8 @@
  "destellos": "sparkles",
  "caja": "package",
  "atras": "chevron-left",
- "codigo": "barcode"
+ "codigo": "barcode",
+ "libro": "book-open",
+ "camion": "truck",
+ "paquete-devolver": "package-x"
 }

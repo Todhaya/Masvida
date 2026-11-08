@@ -94,3 +94,8 @@
 .lvt .st i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:var(--surface);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted)}
 .lvt .st.on i{background:#6A4CF5;color:#fff;box-shadow:none}.lvt .st.cur i{box-shadow:0 0 0 4px rgba(106,76,245,.22)}.lvt .st.on{color:var(--ink)}
 .lvt .st small{font-weight:800;color:#1A8A66}
+/* Wallet: tarjetas con aspecto de tarjeta */
+.wcard{position:relative;overflow:hidden;min-height:118px;box-shadow:var(--vw-sombra)}
+.wcard .wtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.wcard .wic{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.7);display:grid;place-items:center}
+.wcard .wnum{font-size:12px;font-weight:800;letter-spacing:.1em;opacity:.7;font-variant-numeric:tabular-nums}
