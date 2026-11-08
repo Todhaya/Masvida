@@ -422,6 +422,28 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .vr .bd{display:flex;flex-direction:column;gap:4px;min-width:0}.vr small{font-size:12.5px;color:var(--muted)}.vp{font-size:18px;font-variant-numeric:tabular-nums}
 .chip.sm{padding:5px 10px;font-size:12px}.vr .chips{flex-wrap:wrap;overflow:visible}
 .ad{background:var(--bg);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:6px}.ad span{font-size:14px}
+
+/* Ahorro: panel gráfico (en qué se va el dinero, cuánto puedes ahorrar) */
+.adb{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+.ad-hero{border-radius:26px;padding:20px;background:linear-gradient(140deg,var(--mint),var(--surface) 80%);display:flex;flex-direction:column;gap:2px;position:relative;overflow:hidden}
+.ad-hero:after{content:"";position:absolute;right:-50px;top:-60px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(31,163,122,.22),transparent 70%)}
+.ad-hero .lab{font-size:13px;font-weight:700;color:var(--muted)}.ad-hero .big{font-size:44px;font-weight:800;letter-spacing:-.045em;line-height:1.05}
+.ad-bar{height:12px;border-radius:99px;background:rgba(0,0,0,.07);overflow:hidden;margin:10px 0 4px}.ad-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1FA37A,#6A4CF5);transition:width .6s}
+.ad-card{background:var(--surface);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.ad-card h2{margin:0;font-size:17px}
+.ad-don{display:grid;grid-template-columns:128px 1fr;gap:14px;align-items:center}
+.ad-don svg{width:128px;height:128px}.ad-don circle.s{cursor:pointer;transition:opacity .2s,stroke-width .2s}.ad-don .off{opacity:.22}
+.ad-don .cv{font-weight:800;font-size:17px;fill:var(--ink);letter-spacing:-.03em}.ad-don .cl{font-weight:700;font-size:9px;fill:var(--muted)}
+.ad-leg{display:flex;flex-direction:column;gap:2px}
+.ad-leg button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:6px 6px;border-radius:10px;font-family:inherit;font-weight:600;font-size:13.5px;color:var(--ink);text-align:left;cursor:pointer}
+.ad-leg button i{width:10px;height:10px;border-radius:4px;flex:none}.ad-leg button b{margin-left:auto;white-space:nowrap;padding-left:6px}.ad-leg button.off{opacity:.35}
+.ad-det{border-radius:18px;padding:12px 14px;background:var(--sage);display:flex;align-items:center;gap:12px;animation:adIn .25s ease-out}
+.ad-det span{flex:1;font-size:13.5px}.ad-det b{display:block;font-size:15px}
+@keyframes adIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.ad-split{display:flex;height:14px;border-radius:99px;overflow:hidden;gap:2px}.ad-split i{display:block;height:100%}
+.ad-row{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}.ad-row b{color:var(--ink)}.ad-row i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+@media (prefers-reduced-motion:reduce){.ad-bar i,.ad-det{transition:none;animation:none}}
+.kpis button>.ring{position:absolute;top:12px;right:12px}
 </style>
 </head>
 <body>
@@ -485,6 +507,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 
 
   <section class="view" id="v-ahorro" hidden>
+    <div id="ahorro-dash"></div>
     <div class="hub">
       <button class="hr" data-v="facturas"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></i><span><b>Tus facturas</b><small>Luz, gas, fibra, seguros, alarma, banco</small></span><span class='tag' id='tag-facturas'></span></button>
       <button class="hr" data-v="luz"><i style="background:var(--butter)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i><span><b>Tu consumo de luz</b><small>Conectado con Datadis, gratis</small></span><span class='tag' id='tag-luz'></span></button>
@@ -756,6 +779,7 @@ function renderLevels(){renderRefWin();
 
 /* INICIO */
 function renderHome(){
+  if(typeof renderAhorroDash==="function")renderAhorroDash();
   if(typeof homeDash==="function"&&typeof MTX!=="undefined")homeDash();
   const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null),tot=rev.reduce((s,[k])=>s+done[k],0);
   $("#b-save").textContent=eur(tot);$("#b-save-sub").textContent=rev.length?`Con ${rev.length} ${rev.length===1?"factura revisada":"facturas revisadas"} · sigue revisando`:"Revisa tu primera factura";
@@ -790,6 +814,40 @@ function renderFuel(){
   $("#fuel").innerHTML=f.map((x,i)=>`<div class="li"><span><span class="n">${x.n}</span>${i===0?' <span class="pl pl-o">La mejor</span>':""}<br><span class="m">${x.dir} · oficial ${x.p.toFixed(3).replace(".",",")} €${x.real<x.p?" · con tu tarjeta":""}</span></span><span style="font-weight:800">${x.real.toFixed(3).replace(".",",")} €</span></div>`).join("")+`<div class="btns" style="margin-top:6px"><button class="btn" data-toast="Se abriría el mapa con la ruta">Cómo llegar</button></div>`;
 }
 const REEMB=[["Pienso para gato · Mascotas","0,76 €","Disponible"],["Sérum de vitamina C","0,36 €","Disponible"],["Escapada 2 noches · Viajes","3,56 €","Pendiente"],["Cambio de tarifa de luz","8,00 €","Disponible"],["Zapatillas de running","0,90 €","Disponible"],["Fibra y móvil","2,54 €","Pendiente"]];
+
+/* Panel de Ahorro: en qué se va el dinero cada mes y cuánto se puede ahorrar */
+const AD_PAL=["#6A4CF5","#1FA37A","#E8A100","#3B82F6","#E0664F","#C2479A"];
+let adSel=null;const e2=v=>v.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+function renderAhorroDash(){
+  const box=document.getElementById("ahorro-dash");if(!box)return;
+  const vb=visibleBills(),mes=b=>b.u==="m"?b.now:b.now/12;
+  const total=vb.reduce((s,[,b])=>s+mes(b),0);
+  const mejor=b=>Math.max(0,yr(b,Math.min(...b.opts.map(o=>o[1]))));
+  const posible=vb.reduce((s,[,b])=>s+mejor(b),0);
+  const hecho=vb.filter(([k])=>done[k]!=null).reduce((s,[k])=>s+done[k],0);
+  const orden=vb.slice().sort((a,b)=>mes(b[1])-mes(a[1]));
+  const segs=orden.slice(0,5).map(([k,b],i)=>({k,n:b.n,v:mes(b),c:AD_PAL[i],b}));
+  if(orden.length>5)segs.push({k:"otras",n:"Otras",v:orden.slice(5).reduce((s,[,b])=>s+mes(b),0),c:"#B9B4CC"});
+  const R=42,C=2*Math.PI*R;let acc=0;
+  const arcos=segs.map(sg=>{const l=sg.v/total*C,a=`<circle class="s${adSel&&adSel!==sg.k?" off":""}" data-ak="${sg.k}" r="${R}" cx="60" cy="60" fill="none" stroke="${sg.c}" stroke-width="15" stroke-dasharray="${Math.max(.01,l-1.6)} ${C}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`;acc+=l;return a}).join("");
+  const sel=segs.find(x=>x.k===adSel);
+  const pct=posible?Math.round(hecho/posible*100):0;
+  const disp=REEMB.filter(r=>r[2]==="Disponible").reduce((s,r)=>s+parseFloat(r[1].replace(",",".")),0),pend=REEMB.filter(r=>r[2]!=="Disponible").reduce((s,r)=>s+parseFloat(r[1].replace(",",".")),0);
+  box.innerHTML=`<div class="adb">
+    <div class="ad-hero"><span class="lab">Puedes ahorrar al año en lo de siempre</span><span class="big">${eur(posible)}</span>
+      <div class="ad-bar" role="img" aria-label="Llevas ${pct} %"><i style="width:${pct}%"></i></div>
+      <span class="lab">${hecho?`Ya llevas <b style="color:var(--ink)">${eur(hecho)}</b> (${pct} %) · sigue revisando`:"Revisa tu primera factura en 1 minuto"}</span></div>
+    <div class="ad-card"><h2>En qué se va tu dinero cada mes</h2>
+      <div class="ad-don"><svg viewBox="0 0 120 120" role="img" aria-label="Gasto mensual en facturas: ${eur(total)}">${arcos}
+        <text x="60" y="58" text-anchor="middle" class="cv">${eur(sel?sel.v:total)}</text><text x="60" y="73" text-anchor="middle" class="cl">${sel?sel.n:"al mes"}</text></svg>
+        <div class="ad-leg">${segs.map(sg=>`<button data-ak="${sg.k}" class="${adSel&&adSel!==sg.k?"off":""}"><i style="background:${sg.c}"></i>${sg.n}<b>${eur(sg.v)}</b></button>`).join("")}</div></div>
+      ${sel&&sel.b?`<div class="ad-det"><span><b>${sel.n}: ${done[sel.k]!=null?"revisada":"podrías ahorrar "+eur(mejor(sel.b))+" al año"}</b>${sel.b.read}</span><button class="btn pri" data-go-bill="${sel.k}">${done[sel.k]!=null?"Ver":"Revisar"}</button></div>`:`<span class="small muted">Toca un color para ver cuánto puedes ahorrar en esa factura.</span>`}</div>
+    <div class="ad-card"><h2>Tu reembolso</h2>
+      <div class="ad-split"><i style="flex:${disp};background:#1FA37A"></i><i style="flex:${pend};background:#E8A100"></i></div>
+      <div class="ad-row"><span><i style="background:#1FA37A"></i>Para retirar <b>${e2(disp)}</b></span><span><i style="background:#E8A100"></i>En camino <b>${e2(pend)}</b></span></div></div>
+  </div>`;
+}
+document.addEventListener("click",e=>{const x=e.target.closest("#ahorro-dash [data-ak]");if(!x)return;adSel=adSel===x.dataset.ak?null:x.dataset.ak;renderAhorroDash()});
 function renderReemb(){
   $("#reemb").innerHTML=`<div class="hero"><span class="lab">Puedes retirar</span><span class="big">10,02 €</span><span class="lab">Y 6,10 € más en camino (se confirman cuando la tienda valida la compra)</span></div>
    <div class="btns"><button class="btn pri" data-toast="Te lo enviaríamos por Bizum o transferencia en 48 h. Se puede retirar a partir de 10 €">Retirar a mi cuenta</button><button class="btn" data-v="perfil">Subir mi reembolso</button></div>
@@ -951,7 +1009,7 @@ function go(v){const top=PARENT[v]||v;if(SEC[v])document.body.dataset.sec=SEC[v]
  $("#back").hidden=!PARENT[v];if(PARENT[v]){$("#back").dataset.v=PARENT[v];$("#back-l").textContent=LBL[PARENT[v]]}
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
 function resetBill(){$("#step-res").hidden=true;$("#step-load").hidden=true;$("#step-up").hidden=false}
-function renderAll(form=true){if(!BILLS[cur]||(BILLS[cur].need&&!BILLS[cur].need(P)))cur="luz";renderTypes();renderAids();renderOffers();renderHome();renderLevels();renderLuz();renderFuel();renderReemb();renderHogar();renderDinero();renderEsc();renderVentajas();renderHubTags();if(form)renderForm()}
+function renderAll(form=true){if(!BILLS[cur]||(BILLS[cur].need&&!BILLS[cur].need(P)))cur="luz";renderTypes();renderAids();renderOffers();renderHome();renderLevels();renderLuz();renderFuel();renderReemb();renderAhorroDash();renderHogar();renderDinero();renderEsc();renderVentajas();renderHubTags();if(form)renderForm()}
 function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet","4");t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
@@ -1464,7 +1522,7 @@ function homeDash(){
   box.innerHTML=`<div class="card"><div class="card-h"><h2>Hoy en casa</h2><span class="small muted">${DN[dowMon(d)]} ${d.getDate()} de ${MES[d.getMonth()]}</span></div>
    ${f.slice(0,6).map(x=>`<button class="hf" data-v="${x.v}"><i style="background:var(--${x.col})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${HIC[x.ic]}</svg></i><span><b>${x.t}</b>${x.s?`<small>${x.s}</small>`:""}</span><em>›</em></button>`).join("")||'<span class="small muted">Todo en orden por hoy.</span>'}
    ${f.length>6?`<span class="small muted">Y ${f.length-6} cosas más en sus apartados.</span>`:""}</div>
-   <div class="kpis k4"><button data-v="tareas" style="background:var(--butter)"><b>${done}/${todo}</b><span>tareas hechas hoy</span></button><button data-v="pedidos" style="background:var(--sky)"><b>${PDX.filter(p=>p.st<3).length}</b><span>pedidos en camino</span></button><button data-v="docs" style="background:var(--peach)"><b>${DOCX.filter(x=>x.v<=90).length}</b><span>fechas en 3 meses</span></button><button data-v="mant" style="background:var(--mint)"><b>${Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100)} %</b><span>casa al día</span></button></div>`;
+   <div class="kpis k4"><button data-v="tareas" style="background:var(--butter);position:relative"><b>${done}/${todo}</b><span>tareas hechas hoy</span>${ring(todo?done/todo:0,"#C98A00",34)}</button><button data-v="pedidos" style="background:var(--sky)"><b>${PDX.filter(p=>p.st<3).length}</b><span>pedidos en camino</span></button><button data-v="docs" style="background:var(--peach)"><b>${DOCX.filter(x=>x.v<=90).length}</b><span>fechas en 3 meses</span></button><button data-v="mant" style="background:var(--mint);position:relative"><b>${Math.round(MTX.filter(m=>mtLeft(m)>0).length/MTX.length*100)} %</b><span>casa al día</span>${ring(MTX.filter(m=>mtLeft(m)>0).length/MTX.length,"#1A8A66",34)}</button></div>`;
 }
 
 /* MANTENIMIENTO · configuración: qué hay en casa → cuándo se hizo por última vez → listo */
