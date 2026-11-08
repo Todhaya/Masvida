@@ -38,8 +38,17 @@ export function aPrograma(p) {
     web_url: p.site_url || null,
     enlace: p.gotolink || null,
     cashback: tipos.length ? tipos.some((t) => t.includes("cashback")) : null,
-    feeds: (p.feeds_info || []).map((f) => f.xml_link).filter(Boolean).map(enEuros),
+    feeds: feedsParaEspana(p.feeds_info || []),
+    catalogos: (p.feeds_info || []).map((f) => f.name).filter(Boolean),
   };
+}
+
+// Si la tienda tiene catálogos por país, solo los de España (títulos en español); si no, todos.
+const ES = /(^|[^a-z])(es|esp|spain|españa|espana|spanish|español)([^a-z]|$)/i;
+export function feedsParaEspana(info) {
+  const con = info.filter((f) => f.xml_link);
+  const es = con.filter((f) => ES.test(f.name || ""));
+  return (es.length ? es : con).map((f) => enEuros(f.xml_link));
 }
 
 // Admitad convierte los precios del catálogo a la moneda que se le pida (algunas tiendas lo dan en dólares)
@@ -51,6 +60,7 @@ export function enEuros(url) {
 export async function* productos(prog, max) {
   let n = 0;
   for (const feed of prog.feeds) {
+    if (n === 0) console.log(`   ${prog.nombre}: usa ${prog.feeds.length} de [${(prog.catalogos || []).join(" | ")}]`);
     if (n >= max) return;
     const r = await fetch(feed, { signal: AbortSignal.timeout(10 * 60e3) }); // máx. 10 min por catálogo
     if (!r.ok || !r.body) {

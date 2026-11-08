@@ -97,3 +97,10 @@ test("los catálogos de Admitad se piden en euros", async () => {
   assert.match(enEuros("https://export.admitad.com/x/?user=a&currency=USD&format=xml"), /currency=EUR/);
   assert.doesNotMatch(enEuros("https://export.admitad.com/x/?user=a&currency=USD"), /USD/);
 });
+
+test("Admitad: si hay catálogo de España, solo ese", async () => {
+  const { feedsParaEspana } = await import("../scripts/sync/admitad.mjs");
+  const info = [{ name: "AliExpress WW USD", xml_link: "https://a" }, { name: "AliExpress ES EUR", xml_link: "https://b" }, { name: "Sin enlace" }];
+  assert.deepEqual(feedsParaEspana(info), ["https://b/?currency=EUR"]);
+  assert.equal(feedsParaEspana([{ name: "Global", xml_link: "https://a" }]).length, 1);
+});
