@@ -9,6 +9,7 @@ export function supabase(url = process.env.SUPABASE_URL, clave = process.env.SUP
   };
   return {
     lee: (ruta) => pide(ruta),
+    rpc: (fn, args = {}) => pide(`rpc/${fn}`, { method: "POST", body: JSON.stringify(args) }),
     inserta: (tabla, filas, conflicto) => pide(`${tabla}${conflicto ? `?on_conflict=${conflicto}` : ""}`, {
       method: "POST", body: JSON.stringify(filas),
       headers: { Prefer: `return=minimal${conflicto ? ",resolution=merge-duplicates" : ""}` },

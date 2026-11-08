@@ -72,3 +72,31 @@ export async function sinUnir(paginas = 10) {
   }
   return out;
 }
+
+// Comisiones de los últimos `dias` (API GraphQL de comisiones; como mucho 31 días por consulta).
+// El «sid» que añadimos a los enlaces vuelve como shopperId: es nuestro id de clic.
+export async function comisiones(_tk, dias = 30, ahora = new Date()) {
+  const desde = new Date(ahora.getTime() - dias * 864e5).toISOString().slice(0, 19) + "Z";
+  const hasta = new Date(ahora.getTime() + 864e5).toISOString().slice(0, 19) + "Z";
+  const query = `{ publisherCommissions(forPublishers: ["${process.env.CJ_CID}"], sincePostingDate: "${desde}", beforePostingDate: "${hasta}") {
+    count payloadComplete records { commissionId actionStatus validationStatus postingDate eventDate advertiserId shopperId
+      saleAmountPubCurrency pubCommissionAmountPubCurrency } } }`;
+  const r = await fetch("https://commissions.api.cj.com/query", { method: "POST", headers: H(), body: JSON.stringify({ query }) });
+  if (!r.ok) throw new Error(`CJ comisiones: ${r.status} ${(await r.text()).slice(0, 200)}`);
+  const j = await r.json();
+  if (j.errors?.length) throw new Error(`CJ comisiones: ${j.errors[0].message}`);
+  return (j.data?.publisherCommissions?.records || []).map(aComision).filter(Boolean);
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export function aComision(c) {
+  if (!c?.commissionId) return null;
+  const estado = /declined/i.test(c.validationStatus || "") ? "anulada"
+    : { closed: "pagada", locked: "confirmada" }[String(c.actionStatus || "").toLowerCase()] || "pendiente";
+  return {
+    red: "cj", ref_red: String(c.commissionId), programa_id: String(c.advertiserId),
+    clic_id: c.shopperId && UUID.test(c.shopperId) ? c.shopperId : null,
+    importe_venta: c.saleAmountPubCurrency != null ? Number(c.saleAmountPubCurrency) : null,
+    comision: Number(c.pubCommissionAmountPubCurrency) || 0, estado, fecha: c.postingDate || c.eventDate,
+  };
+}

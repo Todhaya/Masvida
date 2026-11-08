@@ -187,6 +187,8 @@ export async function main() {
     if (!r.ok) fallos++;
   }
   if (!SECO) await aplicaPropuestas(db).catch((e) => console.log("   propuestas: " + e.message));
+  // Reembolsos: la parte de cada casa de las comisiones nuevas o que han cambiado de estado
+  if (!SECO) await db.rpc("reparte_comisiones").then((r) => console.log("== reembolsos " + JSON.stringify(r))).catch((e) => console.log("   reembolsos: " + e.message));
   if (process.env.AWIN_LISTA && process.env.AWIN_TOKEN) {
     for (const p of await awin.sinAdherir()) console.log("AWIN " + JSON.stringify(p));
   }

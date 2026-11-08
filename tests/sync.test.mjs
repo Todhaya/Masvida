@@ -127,3 +127,15 @@ test("propuestas del escaparate: solo en productos sin revisar", async () => {
   assert.equal(await aplicaPropuestas(db, ruta), 1);
   assert.deepEqual(llamadas, [["productos", "id=eq.ali%3A1&curado=is.null", { titulo_es: "Batidora portátil", curado: "propuesto", categoria_fija: "cocina", destacado: true }]]);
 });
+
+import { aComision as cjComision } from "../scripts/sync/cj.mjs";
+test("CJ: comisiones con su estado y el id de clic (sid → shopperId)", () => {
+  const id = "11111111-2222-4333-8444-555555555555";
+  const base = { commissionId: "9", advertiserId: "4541237", shopperId: id, saleAmountPubCurrency: "50.00", pubCommissionAmountPubCurrency: "3.50", postingDate: "2026-11-01T10:00:00Z" };
+  assert.deepEqual(cjComision({ ...base, actionStatus: "new", validationStatus: "PENDING" }),
+    { red: "cj", ref_red: "9", programa_id: "4541237", clic_id: id, importe_venta: 50, comision: 3.5, estado: "pendiente", fecha: "2026-11-01T10:00:00Z" });
+  assert.equal(cjComision({ ...base, actionStatus: "locked" }).estado, "confirmada");
+  assert.equal(cjComision({ ...base, actionStatus: "closed" }).estado, "pagada");
+  assert.equal(cjComision({ ...base, actionStatus: "locked", validationStatus: "DECLINED" }).estado, "anulada");
+  assert.equal(cjComision({ ...base, shopperId: "otra-cosa" }).clic_id, null);
+});
