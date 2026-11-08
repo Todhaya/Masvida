@@ -32,4 +32,9 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
    - «Compartir con Viwai», con la app instalada como destino;
    - pedidos automáticos a partir de las compras hechas desde Viwai.
    Conectar el correo, más adelante.
+10. **Reembolsos automáticos (decidido el 8 nov 2026):**
+   - reparto automático de cada comisión confirmada a su casa, según el nivel;
+   - retiradas con PayPal o Wise desde el panel (al principio, a mano);
+   - antes, confirmar las tarifas y la normativa con la gestoría.
+11. Vídeos de ofertas: cuando haya catálogo real.
 8. Pasar al sistema de diseño (`diseno/`) las pantallas que faltan: Calendario, Armario, Menú y Luz (Pedidos, Wallet y Tareas ya están).
