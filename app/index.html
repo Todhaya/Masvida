@@ -444,6 +444,29 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .ad-row{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}.ad-row b{color:var(--ink)}.ad-row i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
 @media (prefers-reduced-motion:reduce){.ad-bar i,.ad-det{transition:none;animation:none}}
 .kpis button>.ring{position:absolute;top:12px;right:12px}
+
+/* Hogar: resumen gráfico */
+.hd{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.hd-hero{border-radius:26px;padding:18px;background:linear-gradient(140deg,var(--sky),var(--surface) 82%);display:flex;align-items:center;gap:16px}
+.hd-hero b{display:block;font-size:20px;letter-spacing:-.02em}.hd-hero span{font-size:13px;color:var(--muted)}
+.hd-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hd-t{border:0;border-radius:20px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;cursor:pointer;color:var(--p-ink);font:inherit;transition:transform .15s}
+.hd-t:active{transform:scale(.97)}.hd-t b{font-size:26px;font-weight:800;letter-spacing:-.04em;line-height:1.1}.hd-t span{font-size:12.5px;font-weight:600}
+.hd-t .dots{display:flex;gap:3px;margin-top:6px}.hd-t .dots i{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.18)}.hd-t .dots i.on{background:currentColor}
+.hd-h{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 2px -4px}
+.hd-tl{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x mandatory}
+.hd-ev{flex:none;width:150px;scroll-snap-align:start;border:0;background:var(--surface);border-radius:20px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px;cursor:pointer;font:inherit;color:var(--ink)}
+.hd-ev .d{display:inline-flex;align-self:flex-start;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:800}
+.hd-ev .n{font-weight:700;font-size:14px;line-height:1.25}
+.hd-ev .pb{height:6px;border-radius:99px;background:var(--line);overflow:hidden}.hd-ev .pb i{display:block;height:100%;border-radius:99px}
+/* Tú: camino de niveles */
+.lvt{display:flex;align-items:flex-start;justify-content:space-between;position:relative;margin:6px 4px 18px}
+.lvt:before{content:"";position:absolute;left:14px;right:14px;top:14px;height:4px;border-radius:99px;background:var(--line)}
+.lvt .fill{position:absolute;left:14px;top:14px;height:4px;border-radius:99px;background:linear-gradient(90deg,#6A4CF5,#1FA37A)}
+.lvt .st{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;width:56px;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.lvt .st i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:var(--surface);box-shadow:inset 0 0 0 2px var(--line);color:var(--muted)}
+.lvt .st.on i{background:#6A4CF5;color:#fff;box-shadow:none}.lvt .st.cur i{box-shadow:0 0 0 4px rgba(106,76,245,.22)}.lvt .st.on{color:var(--ink)}
+.lvt .st small{font-weight:800;color:#1A8A66}
 </style>
 </head>
 <body>
@@ -518,6 +541,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   </section>
 
   <section class="view" id="v-hogar" hidden>
+    <div id="hogar-dash"></div>
     <div class="hub">
       <span class="hub-t">Casa en orden</span>
       <button class="hr" data-v="docs"><i style="background:var(--peach)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></i><span><b>Documentos y fechas</b><small>ITV, DNI, seguros, garantías</small></span><span class='tag' id='tag-docs'></span></button>
@@ -770,7 +794,9 @@ function renderLevels(){renderRefWin();
    <div class="code"><span>LAURA-7K2</span><button class="btn" id="copy">Copiar</button></div>
    <div class="share">${SHARE.map(([n,u,ic])=>`<a href="${u}" target="_blank" rel="noopener" aria-label="Compartir por ${n}"><span>${ic}</span>${n}</a>`).join("")}<button id="ig"><span>${IGI}</span>Instagram</button></div>
    <button class="btn" style="background:transparent;color:var(--bg);box-shadow:inset 0 0 0 1.5px var(--bg)" id="sim">Simular que se une una amiga</button>`;
-  $("#levels").innerHTML=LEVELS.map((l,i)=>{const on=refs>=l.r;const st=!on?`<span class="st-pill st-off">${l.r-refs===1?"Te falta 1 invitación":"Te faltan "+(l.r-refs)+" invitaciones"}</span>`:`<span class="st-pill st-on">Conseguido</span>`;
+  const fillPct=(idx+(next?pct/100:0))/(LEVELS.length-1)*100;
+  const track=`<div class="lvt" role="img" aria-label="Nivel ${idx+1} de ${LEVELS.length}"><span class="fill" style="width:calc((100% - 28px) * ${fillPct/100})"></span>${LEVELS.map((l,i)=>`<span class="st ${refs>=l.r?"on":""} ${i===idx?"cur":""}"><i>${i+1}</i>${l.n}<small>${l.cb.toLocaleString("es-ES")} %</small></span>`).join("")}</div>`;
+  $("#levels").innerHTML=track+LEVELS.map((l,i)=>{const on=refs>=l.r;const st=!on?`<span class="st-pill st-off">${l.r-refs===1?"Te falta 1 invitación":"Te faltan "+(l.r-refs)+" invitaciones"}</span>`:`<span class="st-pill st-on">Conseguido</span>`;
     return`<div class="lv ${on?"on":""}"><span class="dot">${i+1}</span><div><div class="t">${l.n}</div><div class="d">${l.d}</div><div class="d">Reembolso del <b>${l.cb.toLocaleString("es-ES")} %</b> · ${l.r?`con ${l.r} ${l.r===1?"amiga":"amigas"}`:"desde el primer día"}</div>${st}</div></div>`}).join("");
   $("#b-lv-t").textContent=`Nivel ${idx+1} · ${curL.n}`;
   $("#b-lv").textContent=next?`Invita a ${next.r-refs} ${next.r-refs===1?"amiga":"amigas"} más`:"Tienes el reembolso más alto";
@@ -1010,7 +1036,29 @@ function go(v){const top=PARENT[v]||v;if(SEC[v])document.body.dataset.sec=SEC[v]
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0)}
 function resetBill(){$("#step-res").hidden=true;$("#step-load").hidden=true;$("#step-up").hidden=false}
 function renderAll(form=true){if(!BILLS[cur]||(BILLS[cur].need&&!BILLS[cur].need(P)))cur="luz";renderTypes();renderAids();renderOffers();renderHome();renderLevels();renderLuz();renderFuel();renderReemb();renderAhorroDash();renderHogar();renderDinero();renderEsc();renderVentajas();renderHubTags();if(form)renderForm()}
-function renderHubTags(){const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet","4");t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
+
+/* Hogar: resumen gráfico (casa al día, lo que toca y las próximas fechas) */
+function renderHogarDash(){
+  const box=document.getElementById("hogar-dash");if(!box||typeof MTX==="undefined"||typeof CH==="undefined")return;
+  const alDia=MTX.length?MTX.filter(m=>mtLeft(m)>0).length/MTX.length:1,pc=Math.round(alDia*100);
+  const toca=MTX.filter(m=>mtLeft(m)<=0).length,hoyT=CH.filter(c=>nextOf(c)<=0),hechas=hoyT.filter(doneToday).length;
+  const camino=PDX.filter(p=>p.st<3),pronto=DOCX.filter(x=>x.v<=30);
+  const dots=(n,on)=>`<span class="dots">${Array.from({length:Math.min(n,7)},(_,i)=>`<i class="${i<on?"on":""}"></i>`).join("")}</span>`;
+  const prox=DOCX.slice().sort((a,b)=>a.v-b.v).slice(0,6);
+  const tono=v=>v<=15?["var(--peach)","#C4503A"]:v<=60?["var(--butter)","#A26F00"]:["var(--mint)","#1A8A66"];
+  box.innerHTML=`<div class="hd">
+    <div class="hd-hero">${ring(alDia,pc>66?"#1A8A66":"#C98A00",78,pc+"%")}<div><b>Tu casa, ${pc>=80?"al día":pc>=50?"casi al día":"pide un repaso"}</b><span>${toca?`${toca} ${toca===1?"cosa toca":"cosas tocan"} de mantenimiento`:"Nada de mantenimiento pendiente"} · ${pronto.length} ${pronto.length===1?"fecha":"fechas"} este mes</span></div></div>
+    <div class="hd-g">
+      <button class="hd-t" data-v="tareas" style="background:var(--butter)"><b>${hechas}/${hoyT.length}</b><span>tareas de hoy</span>${dots(hoyT.length,hechas)}</button>
+      <button class="hd-t" data-v="pedidos" style="background:var(--sky)"><b>${camino.length}</b><span>pedidos en camino</span>${dots(camino.length,camino.filter(p=>p.st>=2).length)}</button>
+      <button class="hd-t" data-v="docs" style="background:var(--lav)"><b>${pronto.length}</b><span>fechas en 30 días</span>${dots(pronto.length,pronto.filter(x=>x.v<=7).length)}</button>
+      <button class="hd-t" data-v="mant" style="background:var(--mint)"><b>${toca}</b><span>mantenimiento que toca</span>${dots(MTX.length,MTX.filter(m=>mtLeft(m)>0).length)}</button>
+    </div>
+    <span class="hd-h">Lo próximo</span>
+    <div class="hd-tl">${prox.map(x=>{const [bg,fg]=tono(x.v);return`<button class="hd-ev" data-v="docs"><span class="d" style="background:${bg};color:${fg}">${x.v<=0?"Hoy":x.v===1?"Mañana":x.v<60?"En "+x.v+" días":"En "+Math.round(x.v/30)+" meses"}</span><span class="n">${x.n}</span><span class="pb"><i style="width:${Math.max(6,100-Math.min(100,x.v/90*100))}%;background:${fg}"></i></span></button>`}).join("")}</div>
+  </div>`;
+}
+function renderHubTags(){if(typeof renderHogarDash==="function")renderHogarDash();const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet","4");t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.tawho){taWho=b.dataset.tawho;tallaRender()}
