@@ -175,7 +175,7 @@ export async function aplicaPropuestas(db, ruta = new URL("../../data/escaparate
 async function exportaCandidatos(db, max) {
   const tiendas = await db.todo("tiendas?select=id&escaparate=is.true");
   for (const t of tiendas) {
-    const filas = await db.todo(`productos?select=id,titulo,precio,precio_tachado,categoria,categoria_tienda&tienda_id=eq.${encodeURIComponent(t.id)}&filtro_ok=is.true&curado=is.null&order=precio.desc`);
+    const filas = await db.todo(`productos?select=id,titulo,precio,precio_tachado,categoria,categoria_tienda&tienda_id=eq.${encodeURIComponent(t.id)}&filtro_ok=is.true&curado=is.null&categoria=in.(${[...INTERES_CASA].join(",")})&order=categoria,precio.desc`);
     console.log(`== candidatos ${t.id}: ${filas.length}`);
     for (const f of filas.slice(0, max)) console.log("CAND " + JSON.stringify(f));
   }
