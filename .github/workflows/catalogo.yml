@@ -16,6 +16,10 @@ on:
         description: "Sacar en el registro los candidatos del escaparate (para que Claude proponga)"
         type: boolean
         default: false
+      awin_lista:
+        description: "Sacar en el registro las tiendas de Awin España en las que aún no estamos"
+        type: boolean
+        default: false
 concurrency: catalogo
 jobs:
   sincronizar:
@@ -44,3 +48,4 @@ jobs:
           AWIN_TOKEN: ${{ secrets.AWIN_TOKEN }}
           AWIN_FEED_LIST: ${{ secrets.AWIN_FEED_LIST }}
           AWIN_PUBLISHER_ID: "3148698"
+          AWIN_LISTA: ${{ inputs.awin_lista && '1' || '' }}

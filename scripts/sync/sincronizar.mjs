@@ -150,6 +150,9 @@ export async function main() {
     if (!r.ok) fallos++;
   }
   if (!SECO) await aplicaPropuestas(db).catch((e) => console.log("   propuestas: " + e.message));
+  if (process.env.AWIN_LISTA && process.env.AWIN_TOKEN) {
+    for (const p of await awin.sinAdherir()) console.log("AWIN " + JSON.stringify(p));
+  }
   if (process.env.EXPORTA) await exportaCandidatos(db, Number(process.env.EXPORTA) || 400);
   if (fallos) process.exitCode = 1;
 }

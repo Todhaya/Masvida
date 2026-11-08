@@ -151,3 +151,10 @@ export async function* filasCSV(trozos) {
   }
   if (campo || fila.length) { fila.push(campo); yield fila; }
 }
+
+// Para elegir a qué tiendas pedir: las de España en las que aún no estamos (lo imprime la sincronización con AWIN_LISTA=1)
+export async function sinAdherir(pais = "ES") {
+  const r = await fetch(`${API}/publishers/${process.env.AWIN_PUBLISHER_ID}/programmes?relationship=notjoined&countryCode=${pais}&accessToken=${encodeURIComponent(process.env.AWIN_TOKEN)}`);
+  if (!r.ok) throw new Error(`Awin sin adherir: ${r.status}`);
+  return (await r.json()).map((p) => ({ id: p.id, nombre: p.name, sector: p.primarySector || "", web: p.displayUrl || "" }));
+}
