@@ -32,7 +32,7 @@ const [, , proto, out = "."] = process.argv;
   await ir("vender"); await shot("a3");
   // GASOLINA
   await ir("gasolina"); J.g1tap = await ctr('[data-fl="60"]'); await shot("g1");
-  await p.click('[data-fl="60"]'); await ir("gasolina", "#fuel .card:last-of-type", 40); await shot("g2");
+  await p.click('[data-fl="60"]'); await ir("gasolina", "#fuel .card", 150); await shot("g2");
   // CASA AL DÍA (hogar, documentos, mantenimiento)
   await ir("hogar"); J.c1tap = await ctr('#hogar-dash .hd-t[data-v="docs"]'); await shot("c1");
   await ir("docs"); J.c2tap = await ctr('#docs-box .vi .btn'); await shot("c2");
