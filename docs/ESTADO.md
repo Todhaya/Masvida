@@ -19,7 +19,7 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 5. Altas en redes de afiliación (Awin, Tradedoubler, Amazon, Temu, Civitatis). Antes de activar enlaces: alta censal en Hacienda (037), domiciliación y añadir NIF y domicilio a las páginas legales.
 
 ## Siguiente trabajo técnico (por orden)
-- Aplicar en Supabase la migración 014 (servicios sin reembolso; primer cambio de tarifa activa la invitación). Necesita Chrome en el ordenador.
+- ~~Migración 014 (servicios sin reembolso)~~ aplicada en Supabase el 9 nov.
 0. Página «Chollos de Black Friday de verdad» y 2–3 vídeos de Black Friday (antes del 20 de noviembre; necesita Amazon y alguna tienda aprobada).
 1. ~~Bienvenida, perfil obligatorio y tutoriales~~ Hecho (9 nov): bienvenida, tutorial general y ayuda con «?» en cada apartado. Falta: que «ya visto» se guarde por persona y no por casa.
 2. App conectada a Supabase: inicio de sesión con enlace mágico y Google, hogar, miembros y módulos guardados.
