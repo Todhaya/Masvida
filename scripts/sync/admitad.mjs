@@ -97,6 +97,23 @@ export async function sinConectar(tk, web = process.env.ADMITAD_WEBSITE_ID) {
       cashback: (p.traffics || []).some((t) => t.enabled && /cashback/i.test(t.name || "")), web: p.site_url }));
 }
 
+// Todos los programas de Admitad que trabajan en España (catálogo general, no solo los del espacio).
+export async function catalogoES() {
+  const tk = await token("advcampaigns");
+  const out = [];
+  for (let offset = 0; offset < 5000; offset += 500) {
+    const r = await fetch(`${API}/advcampaigns/?limit=500&offset=${offset}`, { headers: { Authorization: `Bearer ${tk}` } });
+    if (!r.ok) throw new Error(`Admitad catálogo: ${r.status} ${(await r.text()).slice(0, 200)}`);
+    const j = await r.json();
+    out.push(...(j.results || []));
+    if (!j._meta || offset + 500 >= j._meta.count) break;
+  }
+  return out
+    .filter((p) => (p.regions || []).some((g) => g.region === "ES"))
+    .map((p) => ({ id: p.id, nombre: p.name, categorias: (p.categories || []).map((c) => c.name).join(", "),
+      cashback: (p.traffics || []).some((t) => t.enabled && /cashback/i.test(t.name || "")), web: p.site_url }));
+}
+
 // Solicitudes: programas pendientes o rechazados para nuestro espacio web
 export async function solicitudes(tk, web = process.env.ADMITAD_WEBSITE_ID) {
   const out = [];

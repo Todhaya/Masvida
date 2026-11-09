@@ -196,6 +196,8 @@ export async function main() {
     if (process.env.ADMITAD_CLIENT_ID) {
       try { const tk = await admitad.token(); for (const p of await admitad.sinConectar(tk)) console.log("ADMITAD " + JSON.stringify(p)); }
       catch (e) { console.log("ADMITAD error " + e.message); }
+      try { for (const p of await admitad.catalogoES()) console.log("ADMITAD_ES " + JSON.stringify(p)); }
+      catch (e) { console.log("ADMITAD_ES error " + e.message); }
     }
     if (process.env.CJ_TOKEN) {
       try { for (const p of await cj.sinUnir()) console.log("CJ " + JSON.stringify(p)); } catch (e) { console.log("CJ error " + e.message); }
