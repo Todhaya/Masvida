@@ -40,9 +40,10 @@ test("Viwai siempre se queda al menos el margen mínimo", () => {
   }
 });
 
-test("altas de precio fijo: parte de la comisión según nivel", () => {
-  assert.equal(reembolsoDe(T.octopus, 0, 0), 3); // 10 % de 30 €
-  assert.equal(reembolsoDe(T.octopus, 0, 10), 9); // 30 % de 30 €
+test("altas de precio fijo: parte de la comisión según nivel (fuera de los servicios)", () => {
+  assert.equal(reembolsoDe(T.raisin, 0, 0), 8); // 10 % de 80 €
+  assert.equal(reembolsoDe(T.raisin, 0, 10), 24); // 30 % de 80 €
+  assert.equal(reembolsoDe(T.octopus, 0, 10), 0); // luz: sin reembolso
 });
 
 test("saldo: solo lo confirmado está disponible", () => {
@@ -60,4 +61,12 @@ test("retirada: solo con 10 € o más de saldo confirmado", () => {
   assert.equal(RETIRADA_MINIMA, 10);
   assert.equal(puedeRetirar([{ tipo: "reembolso", importe: 9.99, estado: "confirmada" }, { tipo: "reembolso", importe: 5, estado: "pendiente" }]), false);
   assert.equal(puedeRetirar([{ tipo: "reembolso", importe: 7, estado: "confirmada" }, { tipo: "premio", importe: 3, estado: "confirmada" }]), true);
+});
+
+test("servicios (luz, gas, telefonía…): sin reembolso aunque la marca lo permita; lo de la usuaria es el ahorro", async () => {
+  const { esServicio } = await import("../app/js/reembolso.js");
+  const luz = { id: "x", categoria: "luz", tipo: "cpa", comision: 40, cashback: true, maxParteUsuaria: 1 };
+  assert.equal(esServicio(luz), true);
+  assert.equal(reembolsoDe(luz, 0, 10), 0);
+  assert.ok(reembolsoDe({ ...luz, categoria: "moda", tipo: "porcentaje", comision: 0.08 }, 100, 0) > 0);
 });

@@ -8,6 +8,8 @@
 //   la parte máxima de la comisión que permite la tienda (maxParteUsuaria)
 //   y MARGEN_MINIMO, la fracción de la comisión que siempre se queda Viwai.
 // - Se paga solo cuando la red confirma la comisión (estado "confirmada").
+// - Servicios (luz, gas, telefonía, seguros…): sin reembolso. Lo que se lleva la usuaria es el ahorro en la factura
+//   (decisión de Alba, 9 nov 2026). El primer cambio de tarifa sí activa la invitación.
 
 export const NIVELES = [
   { min: 0, nombre: "Ahorras", pct: 0.01 },
@@ -16,6 +18,9 @@ export const NIVELES = [
   { min: 5, nombre: "Vives", pct: 0.025 },
   { min: 10, nombre: "Viwai", pct: 0.03 },
 ];
+
+export const SERVICIOS = ["luz", "gas", "energia", "fibra", "movil", "telefonia", "internet", "seguros", "alarmas"];
+export const esServicio = (tienda) => SERVICIOS.includes(String(tienda?.categoria || "").toLowerCase());
 
 export const MARGEN_MINIMO = 0.3; // Viwai se queda al menos el 30 % de cada comisión
 export const PREMIO_INVITACION = 3; // € para cada una, tras la primera acción de la invitada
@@ -41,7 +46,7 @@ export function comisionDe(tienda, importe) {
 
 // Reembolso para la usuaria por una operación.
 export function reembolsoDe(tienda, importe, amigasActivas, comisionReal) {
-  if (!tienda || tienda.cashback !== true) return 0;
+  if (!tienda || tienda.cashback !== true || esServicio(tienda)) return 0;
   const comision = comisionReal != null ? Number(comisionReal) : comisionDe(tienda, importe);
   if (!(comision > 0)) return 0;
   const tope = comision * Math.min(tienda.maxParteUsuaria ?? 0, 1 - MARGEN_MINIMO);

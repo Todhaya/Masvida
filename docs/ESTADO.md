@@ -12,13 +12,14 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 
 ## Pendiente de Alba
 1. Correo hola@viwai.es en IONOS (activación hasta 24 h).
-2. Cuenta de la API de Claude (lectura de facturas) y guardar la clave como secreto `ANTHROPIC_API_KEY` en Supabase.
+2. ~~Clave de Claude en Supabase~~ Hecho (9 nov); falta probar la lectura con una factura real desde la app.
 3. Conectar dominios a Cloudflare cuando el correo funcione: viwai.es → web, viwai.app → app.
 4. Solicitud de marca en la OEPM (clases 9 limitada a software, 35, 36, 42) con `marca/viwai-logo-color.jpg`.
 6. Pedir la clave gratuita de AEMET OpenData (opendata.aemet.es → «Obtención de API Key», con su correo) para conectar el tiempo de la app. Guardarla como secreto `AEMET_API_KEY` (no pasarla por el chat).
 5. Altas en redes de afiliación (Awin, Tradedoubler, Amazon, Temu, Civitatis). Antes de activar enlaces: alta censal en Hacienda (037), domiciliación y añadir NIF y domicilio a las páginas legales.
 
 ## Siguiente trabajo técnico (por orden)
+- Aplicar en Supabase la migración 014 (servicios sin reembolso; primer cambio de tarifa activa la invitación). Necesita Chrome en el ordenador.
 0. Página «Chollos de Black Friday de verdad» y 2–3 vídeos de Black Friday (antes del 20 de noviembre; necesita Amazon y alguna tienda aprobada).
 1. ~~Bienvenida, perfil obligatorio y tutoriales~~ Hecho (9 nov): bienvenida, tutorial general y ayuda con «?» en cada apartado. Falta: que «ya visto» se guarde por persona y no por casa.
 2. App conectada a Supabase: inicio de sesión con enlace mágico y Google, hogar, miembros y módulos guardados.
