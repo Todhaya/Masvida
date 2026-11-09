@@ -8,5 +8,21 @@
   "display": "standalone",
   "background_color": "#FAFAF8",
   "theme_color": "#0F0F0E",
-  "icons": [{ "src": "icons/icono.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+  "icons": [
+    {
+      "src": "icons/icono.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "share_target": {
+    "action": "./?compartir=1",
+    "method": "GET",
+    "params": {
+      "title": "titulo",
+      "text": "texto",
+      "url": "enlace"
+    }
+  }
 }

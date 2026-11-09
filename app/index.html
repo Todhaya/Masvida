@@ -13,6 +13,7 @@
 <title>Viwai</title>
 <script>window.VIWAI_CLICS_MANUAL=true</script>
 <link rel="stylesheet" href="diseno/tokens.css">
+<script src="js/seguimiento.js"></script>
 <link rel="stylesheet" href="diseno/componentes.css">
 <script src="diseno/iconos.js"></script>
 
@@ -1541,23 +1542,41 @@ let PDX=S.get("pdx",PD0);
 function pedsRender(){
   const box=$("#peds-box");if(!box)return;
   const act=PDX.filter(p=>p.st<3),dev=PDX.filter(p=>p.st===3&&p.dev>0),mes=PDX.reduce((s,p)=>s+p.precio,0);
-  const llega=p=>p.st===3?(p.dev>0?`<b>${p.dev}</b><small>días</small>`:`<b>✓</b><small>entregado</small>`):p.v===0?`<b>Hoy</b><small>llega</small>`:p.v===1?`<b>Mañ.</b><small>llega</small>`:`<b>${dOff(p.v).getDate()}</b><small>${MES[dOff(p.v).getMonth()].slice(0,3)}</small>`;
+  const llega=p=>p.v==null&&p.st<3?`<b style="font-size:15px">${p.tr}</b><small>en camino</small>`:p.st===3?(p.dev>0?`<b>${p.dev}</b><small>días</small>`:`<b>✓</b><small>entregado</small>`):p.v===0?`<b>Hoy</b><small>llega</small>`:p.v===1?`<b>Mañ.</b><small>llega</small>`:`<b>${dOff(p.v).getDate()}</b><small>${MES[dOff(p.v).getMonth()].slice(0,3)}</small>`;
   const tono=p=>p.st===3&&p.dev>0?(p.dev<=3?["var(--peach)","var(--vw-urgente)"]:["var(--butter)","var(--vw-atencion)"]):p.v===0?["var(--mint)","var(--vw-bien)"]:["var(--sky)","var(--vw-tinta)"];
   const row=p=>{const [bg,fg]=tono(p);return`<div class="vi"><span class="ic" style="background:var(--${p.st===3?"butter":"sky"})">${viwaiIcono(p.st===3?"paquete-devolver":p.st===2?"camion":"pedidos")}</span>
     <span class="bd"><span class="n">${p.n}</span><span class="m">${p.t} · ${p.tr}</span></span><span class="cd" style="background:${bg};color:${fg}">${llega(p)}</span>
     <div class="full"><span class="hb2"><i style="width:${(p.st+1)/4*100}%;background:linear-gradient(90deg,var(--vw-g4),var(--vw-g2))"></i></span>
       <span class="stp4" style="margin-top:-2px">${PST.map((x,i)=>`<span class="${i<=p.st?"on":""}" style="gap:0">${x}</span>`).join("")}</span>
       ${p.cb?`<span class="small" style="color:var(--ok)">Comprado desde Viwai · reembolso pendiente de confirmar</span>`:""}
+      ${p.url&&p.st<3?`<span class="btns"><a class="btn" href="${p.url}" target="_blank" rel="noopener">Ver seguimiento en ${p.tr}</a><button class="btn" data-pdrec="${p.id}">Ya ha llegado</button></span>`:""}
       ${p.st===3&&p.dev>0?`<span class="btns"><button class="btn" data-toast="Te llevaríamos a la devolución de la tienda con el número de pedido ya copiado">Devolver</button><button class="btn" data-pdok="${p.id}">Me lo quedo</button></span>`:""}</div></div>`};
   const hoyP=act.filter(p=>p.v===0);
   box.innerHTML=`<div class="vh" style="--vt:var(--sky)"><span class="ic" style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.7);display:grid;place-items:center;flex:none">${viwaiIcono("camion")}</span>
      <span class="tx"><span class="k">Pedidos</span><span class="t">${hoyP.length?`${hoyP.length===1?"Llega hoy":"Llegan hoy "+hoyP.length}: ${hoyP[0].n.toLowerCase()}`:act.length?`${act.length} en camino`:"Nada en camino"}</span>
      <span class="pills" style="margin-top:8px"><span class="pill" style="--c:var(--vw-g4)"><i></i>${act.length} en camino</span><span class="pill" style="--c:var(--vw-urgente)"><i></i>${dev.length} por devolver</span><span class="pill" style="--c:var(--vw-g2)"><i></i>${eur(mes)} este mes</span></span></span></div>
-   ${act.length?`<div class="vg"><span class="vg-h">En camino<em>${act.length}</em></span>${act.sort((a,b)=>a.v-b.v).map(row).join("")}</div>`:""}
+   ${act.length?`<div class="vg"><span class="vg-h">En camino<em>${act.length}</em></span>${act.sort((a,b)=>(a.v??99)-(b.v??99)).map(row).join("")}</div>`:""}
    ${dev.length?`<div class="vg"><span class="vg-h" style="color:var(--vw-urgente)">Plazo para devolver<em>${dev.length}</em></span>${dev.map(row).join("")}</div>`:""}
-   <span class="aff">Reenvía los correos de tus pedidos a tu buzón de Viwai y aparecen aquí solos, con el seguimiento de la empresa de transporte.</span>`;
+   <div class="card"><h2>Añadir un pedido</h2>
+     <div class="field"><span class="pk-l">Pega el enlace o el número de seguimiento</span><input id="pd-txt" value="${(pdNew&&pdNew.txt)||""}" placeholder="Ej.: https://… o PQ4F6P07036…" autocomplete="off"></div>
+     ${pdNew&&pdNew.det?`${pdNew.det.transportista?`<span class="pill" style="--c:var(--vw-g2)"><i></i>${pdNew.det.nombre}${pdNew.det.numero?" · "+pdNew.det.numero:""}</span>`:`<span class="pk-l">¿Qué empresa lo trae?</span><div class="chips" style="flex-wrap:wrap">${viwaiTransportistas.filter(t=>!pdNew.det.posibles||!pdNew.det.posibles.length||pdNew.det.posibles.includes(t.id)).map(t=>`<button class="chip" data-pdtr="${t.id}">${t.n}</button>`).join("")}</div>`}
+       <div class="field"><span class="pk-l">Qué es (opcional)</span><input id="pd-n" value="${pdNew.n||""}" placeholder="Ej.: zapatillas de Leo" autocomplete="off"></div>
+       <div class="btns"><button class="btn pri" id="pd-save" ${pdNew.det.transportista?"":"disabled"}>Guardar</button><button class="btn" id="pd-cancel">Cancelar</button></div>`
+     :`<div class="btns"><button class="btn pri" id="pd-go">Reconocer</button></div>`}
+     <span class="small muted">También puedes usar «Compartir» → Viwai desde el correo o la app de la tienda.</span></div>
+   <span class="aff">Abrimos la web de seguimiento de la empresa de transporte. Muy pronto, el estado se actualizará solo.</span>`;
 }
-document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-pedidos"))return;if(b.dataset.pdok){PDX.find(p=>p.id===b.dataset.pdok).dev=0;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome()}});
+let pdNew=null;
+function pdDetecta(txt){pdNew={txt,det:viwaiDetectaEnvio(txt)||{posibles:[]},n:(pdNew&&pdNew.n)||""};if(pdNew.det&&!pdNew.det.numero&&!pdNew.det.url)toast("No encontramos un número de seguimiento: revisa lo que has pegado");pedsRender()}
+// «Compartir con Viwai»: la app instalada recibe el texto o el enlace y abre Pedidos con él
+(()=>{const q=new URLSearchParams(location.search);if(!q.has("compartir"))return;const txt=[q.get("enlace"),q.get("texto"),q.get("titulo")].filter(Boolean).join(" ");history.replaceState(null,"",location.pathname);setTimeout(()=>{go("pedidos");pdDetecta(txt)},400)})();
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-pedidos"))return;
+  if(b.id==="pd-go"){pdDetecta($("#pd-txt").value);return}
+  if(b.id==="pd-cancel"){pdNew=null;pedsRender();return}
+  if(b.dataset.pdtr){pdNew.n=$("#pd-n").value;const t=viwaiTransportistas.find(x=>x.id===b.dataset.pdtr);pdNew.det={...pdNew.det,transportista:t.id,nombre:t.n,url:pdNew.det.url||viwaiEnlaceEnvio(t.id,pdNew.det.numero)};pedsRender();return}
+  if(b.id==="pd-save"){const d=pdNew.det,n=$("#pd-n").value.trim();PDX.push({id:"p"+Date.now(),n:n||"Pedido por "+d.nombre,t:"Añadido por ti",tr:d.nombre,st:1,v:null,precio:0,num:d.numero,url:d.url});pdNew=null;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome();toast("Pedido añadido. Toca «Ver seguimiento» cuando quieras");return}
+  if(b.dataset.pdrec){const p=PDX.find(x=>x.id===b.dataset.pdrec);p.st=3;p.v=0;p.dev=14;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome();toast("Marcado como entregado. Te recordamos el plazo para devolverlo");return}
+  if(b.dataset.pdok){PDX.find(p=>p.id===b.dataset.pdok).dev=0;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome()}});
 
 /* Wallet: tarjetas con su código listo para la caja */
 const WL0=[{n:"Gasolinera",s:"Club · 5 cts/l de descuento",c:"peach",code:"7712 0458 9931",ic:"gasolina"},{n:"Súper del barrio",s:"Tarjeta cliente · 3 % en tu cuenta",c:"mint",code:"2210 7781 0042",ic:"compra"},{n:"Biblioteca",s:"Carné de Noa",c:"sky",code:"0042 7719",ic:"libro"},{n:"Cine · sábado 18:30",s:"2 entradas · sala 4",c:"lav",code:"CN-88213",ic:"entrada"}];
