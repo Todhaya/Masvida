@@ -88,5 +88,6 @@
  "codigo": "barcode",
  "libro": "book-open",
  "camion": "truck",
- "paquete-devolver": "package-x"
+ "paquete-devolver": "package-x",
+ "camara": "camera"
 }
