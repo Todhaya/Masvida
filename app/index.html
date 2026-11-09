@@ -14,6 +14,7 @@
 <script>window.VIWAI_CLICS_MANUAL=true</script>
 <link rel="stylesheet" href="diseno/tokens.css">
 <script src="js/seguimiento.js"></script>
+<script src="js/archivos.js"></script>
 <link rel="stylesheet" href="diseno/componentes.css">
 <script src="diseno/iconos.js"></script>
 
@@ -351,6 +352,8 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .tk .rt{display:flex;flex-direction:column;align-items:center;gap:3px}
 .tk-who{border:0;background:transparent;padding:0;border-radius:50%}
 .tav{display:inline-grid;place-items:center;border-radius:50%;font-weight:800;color:var(--p-ink);flex:none}
+.wimg{display:block;margin-top:12px;background:var(--vw-blanco);border-radius:14px;padding:8px}.wimg img{display:block;width:100%;border-radius:8px}
+.wcard .btns{margin-top:12px}
 .avbtn{position:relative;border:0;background:none;padding:0;border-radius:50%;cursor:pointer;flex:none;display:inline-grid}
 .avbtn>i{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--surface);display:grid;place-items:center;box-shadow:0 0 0 2px var(--surface)}
 .avbtn>i svg{width:12px;height:12px}
@@ -564,6 +567,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 </div>
 
 <input type="file" id="foto-in" accept="image/*" hidden>
+<input type="file" id="wl-in" accept="application/pdf,.pdf,image/*" hidden>
 <nav class="tabs" aria-label="Secciones"><div class="in" id="tabs">
   <button data-v="inicio" aria-current="page"><svg data-ico="inicio"></svg>Inicio</button>
   <button data-v="ahorro"><svg data-ico="ahorro"></svg>Ahorro</button>
@@ -576,6 +580,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 <script>
 const S={get(k,d){try{const v=localStorage.getItem("pj2-"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pj2-"+k,JSON.stringify(v))}catch(e){}}};
 const $=s=>document.querySelector(s);
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const eur=v=>Math.round(v).toLocaleString("es-ES")+" €";
 function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,2800)}
 
@@ -1044,7 +1049,7 @@ function renderHogarDash(){
     <div class="hd-tl">${prox.map(x=>{const [bg,fg]=tono(x.v);return`<button class="hd-ev" data-v="docs"><span class="d" style="background:${bg};color:${fg}">${x.v<=0?"Hoy":x.v===1?"Mañana":x.v<60?"En "+x.v+" días":"En "+Math.round(x.v/30)+" meses"}</span><span class="n">${x.n}</span><span class="pb"><i style="width:${Math.max(6,100-Math.min(100,x.v/90*100))}%;background:${fg}"></i></span></button>`}).join("")}</div>
   </div>`;
 }
-function renderHubTags(){if(typeof renderHogarDash==="function")renderHogarDash();const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet","4");t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
+function renderHubTags(){if(typeof renderHogarDash==="function")renderHogarDash();const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet",String(WLU.length+WL0.length));t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.tawho){taWho=b.dataset.tawho;tallaRender()}
@@ -1599,7 +1604,7 @@ function pedsRender(){
 let pdNew=null;
 function pdDetecta(txt){pdNew={txt,det:viwaiDetectaEnvio(txt)||{posibles:[]},n:(pdNew&&pdNew.n)||""};if(pdNew.det&&!pdNew.det.numero&&!pdNew.det.url)toast("No encontramos un número de seguimiento: revisa lo que has pegado");pedsRender()}
 // «Compartir con Viwai»: la app instalada recibe el texto o el enlace y abre Pedidos con él
-(()=>{const q=new URLSearchParams(location.search);if(!q.has("compartir"))return;const txt=[q.get("enlace"),q.get("texto"),q.get("titulo")].filter(Boolean).join(" ");history.replaceState(null,"",location.pathname);setTimeout(()=>{go("pedidos");pdDetecta(txt)},400)})();
+(()=>{const q=new URLSearchParams(location.search);if(!q.has("compartir"))return;if(q.get("archivo")){const a=q.get("archivo"),n=(q.get("nombre")||q.get("titulo")||"").replace(/\.[a-z0-9]+$/i,"").replace(/[_-]+/g," ").slice(0,40);history.replaceState(null,"",location.pathname);setTimeout(async()=>{const x=await viwaiArchivos.lee("compartido").catch(()=>null);if(!x){toast("No nos ha llegado el archivo. Prueba a elegirlo desde la wallet");go("wallet");return}await viwaiArchivos.borra("compartido").catch(()=>{});wlNuevo={tipo:"entrada"};go("wallet");wlArchivo(new File([x],(n||"entrada")+(a==="pdf"?".pdf":".jpg"),{type:x.type||(a==="pdf"?"application/pdf":"image/jpeg")}))},400);return}const txt=[q.get("enlace"),q.get("texto"),q.get("titulo")].filter(Boolean).join(" ");history.replaceState(null,"",location.pathname);setTimeout(()=>{go("pedidos");pdDetecta(txt)},400)})();
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-pedidos"))return;
   if(b.id==="pd-go"){pdDetecta($("#pd-txt").value);return}
   if(b.id==="pd-cancel"){pdNew=null;pedsRender();return}
@@ -1612,12 +1617,53 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||
 const WL0=[{n:"Gasolinera",s:"Club · 5 cts/l de descuento",c:"peach",code:"7712 0458 9931",ic:"gasolina"},{n:"Súper del barrio",s:"Tarjeta cliente · 3 % en tu cuenta",c:"mint",code:"2210 7781 0042",ic:"compra"},{n:"Biblioteca",s:"Carné de Noa",c:"sky",code:"0042 7719",ic:"libro"},{n:"Cine · sábado 18:30",s:"2 entradas · sala 4",c:"lav",code:"CN-88213",ic:"entrada"}];
 let wlOpen=null;
 const bars=code=>{let x=0,out="";for(const ch of code.replace(/\s/g,"")){const v=ch.charCodeAt(0);for(let k=0;k<3;k++){const w=1+((v>>k)&1)*2;out+=`<rect x="${x}" width="${w}" height="44" fill="currentColor"/>`;x+=w+1+((v>>(k+2))&1)}}return`<svg viewBox="0 0 ${x} 44" preserveAspectRatio="none" class="bc" aria-hidden="true">${out}</svg>`};
+/* Entradas, billetes y tarjetas añadidos por la usuaria: solo en este móvil (no se suben ni se comparten con la casa) */
+const WLU=(()=>{try{return JSON.parse(localStorage.getItem("viwai-wl")||"[]")}catch(e){return[]}})();
+const wlGuarda=()=>{try{localStorage.setItem("viwai-wl",JSON.stringify(WLU))}catch(e){}};
+let wlNuevo=null;const wlURL={};
+const hoyISO=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const fechaTxt=f=>{if(!f)return"";const d=Math.round((new Date(f)-new Date(hoyISO()))/864e5);return d===0?"Hoy":d===1?"Mañana":d<0?"Ya pasó":new Date(f+"T12:00").toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})};
+function reduceImg(file,max=1600){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.naturalWidth,i.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(i.naturalWidth*k);c.height=Math.round(i.naturalHeight*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(),"image/jpeg",.88)};i.onerror=()=>{URL.revokeObjectURL(u);ko()};i.src=u})}
+async function wlArchivo(file){if(!file)return;const pdf=file.type==="application/pdf"||/\.pdf$/i.test(file.name||"");
+  let b=file;if(!pdf){try{b=await reduceImg(file)}catch(e){toast("No hemos podido abrir esa imagen");return}}
+  await viwaiArchivos.guarda("nuevo",b);wlNuevo={...(wlNuevo||{tipo:"entrada"}),tipo:"entrada",arch:pdf?"pdf":"img",n:wlNuevo?.n||(file.name||"").replace(/\.[a-z0-9]+$/i,"").replace(/[_-]+/g," ").slice(0,40)};walRender()}
 function walRender(){
   const box=$("#wal-box");if(!box)return;
-  box.innerHTML=`<div class="wl">${WL0.map((w,i)=>`<button class="wcard" style="background:linear-gradient(135deg,var(--${w.c}),var(--surface) 140%)" data-wl="${i}" aria-expanded="${wlOpen===i}"><span class="wtop"><span class="wic">${viwaiIcono(w.ic)}</span><span class="wnum">•••• ${w.code.replace(/\D/g,"").slice(-4)||w.code.slice(-4)}</span></span><b>${w.n}</b><small>${w.s}</small>${wlOpen===i?`<span class="bcw">${bars(w.code)}<span>${w.code}</span></span><small>Sube el brillo y enséñalo en caja</small>`:""}</button>`).join("")}</div>
-   <span class="small muted">Toca una tarjeta para enseñar su código en caja.</span><div class="btns"><button class="btn pri" data-toast="Escanearías el código de barras de la tarjeta con la cámara">Añadir tarjeta</button></div>`;
+  if(wlNuevo){const f=wlNuevo;box.innerHTML=`<div class="card"><h2>Añadir a tu wallet</h2>
+    <div class="cards" style="--n:2"><button data-wlt="entrada" aria-pressed="${f.tipo==="entrada"}">${viwaiIcono("entrada")}Entrada o billete<small>Concierto, cine, avión, tren…</small></button><button data-wlt="tarjeta" aria-pressed="${f.tipo==="tarjeta"}">${viwaiIcono("wallet")}Tarjeta de cliente<small>Súper, gasolinera, biblioteca…</small></button></div>
+    ${f.tipo==="entrada"?`<span class="pk-l">La entrada</span>
+     ${f.arch?`<div class="aid" style="flex-direction:row;align-items:center;gap:10px">${viwaiIcono("hecho")}<span><b>${f.arch==="pdf"?"PDF guardado":"Imagen guardada"}</b><br><span class="small muted">Se queda solo en este móvil</span></span></div>`:""}
+     <div class="btns"><button class="btn${f.arch?"":" pri"}" id="wl-file">${viwaiIcono("subir")}<span>${f.arch?"Cambiar archivo":"Elegir PDF o captura"}</span></button></div>
+     <div class="aid"><b>¿Te llegó por correo?</b><span class="small">Abre el PDF adjunto o la entrada del correo y toca <b>Compartir → Viwai</b> (en Android). En iPhone, guarda el PDF en Archivos o haz una captura del código QR y elígela aquí. Si el correo trae «Añadir a Apple Wallet» o «Google Wallet», también puedes usarlo: aquí te recordamos la fecha.</span></div>
+     <div class="field"><span class="pk-l">Qué es</span><input id="wl-n" value="${esc(f.n||"")}" placeholder="Ej.: Concierto Rosalía, vuelo a Roma" autocomplete="off"></div>
+     <div class="cards" style="--n:2"><div class="field"><span class="pk-l">Día</span><input id="wl-d" type="date" value="${f.fecha||""}"></div><div class="field"><span class="pk-l">Hora (opcional)</span><input id="wl-h" type="time" value="${f.hora||""}"></div></div>`
+    :`<div class="field"><span class="pk-l">Tienda</span><input id="wl-n" value="${esc(f.n||"")}" placeholder="Ej.: Súper del barrio" autocomplete="off"></div>
+     <div class="field"><span class="pk-l">Número de la tarjeta</span><input id="wl-c" value="${esc(f.code||"")}" inputmode="numeric" placeholder="El que sale bajo el código de barras" autocomplete="off"></div>`}
+    <div class="btns"><button class="btn pri" id="wl-save">Guardar</button><button class="btn" id="wl-cancel">Cancelar</button></div></div>`;return}
+  const todas=[...WLU.map((w,i)=>({...w,u:i})),...WL0];
+  box.innerHTML=`<div class="wl">${todas.map((w,i)=>{const ab=wlOpen===i,ic=w.ic||(w.tipo==="tarjeta"?"wallet":"entrada"),num=w.code?`•••• ${w.code.replace(/\D/g,"").slice(-4)||w.code.slice(-4)}`:fechaTxt(w.fecha)+(w.hora?" · "+w.hora:"");
+    return`<button class="wcard" style="background:linear-gradient(135deg,var(--${w.c||"lav"}),var(--surface) 140%)" data-wl="${i}" aria-expanded="${ab}"><span class="wtop"><span class="wic">${viwaiIcono(ic)}</span><span class="wnum">${num}</span></span><b>${esc(w.n)}</b><small>${esc(w.s||(w.arch?"Entrada guardada en este móvil":"Tarjeta de cliente"))}</small>
+    ${ab&&w.code?`<span class="bcw">${bars(w.code)}<span>${esc(w.code)}</span></span><small>Sube el brillo y enséñalo en caja</small>`:""}
+    ${ab&&w.arch==="img"?`<span class="wimg" data-wlimg="${w.id}"></span><small>Sube el brillo y enseña el código en la puerta</small>`:""}
+    ${ab&&w.u!=null?`<span class="btns">${w.arch==="pdf"?`<span class="btn pri" data-wlpdf="${w.id}">Abrir la entrada</span>`:""}<span class="btn" data-wlq="${w.u}">Quitar</span></span>`:""}</button>`}).join("")}</div>
+   <span class="small muted">Toca una tarjeta o una entrada para enseñar su código.</span><div class="btns"><button class="btn pri" id="wl-new">${viwaiIcono("mas")}<span>Añadir entrada o tarjeta</span></button></div>`;
+  box.querySelectorAll("[data-wlimg]").forEach(async el=>{const id=el.dataset.wlimg;if(!wlURL[id]){const b=await viwaiArchivos.lee(id).catch(()=>null);if(!b){el.innerHTML='<small>No encontramos la imagen en este móvil</small>';return}wlURL[id]=URL.createObjectURL(b)}el.innerHTML=`<img src="${wlURL[id]}" alt="Entrada">`});
 }
-document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-wallet"))return;if(b.dataset.wl!=null){const i=+b.dataset.wl;wlOpen=wlOpen===i?null:i;walRender()}});
+document.addEventListener("click",async e=>{const b=e.target.closest("button,[data-wlpdf],[data-wlq]");if(!b||!b.closest("#v-wallet"))return;const d=b.dataset;
+  const keep=()=>{if(!wlNuevo)return;const v=id=>$(id)?$(id).value.trim():undefined;wlNuevo.n=v("#wl-n")??wlNuevo.n;if($("#wl-d"))wlNuevo.fecha=v("#wl-d");if($("#wl-h"))wlNuevo.hora=v("#wl-h");if($("#wl-c"))wlNuevo.code=v("#wl-c")};
+  if(d.wlpdf){e.stopPropagation();const x=await viwaiArchivos.lee(d.wlpdf).catch(()=>null);if(!x){toast("No encontramos el PDF en este móvil");return}window.open(URL.createObjectURL(x),"_blank");return}
+  if(d.wlq!=null){e.stopPropagation();const w=WLU[+d.wlq];if(!w)return;WLU.splice(+d.wlq,1);wlGuarda();if(w.arch)viwaiArchivos.borra(w.id).catch(()=>{});wlOpen=null;walRender();renderHubTags();toast("Quitada de tu wallet");return}
+  if(b.id==="wl-new"){wlNuevo={tipo:"entrada"};walRender();return}
+  if(b.id==="wl-cancel"){wlNuevo=null;viwaiArchivos.borra("nuevo").catch(()=>{});walRender();return}
+  if(d.wlt){keep();wlNuevo.tipo=d.wlt;walRender();return}
+  if(b.id==="wl-file"){keep();const i=$("#wl-in");i.value="";i.click();return}
+  if(b.id==="wl-save"){keep();const f=wlNuevo;if(!f.n){toast(f.tipo==="tarjeta"?"Escribe el nombre de la tienda":"Escribe qué es");return}
+    if(f.tipo==="tarjeta"){if(!f.code){toast("Escribe el número de la tarjeta");return}WLU.unshift({id:"w"+Date.now(),tipo:"tarjeta",n:f.n,code:f.code,c:"mint"})}
+    else{if(!f.arch){toast("Elige el PDF o la captura de la entrada");return}const id="w"+Date.now(),x=await viwaiArchivos.lee("nuevo");await viwaiArchivos.guarda(id,x);viwaiArchivos.borra("nuevo").catch(()=>{});
+      WLU.unshift({id,tipo:"entrada",n:f.n,fecha:f.fecha||"",hora:f.hora||"",arch:f.arch,c:"lav"});WLU.sort((a,b)=>(a.fecha||"9")<(b.fecha||"9")?-1:1)}
+    wlNuevo=null;wlGuarda();wlOpen=null;walRender();renderHubTags();toast("Guardada en tu wallet");return}
+  if(d.wl!=null){const i=+d.wl;wlOpen=wlOpen===i?null:i;walRender()}});
+document.addEventListener("change",e=>{if(e.target.id==="wl-in")wlArchivo(e.target.files[0])});
 
 /* INICIO: todo lo útil de hoy, ordenado por urgencia */
 function homeFeed(){
@@ -1625,6 +1671,7 @@ function homeFeed(){
   DOCX.filter(d=>d.v<=30).forEach(d=>add(100-d.v,"peach","doc",`${d.n}: ${plazo(d.v).toLowerCase()}`,d.nota||"","docs"));
   PDX.filter(p=>p.st<3&&p.v===0).forEach(p=>add(90,"sky","box",`Llega hoy: ${p.n}`,p.tr,"pedidos"));
   PDX.filter(p=>p.st===3&&p.dev>0&&p.dev<=7).forEach(p=>add(85,"peach","box",`Te quedan ${p.dev} días para devolver ${p.n.toLowerCase()}`,"Si te lo quedas, márcalo y no te avisamos más","pedidos"));
+  WLU.filter(w=>w.fecha===hoyISO()).forEach(w=>add(88,"lav","cal",`Hoy${w.hora?" a las "+w.hora:""}: ${w.n}`,"Tu entrada está en la wallet","wallet"));
   evOn(0).forEach(e=>add(80,"mint","cal",`${e.h||"Hoy"} · ${e.t}`,[e.lleva?"Lleva "+memOf(e.lleva).n:"",e.note||""].filter(Boolean).join(" · "),"cal"));
   const td=CH.filter(c=>nextOf(c)<=0&&!doneToday(c));if(td.length)add(70,"butter","task",`${td.length} tareas de casa para hoy`,td.slice(0,3).map(c=>c.n+" ("+memOf(c.who).n+")").join(", "),"tareas");
   const mt=MTX.filter(m=>mtLeft(m)<=0);if(mt.length)add(60,"butter","tool",`Mantenimiento: ${mt[0].n.toLowerCase()}${mt.length>1?` y ${mt.length-1} más`:""}`,mt[0].tip,"mant");
