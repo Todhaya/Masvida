@@ -15,6 +15,8 @@
 <link rel="stylesheet" href="diseno/tokens.css">
 <script src="js/seguimiento.js"></script>
 <script src="js/archivos.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="js/codigos.js"></script>
 <link rel="stylesheet" href="diseno/componentes.css">
 <script src="diseno/iconos.js"></script>
 
@@ -353,7 +355,8 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 .tk-who{border:0;background:transparent;padding:0;border-radius:50%}
 .tav{display:inline-grid;place-items:center;border-radius:50%;font-weight:800;color:var(--p-ink);flex:none}
 .wimg{display:block;margin-top:12px;background:var(--vw-blanco);border-radius:14px;padding:8px}.wimg img{display:block;width:100%;border-radius:8px}
-.wcard .btns{margin-top:12px}
+.wcard .btns{margin-top:12px}.wimg .cod{display:block;width:100%;height:84px;fill:var(--vw-tinta)}.wimg .cod.qr{height:auto;max-width:240px;margin:0 auto}.wimg .wcode{display:block;text-align:center;font-weight:800;letter-spacing:.12em;margin-top:6px;color:var(--vw-tinta);font-variant-numeric:tabular-nums}
+.vw-scan{position:fixed;inset:0;z-index:99;background:var(--vw-tinta);color:var(--vw-blanco);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}.vw-scan #vw-scan-v{width:100%;max-width:480px;border-radius:18px;overflow:hidden}.vw-scan p{margin:0;font-weight:700;text-align:center}.vw-scan .btn{background:var(--vw-blanco);color:var(--vw-tinta)}
 .avbtn{position:relative;border:0;background:none;padding:0;border-radius:50%;cursor:pointer;flex:none;display:inline-grid}
 .avbtn>i{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--surface);display:grid;place-items:center;box-shadow:0 0 0 2px var(--surface)}
 .avbtn>i svg{width:12px;height:12px}
@@ -568,6 +571,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
 
 <input type="file" id="foto-in" accept="image/*" hidden>
 <input type="file" id="wl-in" accept="application/pdf,.pdf,image/*" hidden>
+<input type="file" id="wl-in-foto" accept="image/*" hidden>
 <nav class="tabs" aria-label="Secciones"><div class="in" id="tabs">
   <button data-v="inicio" aria-current="page"><svg data-ico="inicio"></svg>Inicio</button>
   <button data-v="ahorro"><svg data-ico="ahorro"></svg>Ahorro</button>
@@ -1626,7 +1630,8 @@ const fechaTxt=f=>{if(!f)return"";const d=Math.round((new Date(f)-new Date(hoyIS
 function reduceImg(file,max=1600){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.naturalWidth,i.naturalHeight)),c=document.createElement("canvas");c.width=Math.round(i.naturalWidth*k);c.height=Math.round(i.naturalHeight*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?ok(b):ko(),"image/jpeg",.88)};i.onerror=()=>{URL.revokeObjectURL(u);ko()};i.src=u})}
 async function wlArchivo(file){if(!file)return;const pdf=file.type==="application/pdf"||/\.pdf$/i.test(file.name||"");
   let b=file;if(!pdf){try{b=await reduceImg(file)}catch(e){toast("No hemos podido abrir esa imagen");return}}
-  await viwaiArchivos.guarda("nuevo",b);wlNuevo={...(wlNuevo||{tipo:"entrada"}),tipo:"entrada",arch:pdf?"pdf":"img",n:wlNuevo?.n||(file.name||"").replace(/\.[a-z0-9]+$/i,"").replace(/[_-]+/g," ").slice(0,40)};walRender()}
+  await viwaiArchivos.guarda("nuevo",b);let lc={};if(!pdf){try{const r=await viwaiEscaneaFoto(b);lc={code:r.texto,fmt:r.formato,leido:r.texto}}catch(e){}}
+  wlNuevo={...(wlNuevo||{tipo:"entrada"}),...lc,tipo:"entrada",arch:pdf?"pdf":"img",n:wlNuevo?.n||(file.name||"").replace(/\.[a-z0-9]+$/i,"").replace(/[_-]+/g," ").slice(0,40)};walRender()}
 function walRender(){
   const box=$("#wal-box");if(!box)return;
   if(wlNuevo){const f=wlNuevo;box.innerHTML=`<div class="card"><h2>Añadir a tu wallet</h2>
@@ -1638,12 +1643,14 @@ function walRender(){
      <div class="field"><span class="pk-l">Qué es</span><input id="wl-n" value="${esc(f.n||"")}" placeholder="Ej.: Concierto Rosalía, vuelo a Roma" autocomplete="off"></div>
      <div class="cards" style="--n:2"><div class="field"><span class="pk-l">Día</span><input id="wl-d" type="date" value="${f.fecha||""}"></div><div class="field"><span class="pk-l">Hora (opcional)</span><input id="wl-h" type="time" value="${f.hora||""}"></div></div>`
     :`<div class="field"><span class="pk-l">Tienda</span><input id="wl-n" value="${esc(f.n||"")}" placeholder="Ej.: Súper del barrio" autocomplete="off"></div>
-     <div class="field"><span class="pk-l">Número de la tarjeta</span><input id="wl-c" value="${esc(f.code||"")}" inputmode="numeric" placeholder="El que sale bajo el código de barras" autocomplete="off"></div>`}
+     <div class="btns"><button class="btn${f.code?"":" pri"}" id="wl-scan">${viwaiIcono("camara")}<span>${f.code?"Escanear otra vez":"Escanear con la cámara"}</span></button><button class="btn" id="wl-foto">${viwaiIcono("subir")}<span>Desde una foto</span></button></div>
+     ${f.code?`<div class="wimg">${viwaiCodigoSVG(f.code,f.fmt)}</div>`:""}
+     <div class="field"><span class="pk-l">Número de la tarjeta</span><input id="wl-c" value="${esc(f.code||"")}" placeholder="Se rellena solo al escanear" autocomplete="off"></div>`}
     <div class="btns"><button class="btn pri" id="wl-save">Guardar</button><button class="btn" id="wl-cancel">Cancelar</button></div></div>`;return}
   const todas=[...WLU.map((w,i)=>({...w,u:i})),...WL0];
   box.innerHTML=`<div class="wl">${todas.map((w,i)=>{const ab=wlOpen===i,ic=w.ic||(w.tipo==="tarjeta"?"wallet":"entrada"),num=w.code?`•••• ${w.code.replace(/\D/g,"").slice(-4)||w.code.slice(-4)}`:fechaTxt(w.fecha)+(w.hora?" · "+w.hora:"");
     return`<button class="wcard" style="background:linear-gradient(135deg,var(--${w.c||"lav"}),var(--surface) 140%)" data-wl="${i}" aria-expanded="${ab}"><span class="wtop"><span class="wic">${viwaiIcono(ic)}</span><span class="wnum">${num}</span></span><b>${esc(w.n)}</b><small>${esc(w.s||(w.arch?"Entrada guardada en este móvil":"Tarjeta de cliente"))}</small>
-    ${ab&&w.code?`<span class="bcw">${bars(w.code)}<span>${esc(w.code)}</span></span><small>Sube el brillo y enséñalo en caja</small>`:""}
+    ${ab&&w.code?`<span class="wimg">${viwaiCodigoSVG(w.code,w.fmt)||bars(w.code)}<span class="wcode">${esc(w.code)}</span></span><small>Sube el brillo y enséñalo ${w.tipo==="entrada"?"en la puerta":"en caja"}</small>`:""}
     ${ab&&w.arch==="img"?`<span class="wimg" data-wlimg="${w.id}"></span><small>Sube el brillo y enseña el código en la puerta</small>`:""}
     ${ab&&w.u!=null?`<span class="btns">${w.arch==="pdf"?`<span class="btn pri" data-wlpdf="${w.id}">Abrir la entrada</span>`:""}<span class="btn" data-wlq="${w.u}">Quitar</span></span>`:""}</button>`}).join("")}</div>
    <span class="small muted">Toca una tarjeta o una entrada para enseñar su código.</span><div class="btns"><button class="btn pri" id="wl-new">${viwaiIcono("mas")}<span>Añadir entrada o tarjeta</span></button></div>`;
@@ -1657,13 +1664,18 @@ document.addEventListener("click",async e=>{const b=e.target.closest("button,[da
   if(b.id==="wl-cancel"){wlNuevo=null;viwaiArchivos.borra("nuevo").catch(()=>{});walRender();return}
   if(d.wlt){keep();wlNuevo.tipo=d.wlt;walRender();return}
   if(b.id==="wl-file"){keep();const i=$("#wl-in");i.value="";i.click();return}
+  if(b.id==="wl-scan"){keep();let r;try{r=await viwaiEscaneaCamara()}catch(_){r=undefined}
+    if(r===undefined){toast("No hemos podido abrir la cámara. Prueba con una foto de la tarjeta");return}if(!r)return;
+    Object.assign(wlNuevo,{code:r.texto,fmt:r.formato,leido:r.texto});walRender();toast("Código leído");return}
+  if(b.id==="wl-foto"){keep();const i=$("#wl-in-foto");i.value="";i.click();return}
   if(b.id==="wl-save"){keep();const f=wlNuevo;if(!f.n){toast(f.tipo==="tarjeta"?"Escribe el nombre de la tienda":"Escribe qué es");return}
-    if(f.tipo==="tarjeta"){if(!f.code){toast("Escribe el número de la tarjeta");return}WLU.unshift({id:"w"+Date.now(),tipo:"tarjeta",n:f.n,code:f.code,c:"mint"})}
+    if(f.tipo==="tarjeta"){if(!f.code){toast("Escribe el número de la tarjeta");return}WLU.unshift({id:"w"+Date.now(),tipo:"tarjeta",n:f.n,code:f.code,fmt:f.code===f.leido?f.fmt||"":"",c:"mint"})}
     else{if(!f.arch){toast("Elige el PDF o la captura de la entrada");return}const id="w"+Date.now(),x=await viwaiArchivos.lee("nuevo");await viwaiArchivos.guarda(id,x);viwaiArchivos.borra("nuevo").catch(()=>{});
-      WLU.unshift({id,tipo:"entrada",n:f.n,fecha:f.fecha||"",hora:f.hora||"",arch:f.arch,c:"lav"});WLU.sort((a,b)=>(a.fecha||"9")<(b.fecha||"9")?-1:1)}
+      WLU.unshift({id,tipo:"entrada",n:f.n,fecha:f.fecha||"",hora:f.hora||"",arch:f.arch,code:f.code||"",fmt:f.fmt||"",c:"lav"});WLU.sort((a,b)=>(a.fecha||"9")<(b.fecha||"9")?-1:1)}
     wlNuevo=null;wlGuarda();wlOpen=null;walRender();renderHubTags();toast("Guardada en tu wallet");return}
   if(d.wl!=null){const i=+d.wl;wlOpen=wlOpen===i?null:i;walRender()}});
-document.addEventListener("change",e=>{if(e.target.id==="wl-in")wlArchivo(e.target.files[0])});
+document.addEventListener("change",async e=>{if(e.target.id==="wl-in")wlArchivo(e.target.files[0]);
+  if(e.target.id==="wl-in-foto"&&wlNuevo){const f=e.target.files[0];if(!f)return;try{const r=await viwaiEscaneaFoto(f);Object.assign(wlNuevo,{code:r.texto,fmt:r.formato,leido:r.texto});walRender();toast("Código leído")}catch(_){toast("No encontramos el código en la foto. Prueba más cerca y con luz")}}});
 
 /* INICIO: todo lo útil de hoy, ordenado por urgencia */
 function homeFeed(){
