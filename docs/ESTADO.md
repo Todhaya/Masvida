@@ -20,7 +20,7 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 
 ## Siguiente trabajo técnico (por orden)
 0. Página «Chollos de Black Friday de verdad» y 2–3 vídeos de Black Friday (antes del 20 de noviembre; necesita Amazon y alguna tienda aprobada).
-1. Bienvenida, perfil obligatorio y tutoriales (`docs/specs/BIENVENIDA_Y_TUTORIAL.md`), en el prototipo y en la app.
+1. ~~Bienvenida, perfil obligatorio y tutoriales~~ Hecho (9 nov): bienvenida, tutorial general y ayuda con «?» en cada apartado. Falta: que «ya visto» se guarde por persona y no por casa.
 2. App conectada a Supabase: inicio de sesión con enlace mágico y Google, hogar, miembros y módulos guardados.
 3. Panel para Alba (lista de espera, uso, comisiones, pagos y neto).
 4. Vídeos de gasolina, casa compartida y escapadas (motor en `marketing/motor/`; no usar en anuncios las fotos de auriculares ni del juego de construcción por parecido con marcas).

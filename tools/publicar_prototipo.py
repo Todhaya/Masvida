@@ -17,6 +17,19 @@ for js in ("js/archivos.js", "vendor/qrcode.js", "js/codigos.js"):
     cuerpo = cuerpo.replace(f'<script src="{js}"></script>', "<script>\n" + open("app/" + js, encoding="utf-8").read() + "</script>")
 # El lector de códigos se carga al escanear; en el prototipo va incluido porque no hay carpeta vendor/
 cuerpo = cuerpo.replace('<script>\n' + open("app/js/codigos.js", encoding="utf-8").read(), "<script>\n" + open("app/vendor/html5-qrcode.min.js", encoding="utf-8").read() + "</script>\n<script>\n" + open("app/js/codigos.js", encoding="utf-8").read(), 1)
+cuerpo = cuerpo.replace('<script src="js/ayuda.js"></script>', "<script>\n" + open("app/js/ayuda.js", encoding="utf-8").read() + "</script>")
+# Bienvenida de muestra (como la ve una casa nueva), desde «Tú»: sin guardar nada
+ayu = open("app/js/ayudas.js", encoding="utf-8").read()
+bv = "\n".join(l for l in open("app/js/bienvenida.js", encoding="utf-8").read().splitlines() if not l.startswith("import "))
+cuerpo += "<style>\n" + open("app/js/bienvenida.css", encoding="utf-8").read() + "</style>\n" + """<script type="module">
+""" + ayu + "\n" + bv + """
+const EJ = [{ id: "ej1", nombre: "Bono social eléctrico (ejemplo)", cuantia: "Hasta un 50 % de la factura de luz", para: "Hogares con ingresos bajos o familias numerosas", reglas: {} },
+  { id: "ej2", nombre: "Deducción por maternidad (ejemplo)", cuantia: "Hasta 1.200 € al año", para: "Madres con peques de menos de 3 años", reglas: {} }];
+const t = document.querySelector("[data-tutorial]");
+if (t) t.insertAdjacentHTML("afterend", `<button class="hr" data-bv-demo><i style="background:var(--mint)">${viwaiIcono("destellos")}</i><span><b>Ver la bienvenida</b><small>Lo que ve una casa nueva al registrarse (muestra, no guarda nada)</small></span></button>`);
+document.addEventListener("click", (e) => { if (e.target.closest("[data-bv-demo]")) bienvenida({ email: "", ayudas: EJ }).then(() => toast("Fin de la bienvenida de muestra")); });
+</script>
+"""
 salida = sys.argv[1] if len(sys.argv) > 1 else "prototipo.html"
 open(salida, "w", encoding="utf-8").write(cuerpo.rstrip() + "\n")
 print(salida, len(cuerpo))

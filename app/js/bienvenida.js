@@ -5,13 +5,8 @@ import { ccaaDeCP, perfilAyudas, misAyudas } from "./ayudas.js";
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const COLORES = ["peach", "mint", "lav", "sky", "butter"];
 
-const TUTORIAL = [
-  ["Ahorra en lo de siempre.", "Revisamos tus facturas con tu consumo real y te decimos si pagas de más. También te avisamos de las ayudas que te tocan."],
-  ["La casa, en orden.", "Menú y compra, tareas repartidas, armario de cada uno, calendario y papeles con aviso. Todo compartido con quien vive contigo."],
-  ["Ofertas que te sirven.", "En tu súper, en la talla de tus peques y en lo que de verdad usas. También escapadas y planes."],
-  ["Una parte vuelve a ti.", "Compra al mismo precio en las tiendas asociadas y te devolvemos hasta un 3 %. A partir de 10 € lo pasas a tu cuenta."],
-  ["Invita y sube de nivel.", "Cada amiga que se une os da 3 € a las dos y sube tu porcentaje para siempre."],
-];
+// Las tarjetas del tutorial están en js/ayuda.js (las mismas que se ven desde «Tú › Ver el tutorial»)
+const TUTORIAL = (globalThis.VIWAI_TUTORIAL || []).map(([, t, x]) => [t, x]);
 
 // Estado inicial de una casa real: lo que ha contado en la bienvenida y el resto vacío (sin datos de ejemplo).
 export function estadoInicial(r) {

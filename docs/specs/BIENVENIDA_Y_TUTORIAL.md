@@ -1,6 +1,6 @@
 # Bienvenida, perfil y tutoriales
 
-Decidido por Alba el 6 de noviembre de 2026. Implementado en la app el 8 de noviembre (app/js/bienvenida.js); ayuda por apartado pendiente.
+Decidido por Alba el 6 de noviembre de 2026. Bienvenida en la app desde el 8 de noviembre (app/js/bienvenida.js). Tutorial general («Tú › Ver el tutorial») y ayuda de cada apartado con «?» desde el 9 de noviembre (app/js/ayuda.js, donde están los textos). En el prototipo, «Tú › Ver la bienvenida» la enseña sin guardar nada.
 
 ## 1. Primera entrada: el perfil busca tus ayudas (obligatorio, 2–3 minutos)
 Tras registrarse, la persona configura el perfil antes de entrar. Se le explica desde la primera pantalla para qué sirve: **«Con estas preguntas buscamos las ayudas, bonos y deducciones que te pueden tocar.»** Cada pantalla recuerda en una línea qué ayuda depende de esa respuesta.
@@ -53,8 +53,8 @@ La primera vez que se entra en un apartado: una tarjeta arriba con «Para qué s
 - **Calendario** · Quién lleva, quién recoge y qué toca cada día. · 1) Añade un plan y quién va. 2) Filtra por persona. 3) Marca los días en la otra casa.
 - **Eventos** · Organizar un cumple o una celebración entre todos. · 1) Crea el evento y su presupuesto. 2) Reparte tareas. 3) Apunta los gastos compartidos.
 - **Papeles y fechas** · Que no se te pase ninguna fecha: ITV, DNI, garantías, seguros. · 1) Añade la fecha o haz una foto del documento. 2) Te avisamos antes de que venza.
-- **Pedidos** · Tus pedidos y plazos de devolución en un sitio. · 1) Reenvía los correos de pedidos a tu buzón de Viwai. 2) Te avisamos antes de que acabe el plazo de devolución.
-- **Wallet** · Tus tarjetas de socio y cupones a mano. · 1) Añade la tarjeta con su código. 2) Enséñala en caja desde el móvil.
+- **Pedidos** · Tus pedidos y plazos de devolución en un sitio. · 1) Lo que compras desde Viwai aparece solo. 2) Para el resto, pega el número o el enlace de seguimiento, o «Compartir → Viwai». 3) Te avisamos antes de que acabe el plazo de devolución.
+- **Wallet** · Tus tarjetas de cliente y tus entradas, a mano. · 1) Escanea la tarjeta con la cámara o desde una foto. 2) Las entradas: elige el PDF o la captura, o compártelas desde el correo. 3) En caja o en la puerta, toca la tarjeta y enseña el código.
 - **Mantenimiento** · Cuidar la casa a tiempo para evitar averías caras. · 1) Marca qué tienes en casa. 2) Dinos cuándo lo hiciste por última vez. 3) Te avisamos cuando toque.
 - **Familia** · Quién vive en casa y quién la gestiona contigo. · 1) Añade miembros con su talla y edad. 2) Invita a otra persona adulta con su permiso.
 - **Mi dinero** (de pago, más adelante) · Ver en qué se va el dinero, conectando tu banco. · 1) Conecta tu banco. 2) Revisa gastos por categoría y suscripciones.

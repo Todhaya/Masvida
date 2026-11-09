@@ -1,8 +1,8 @@
 // Service worker mínimo: guarda la app para abrirla sin conexión. Los datos siempre se piden a la red.
 // También recibe lo que se comparte con Viwai desde otras apps (enlaces de seguimiento, PDF o capturas de entradas).
 importScripts("js/archivos.js");
-const CACHE = "viwai-v32";
-const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "icons/icono.svg", "config.js", "js/nube.js", "js/bienvenida.js", "js/bienvenida.css", "js/ayudas.js", "js/cuenta.js", "js/clic.js", "js/seguimiento.js", "js/archivos.js", "js/codigos.js", "vendor/qrcode.js", "diseno/tokens.css", "diseno/componentes.css", "diseno/iconos.js"];
+const CACHE = "viwai-v33";
+const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "icons/icono.svg", "config.js", "js/nube.js", "js/bienvenida.js", "js/bienvenida.css", "js/ayudas.js", "js/cuenta.js", "js/clic.js", "js/seguimiento.js", "js/archivos.js", "js/ayuda.js", "js/codigos.js", "vendor/qrcode.js", "diseno/tokens.css", "diseno/componentes.css", "diseno/iconos.js"];
 self.addEventListener("install", (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARCHIVOS))));
 self.addEventListener("activate", (e) => e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k))))));
 self.addEventListener("fetch", (e) => {
