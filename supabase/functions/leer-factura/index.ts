@@ -30,6 +30,9 @@ Deno.serve(async (req) => {
   if (!(f instanceof File) || !TIPOS_ARCHIVO.has(f.type)) return new Response("Sube una foto (JPG, PNG) o un PDF.", { status: 400, headers: cors });
   if (f.size > MAX_BYTES) return new Response("El archivo pesa más de 8 MB. Prueba con una foto más ligera.", { status: 400, headers: cors });
 
+  const clave = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!clave) return new Response("La lectura de facturas aún no está activada.", { status: 503, headers: cors });
+
   const b64 = encodeBase64(new Uint8Array(await f.arrayBuffer()));
   const bloque = f.type === "application/pdf"
     ? { type: "document", source: { type: "base64", media_type: f.type, data: b64 } }
@@ -37,10 +40,10 @@ Deno.serve(async (req) => {
 
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "x-api-key": Deno.env.get("ANTHROPIC_API_KEY")!, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+    headers: { "x-api-key": clave, "anthropic-version": "2023-06-01", "content-type": "application/json" },
     body: JSON.stringify({ model: MODELO, max_tokens: 600, system: INSTRUCCIONES, messages: [{ role: "user", content: [bloque, { type: "text", text: "Extrae los datos." }] }] }),
   });
-  if (!r.ok) return new Response("No hemos podido leer la factura ahora. Inténtalo en unos minutos.", { status: 502, headers: cors });
+  if (!r.ok) { console.error("anthropic", r.status, (await r.text()).slice(0, 300)); return new Response("No hemos podido leer la factura ahora. Inténtalo en unos minutos.", { status: 502, headers: cors }); }
   const out = await r.json();
   const texto = (out.content ?? []).map((c: { text?: string }) => c.text ?? "").join("");
   let datos;

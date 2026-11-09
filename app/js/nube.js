@@ -143,6 +143,14 @@ async function arranca() {
     lvl: a.nivel === "si" ? "yes" : "maybe", t: () => (a.nivel === "si" ? "yes" : "maybe"),
   }));
   globalThis.renderAids = () => pintaAyudas(lista);
+  // Facturas: se leen con la función leer-factura (Claude); la app solo recibe los datos, sin identificadores
+  globalThis.viwaiLeeFactura = async (file) => {
+    const fd = new FormData(); fd.append("archivo", file);
+    const { data, error } = await sb.functions.invoke("leer-factura", { body: fd });
+    if (error) { let m = ""; try { m = await error.context?.text?.(); } catch (e) {} throw new Error(m || "No hemos podido leer la factura ahora. Inténtalo en unos minutos."); }
+    return data;
+  };
+  document.querySelector("#step-up .aff")?.replaceChildren("La leemos con IA y solo guardamos lo necesario para comparar: nunca tu nombre, DNI, dirección ni cuenta.");
   // Ofertas reales del catálogo (las de ejemplo solo se ven en el prototipo) y clics apuntados a la casa
   await ofertasReales();
   escuchaClics((id, tienda, origen) => { sb.rpc("registra_clic", { p_id: id, p_tienda: tienda, p_origen: origen }).then(() => {}, () => {}); });

@@ -664,6 +664,34 @@ function analyse(){
   const m=["Buscando lo que pagas","Comparando con el mercado","Calculando tu ahorro"];let i=0;const t=setInterval(()=>{i++;if(m[i])$("#load-msg").textContent=m[i]},450);
   setTimeout(()=>{clearInterval(t);result()},1500);
 }
+/* Cuenta real: la factura se lee de verdad. Sin tarifas comprobadas para comparar, no damos cifras de ahorro (no se inventa). */
+const LEIDAS=S.get("facturas_leidas",[]);
+const TIPO_TXT={luz:"luz",gas:"gas",fibra:"fibra e internet",movil:"móvil",seguro:"seguro",otra:"otra factura"};
+async function leeReal(file){
+  $("#step-up").hidden=true;$("#step-res").hidden=true;$("#step-load").hidden=false;$("#load-msg").textContent="Leyendo los datos de tu factura";
+  const bar=$("#bar");bar.style.transition="width 12s ease-out";bar.style.width="0";requestAnimationFrame(()=>requestAnimationFrame(()=>bar.style.width="90%"));
+  let d;try{d=await viwaiLeeFactura(file)}catch(e){$("#step-load").hidden=true;$("#step-up").hidden=false;bar.style.transition="";toast(e.message||"No hemos podido leer la factura");return}
+  bar.style.transition="";
+  const e2=v=>v.toLocaleString("es-ES",{style:"currency",currency:"EUR"}),nf=v=>v.toLocaleString("es-ES");
+  const n=v=>typeof v==="number"&&isFinite(v),fila=(l,v)=>v==null||v===""?"":`<div class="li"><span class="m">${l}</span><span class="n">${esc(v)}</span></div>`;
+  const dias=n(d.dias_facturados)&&d.dias_facturados>0?d.dias_facturados:null,mes=n(d.importe_total)&&dias?d.importe_total/dias*30:null;
+  LEIDAS.unshift({fecha:hoyISO(),tipo:d.tipo||cur,compania:d.compania||null,importe:n(d.importe_total)?d.importe_total:null,dias,potencia_kw:d.potencia_kw??null,consumo_kwh:d.consumo_kwh??null,
+    consumo_punta_kwh:d.consumo_punta_kwh??null,consumo_llano_kwh:d.consumo_llano_kwh??null,consumo_valle_kwh:d.consumo_valle_kwh??null,tarifa:d.tarifa||null,permanencia_hasta:d.permanencia_hasta||null,lineas_movil:d.lineas_movil??null,velocidad_fibra_mb:d.velocidad_fibra_mb??null});
+  LEIDAS.length=Math.min(LEIDAS.length,24);S.set("facturas_leidas",LEIDAS);
+  const otroTipo=d.tipo&&BILLS[cur]&&d.tipo!==cur&&TIPO_TXT[d.tipo];
+  const perm=d.permanencia_hasta&&/^\d{4}-\d{2}-\d{2}$/.test(d.permanencia_hasta)?d.permanencia_hasta:null;
+  $("#step-load").hidden=true;const r=$("#step-res");r.hidden=false;
+  r.innerHTML=`<div class="vh" style="--vt:var(--peach)"><span class="tx"><span class="k">Factura leída${d.compania?" · "+esc(d.compania):""}</span><span class="t">${mes?eur(mes)+" al mes":"Datos guardados"}</span><span class="s">${n(d.importe_total)?`${e2(d.importe_total)}${dias?` en ${dias} días`:""}`:"No hemos encontrado el importe total"}</span></span></div>
+   ${otroTipo?`<div class="aid">Parece una factura de <b>${TIPO_TXT[d.tipo]}</b>, no de ${BILLS[cur].n.toLowerCase()}. La guardamos como ${TIPO_TXT[d.tipo]}.</div>`:""}
+   <div class="card"><h2>Lo que hemos leído</h2>${fila("Compañía",d.compania)}${fila("Tarifa",d.tarifa)}${fila("Importe",n(d.importe_total)?e2(d.importe_total):null)}${fila("Días facturados",dias)}${fila("Potencia",n(d.potencia_kw)?nf(d.potencia_kw)+" kW":null)}${fila("Consumo",n(d.consumo_kwh)?nf(d.consumo_kwh)+" kWh":null)}${n(d.consumo_punta_kwh)?fila("Punta · llano · valle",`${d.consumo_punta_kwh} · ${d.consumo_llano_kwh??"–"} · ${d.consumo_valle_kwh??"–"} kWh`):""}${fila("Líneas de móvil",d.lineas_movil)}${fila("Velocidad de fibra",n(d.velocidad_fibra_mb)?d.velocidad_fibra_mb+" Mb":null)}${fila("Permanencia hasta",perm?new Date(perm+"T12:00").toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"}):null)}
+    <span class="small muted">Si algo no cuadra, sube otra foto con más luz o el PDF de la compañía.</span></div>
+   <div class="card"><h2>¿Pagas de más?</h2><p class="small" style="margin:0">Todavía estamos comprobando una a una las tarifas de las compañías para compararlas con tu consumo real. No te daremos una cifra hasta que sea fiable. Tu factura queda guardada y te avisamos en cuanto podamos decírtelo.</p></div>
+   ${perm?`<div class="btns"><button class="btn pri" data-permfecha="${perm}" data-permn="Permanencia ${esc(d.compania||TIPO_TXT[d.tipo]||"")}">Avisarme cuando acabe la permanencia</button></div>`:""}
+   <div class="btns"><button class="btn" id="again">Revisar otra</button></div>`;
+  window.scrollTo(0,0);
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-permfecha]");if(!b)return;const[y,m,dd]=b.dataset.permfecha.split("-").map(Number);
+  DOCX.push({id:"d"+Date.now(),n:b.dataset.permn.trim(),cat:"casa",v:offOf(new Date(y,m-1,dd))});S.set("docx",DOCX);renderHubTags();renderHome();b.disabled=true;toast("Guardado en Papeles y fechas. Te avisaremos antes")});
 function resultSeguro(){
   const b=BILLS[cur];done[cur]=0;S.set("done",done);
   $("#step-load").hidden=true;const r=$("#step-res");r.hidden=false;
@@ -1117,7 +1145,7 @@ document.addEventListener("change",e=>{if(e.target.dataset&&e.target.dataset.eda
 document.addEventListener("submit",e=>{if(e.target.id==="sh-add"){e.preventDefault();const n=$("#sh-n").value.trim();if(!n)return;shopExtra.push({n,q:Math.max(1,parseInt($("#sh-q").value||"1",10)),st:"Súper"});S.set("shopextra",shopExtra);renderMenu()}});
 document.addEventListener("input",e=>{if(e.target.id==="rq"){recQ=e.target.value;clearTimeout(window._rq);window._rq=setTimeout(()=>{renderMenu();const el=document.getElementById("rq");el.focus();el.setSelectionRange(recQ.length,recQ.length)},300);return}if(e.target.id==="e-dq"){E.dq=e.target.value.trim();S.set("esc",E);clearTimeout(window._dq);window._dq=setTimeout(()=>{const pos=e.target.selectionStart;renderEsc();const el=document.getElementById("e-dq");el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}},350)}});
 $("#q").addEventListener("input",e=>{q=e.target.value.trim();renderOffers()});
-$("#file").addEventListener("change",e=>{if(e.target.files.length)analyse();e.target.value=""});
+$("#file").addEventListener("change",e=>{const f=e.target.files[0];if(f)(self.viwaiLeeFactura?leeReal(f):analyse());e.target.value=""});
 /* TAREAS DE CASA: reparto entre la familia y premios por estrellas (como en Vitalis, adaptado) */
 const DAY0=Math.floor(Date.now()/864e5);
 const MEM=S.get("mem",[{id:"laura",n:"Laura",c:"peach",kid:0,talla:"M",home:"siempre",acc:"titular"},{id:"noa",n:"Noa",c:"mint",kid:1,age:8,pie:31,talla:"8 años",home:"siempre"},{id:"leo",n:"Leo",c:"lav",kid:1,age:12,pie:37,talla:"12 años",home:"alterno"}]);
