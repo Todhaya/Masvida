@@ -141,7 +141,7 @@ footer a{color:var(--brand-strong)}
 
 [hidden]{display:none!important}
 .menu{display:flex;gap:18px;margin-left:auto;margin-right:16px;align-items:center}.menu a{color:inherit;font-weight:700;text-decoration:none;font-size:15px}.menu a:hover{text-decoration:underline}.menu a[aria-current]{color:var(--brand-strong,#5B3FE0)}@media(max-width:520px){.menu{gap:12px;margin-right:10px}.menu a{font-size:14px}.menu .bfl{display:none}}
-.ti{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.7);display:grid;place-items:center;margin-bottom:6px}.tienda .ti{background:var(--vw-lavanda-suave);color:var(--vw-lila-app)}
+.ti{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.7);display:grid;place-items:center;margin-bottom:6px}.tienda .ti{background:var(--vw-lavanda-suave);color:var(--vw-lila-app);position:relative;overflow:hidden;width:56px;height:56px;font-size:24px;font-weight:800}.tienda .ti img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:var(--surface);padding:6px}
 .tienda{transition:transform .2s}.tienda:hover{transform:translateY(-3px)}
 </style>
 </head>
@@ -211,7 +211,7 @@ footer a{color:var(--brand-strong)}
   ]);
   const nombre = id => (tiendas.find(t => t.id === id) || {}).nombre || id;
   const tt = ofertas.filter(o => o.categoria === "tienda");
-  document.getElementById("tiendas").innerHTML = tt.map(o => `<a class="tienda" href="${esc(o.url)}" data-tienda="${esc(o.tienda_id)}" target="_blank" rel="sponsored noopener"><span class="ti">${viwaiIcono("tienda")}</span><b>${esc(nombre(o.tienda_id))}</b><span>${esc(o.titulo)}</span><i>Ver ofertas →</i></a>`).join("");
+  document.getElementById("tiendas").innerHTML = tt.map(o => `<a class="tienda" href="${esc(o.url)}" data-tienda="${esc(o.tienda_id)}" target="_blank" rel="sponsored noopener"><span class="ti" aria-hidden="true">${esc(nombre(o.tienda_id))[0]}<img src="/img/logos/${esc(o.tienda_id)}.png" alt="" loading="lazy" onerror="this.remove()"></span><b>${esc(nombre(o.tienda_id))}</b><span>${esc(o.titulo)}</span><i>Ver ofertas →</i></a>`).join("");
   const ch = ofertas.filter(o => o.categoria !== "tienda");
   if (!ch.length) { document.getElementById("vacio").hidden = false; return; }
   document.getElementById("chollos").innerHTML = ch.map(o => {
