@@ -427,7 +427,7 @@ V.dinero = async (m) => {
   const anyo = meses.reduce((t, r) => { for (const k of Object.keys(r)) if (k !== "ym") t[k] = (t[k] || 0) + r[k]; return t; }, {});
   const rep = reparto100(anyo);
   const res = aj.reservas || {}, obj = aj.objetivos || {};
-  const pub = publicidad(meses, obj, casasMes);
+  const pub = publicidad(meses, obj, casasMes, res);
   const bloques = rep ? [["usuarias", "A usuarias", "var(--mint)"], ["gastos", "Gastos", "var(--sky)"], ["irpf", "IRPF", "var(--peach)"], ["colchon", "Colchón", "var(--butter)"], ["tuyo", "Tuyo", "var(--lav)"]] : [];
   const mesAct = meses[meses.length - 1];
   const porRed = Object.entries(comisiones.filter((c) => c.estado !== "anulada" && c.fecha >= haceDias(365)).reduce((acc, c) => ((acc[c.red] = (acc[c.red] || 0) + Number(c.comision || 0)), acc), {})).sort((x, y) => y[1] - x[1]);
@@ -450,11 +450,11 @@ V.dinero = async (m) => {
       <div class="caja"><div class="ch"><b>Objetivos</b></div><div class="rings">${progresoObjetivos(meses, obj).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#1FA37A" })}<div><b>${esc(o.nombre)}</b><span>${o.pendiente ? "apunta tus gastos fijos abajo" : o.falta > 0 ? `faltan ${eur(o.falta)}${o.clave === "marca" ? "" : " al mes"}` : "¡conseguido!"}</span><br><span>${esc(o.nota)}</span></div></div>`).join("")}</div></div>
     </div>
     <div class="caja" style="margin-top:12px"><div class="ch"><b>Publicidad</b><span class="note">se apunta como gasto (categoría «publicidad»)</span></div>
-      ${pub.puede ? `<div class="tiles">${kpi("Puedes invertir este mes", eur(pub.presupuesto), `el ${pub.pct} % del excedente medio (${eur(pub.excedente)})`, "", { ico: "grafico", tono: TONO.mint })}
+      ${pub.puede ? `<div class="tiles">${kpi("Puedes invertir este mes", eur(pub.presupuesto), `el ${pub.pct} % de ${eur(pub.libre)} (lo que sobra tras gastos, cuota, marca, IRPF y colchón)`, "", { ico: "grafico", tono: TONO.mint })}
         ${kpi("Gastado el último mes", eur(pub.gastado), pub.nuevas ? `${num(pub.nuevas)} casas nuevas` : "sin casas nuevas", "", { ico: "euro", tono: TONO.sky })}
         ${kpi("Coste por casa nueva", pub.coste != null ? eur(pub.coste) : "—", pub.vuelta != null ? `se recupera en ${String(pub.vuelta).replace(".", ",")} meses` : "con datos de un mes con anuncios", "", { ico: "casa", tono: TONO.butter })}</div>
-        <p class="note">Regla: solo se invierte el excedente (margen − gastos fijos), nunca tu dinero. Si una casa tarda más de 6 meses en devolver lo que costó traerla, para ese canal.</p>`
-      : `<p class="note">Todavía no: la publicidad empieza cuando el margen (comisiones menos reembolsos) cubra los gastos fijos tres meses seguidos. ${pub.excedente < 0 ? `Ahora faltan ${eur(-pub.excedente)} al mes.` : "Apunta tus gastos fijos para medirlo."} Mientras, crecemos con redes, invitaciones y boca a boca.</p>`}
+        <p class="note">Regla: solo se invierte lo que sobra después de gastos fijos, cuota de autónoma, marca e impuestos, nunca tu dinero. Si una casa tarda más de 6 meses en devolver lo que costó traerla, para ese canal.</p>`
+      : `<p class="note">Todavía no: la publicidad empieza cuando el margen (comisiones menos reembolsos) cubra todos los gastos: los fijos, la cuota de autónoma (${eur(obj.cuota_autonoma || 0)}) y la marca (${eur((obj.marca_oepm || 0) / 12)} al mes), con los impuestos apartados. ${pub.excedente < 0 ? `Ahora faltan ${eur(-pub.excedente)} al mes.` : "Apunta tus gastos fijos para medirlo."} Mientras, crecemos con redes, invitaciones y boca a boca.</p>`}
     </div>
     <details class="caja" style="margin-top:12px"><summary>Mes a mes</summary><div style="margin-top:10px">
     <div class="tw"><table><thead><tr><th>Mes</th><th class="n">Comisión confirmada</th><th class="n">Pendiente</th><th class="n">A usuarias</th><th class="n">Gastos fijos</th><th class="n">Publicidad</th><th class="n">IRPF</th><th class="n">Colchón</th><th class="n">Disponible</th></tr></thead>

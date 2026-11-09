@@ -59,9 +59,7 @@ test("objetivos: marca con lo acumulado, mensuales con la media de los 3 meses c
   const o = progresoObjetivos(meses, { marca_oepm: 150, cuota_autonoma: 300, neto_mensual: 1500, dejar_trabajo: 4000 });
   const marca = o.find((x) => x.clave === "marca");
   assert.equal(marca.pct, 100);
-  const cuota = o.find((x) => x.clave === "autonoma");
-  assert.equal(cuota.valor, 300);      // media de 200, 300, 400 (el mes en curso no cuenta)
-  assert.equal(cuota.falta, 0);
+  assert.equal(o.find((x) => x.clave === "neto").valor, 300); // media de 200, 300, 400 (el mes en curso no cuenta)
   assert.equal(o.find((x) => x.clave === "neto").meta, 1800);
 });
 
@@ -103,15 +101,15 @@ test("publicidad: se separa de los gastos fijos y solo se invierte el excedente"
   const r = resumenMes({ comisiones: [{ fecha: "2027-01-05", estado: "confirmada", comision: 200 }], movimientos: [], gastos }, "2027-01", {});
   assert.equal(r.publicidad, 50); assert.equal(r.gastosFijos, 20); assert.equal(r.gastos, 70);
   const meses = [{ ym: "a", margen: 120, gastosFijos: 20 }, { ym: "b", margen: 120, gastosFijos: 20 }, { ym: "c", margen: 120, gastosFijos: 20, publicidad: 40 }, { ym: "d" }];
-  const p = publicidad(meses, { publicidad_pct: 50 }, { c: 4, _total: 10 });
-  assert.equal(p.excedente, 100); assert.equal(p.presupuesto, 50); assert.equal(p.coste, 10);
+  const p = publicidad(meses, { publicidad_pct: 50, cuota_autonoma: 20, marca_oepm: 120 }, { c: 4, _total: 10 }, { irpf_pct: 20, colchon_pct: 10 });
+  assert.equal(p.excedente, 70); assert.equal(p.libre, 49); assert.equal(p.presupuesto, 24.5); assert.equal(p.coste, 10);
   assert.equal(p.porCasa, 12); assert.equal(p.vuelta, 0.8);
   assert.equal(publicidad([{ margen: 10, gastosFijos: 30 }, {}], {}).presupuesto, 0);
 });
 
 test("objetivo cubrir gastos: margen frente a gastos fijos; sin gastos apuntados queda pendiente", () => {
-  const o = progresoObjetivos([{ margen: 50, gastosFijos: 100 }, { margen: 50, gastosFijos: 100 }, { margen: 50, gastosFijos: 100 }, {}], {});
+  const o = progresoObjetivos([{ margen: 50, gastosFijos: 40 }, { margen: 50, gastosFijos: 40 }, { margen: 50, gastosFijos: 40 }, {}], { cuota_autonoma: 50, marca_oepm: 120 });
   const g = o.find((x) => x.clave === "gastos");
-  assert.equal(g.pct, 50); assert.equal(g.falta, 50);
+  assert.equal(g.meta, 100); assert.equal(g.pct, 50); assert.equal(g.falta, 50); // 40 fijos + 50 cuota + 10 marca
   assert.equal(progresoObjetivos([{}, {}], {}).find((x) => x.clave === "gastos").pendiente, true);
 });

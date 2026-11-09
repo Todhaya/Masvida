@@ -70,27 +70,34 @@ export function progresoObjetivos(meses, objetivos = {}) {
   // Primer objetivo: que lo que queda de las comisiones (después de pagar a las usuarias) cubra los gastos fijos.
   // Cuando se cumple, el excedente se puede reinvertir en publicidad.
   const media3 = (k) => (cerrados.length ? r2(cerrados.reduce((s, m) => s + (Number(m[k]) || 0), 0) / cerrados.length) : 0);
-  const fijos = media3("gastosFijos"), margen = media3("margen");
-  const cubrir = item("gastos", "Cubrir los gastos y empezar con publicidad", fijos, margen,
-    fijos > 0 ? "Margen medio (comisiones menos reembolsos) frente a gastos fijos, 3 últimos meses cerrados" : "Apunta tus gastos fijos para medirlo");
-  if (!(fijos > 0)) { cubrir.falta = 0; cubrir.pct = 0; cubrir.pendiente = true; }
+  const margen = media3("margen"), costes = costesMes(media3("gastosFijos"), objetivos);
+  const cubrir = item("gastos", "Cubrir todos los gastos y empezar con publicidad", costes, margen,
+    "Gastos fijos, cuota de autónoma y marca, frente al margen (comisiones menos reembolsos) de los 3 últimos meses cerrados. Los impuestos se apartan del beneficio");
+  if (!(costes > 0)) { cubrir.falta = 0; cubrir.pct = 0; cubrir.pendiente = true; }
   return [
     cubrir,
     item("marca", "Registrar la marca (OEPM)", objetivos.marca_oepm, acumulado, "Pago único con lo acumulado"),
-    item("autonoma", "Cubrir la cuota de autónoma", cuota, media, "Media de los 3 últimos meses cerrados"),
     item("neto", "1.500 € netos al mes", (Number(objetivos.neto_mensual) || 0) + cuota, media, "Ya descontada la cuota de autónoma"),
     item("trabajo", "Poder dejar el trabajo", (Number(objetivos.dejar_trabajo) || 0) + cuota, media, "Ya descontada la cuota de autónoma"),
   ];
 }
 
+// Lo que hay que cubrir cada mes: gastos fijos apuntados + cuota de autónoma + marca (registro repartido en 12 meses).
+export function costesMes(gastosFijos, objetivos = {}) {
+  return r2((Number(gastosFijos) || 0) + (Number(objetivos.cuota_autonoma) || 0) + (Number(objetivos.marca_oepm) || 0) / 12);
+}
+
 // Publicidad: solo con el excedente. Presupuesto = % del excedente medio (margen − gastos fijos) de los 3 últimos meses cerrados.
 // Coste por casa nueva = publicidad del mes / casas nuevas ese mes. Vuelta = meses que tarda una casa en devolver lo que costó.
-export function publicidad(meses, objetivos = {}, casasNuevas = {}) {
+// Excedente = margen − (gastos fijos + cuota + marca). De él se apartan antes IRPF y colchón; el presupuesto es un % de lo que queda.
+export function publicidad(meses, objetivos = {}, casasNuevas = {}, reservas = {}) {
   const cerrados = meses.slice(-4, -1);
   const n = cerrados.length || 1;
-  const excedente = r2(cerrados.reduce((s, m) => s + (Number(m.margen) || 0) - (Number(m.gastosFijos) || 0), 0) / n);
+  const excedente = r2(cerrados.reduce((s, m) => s + (Number(m.margen) || 0) - costesMes(m.gastosFijos, objetivos), 0) / n);
   const pct = objetivos.publicidad_pct != null && objetivos.publicidad_pct !== "" ? Number(objetivos.publicidad_pct) : 50;
-  const presupuesto = excedente > 0 ? r2(excedente * pct / 100) : 0;
+  const reserva = ((Number(reservas.irpf_pct) || 0) + (Number(reservas.colchon_pct) || 0)) / 100;
+  const libre = excedente > 0 ? r2(excedente * Math.max(0, 1 - reserva)) : 0;
+  const presupuesto = r2(libre * pct / 100);
   const ultimo = cerrados[cerrados.length - 1] || {};
   const nuevas = Number(casasNuevas[ultimo.ym]) || 0;
   const gastado = Number(ultimo.publicidad) || 0;
@@ -99,7 +106,7 @@ export function publicidad(meses, objetivos = {}, casasNuevas = {}) {
   const casasTot = Number(casasNuevas._total) || 0;
   const porCasa = casasTot > 0 ? r2(cerrados.reduce((s, m) => s + (Number(m.margen) || 0), 0) / n / casasTot) : null;
   const vuelta = coste != null && porCasa > 0 ? Math.round(coste / porCasa * 10) / 10 : null;
-  return { excedente, pct, presupuesto, puede: excedente > 0, gastado, nuevas, coste, porCasa, vuelta };
+  return { excedente, libre, pct, presupuesto, puede: excedente > 0, gastado, nuevas, coste, porCasa, vuelta };
 }
 
 // KPIs por tienda o por campaña a partir de clics y comisiones.
