@@ -15,7 +15,7 @@ const INSTRUCCIONES = `Eres un lector de facturas domésticas españolas. Extrae
 "tarifa":string|null,"permanencia_hasta":"AAAA-MM-DD"|null,"lineas_movil":number|null,"velocidad_fibra_mb":number|null}
 Si un dato no aparece claramente en la factura, pon null. No inventes ni estimes. No incluyas nombres, DNI, direcciones, CUPS completo ni cuentas bancarias.`;
 
-const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, content-type" };
+const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
