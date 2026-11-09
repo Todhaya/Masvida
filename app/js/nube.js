@@ -158,6 +158,20 @@ async function ofertasReales() {
     c: CAT_APP[p.categoria] || "hogar", n: p.titulo, s: p.tienda, t: p.tienda_id, url: p.url, img: p.imagen,
     p: Number(p.precio), o: Number(p.precio_min_30d) > Number(p.precio) ? Number(p.precio_min_30d) : Number(p.precio), real: 1,
   })).filter((o) => o.p > 0);
+  // Chollos de campaña (Black Friday…): se ven dentro de la app para que el clic quede a nombre de la casa
+  // y la compra sume reembolso. Si se abrieran en la web, el clic sería anónimo.
+  const hoy = new Date().toISOString().slice(0, 10);
+  const { data: camps } = await sb.from("campanas").select("id,titulo").gte("fin", hoy).then((r) => r, () => ({}));
+  if (camps?.length) {
+    const [{ data: co }, { data: ti }] = await Promise.all([
+      sb.from("ofertas").select("titulo,tienda_id,url,imagen,categoria,precio,precio_min_30d,campana_id").in("campana_id", camps.map((c) => c.id)).neq("categoria", "tienda"),
+      sb.from("tiendas_publicas").select("id,nombre"),
+    ]).catch(() => [{}, {}]);
+    const nom = (id) => (ti || []).find((t) => t.id === id)?.nombre || id;
+    (co || []).forEach((o) => { if (!(Number(o.precio) > 0) || !o.url) return;
+      reales.unshift({ c: CAT_APP[o.categoria] || "hogar", n: o.titulo, s: nom(o.tienda_id), t: o.tienda_id, url: o.url, img: o.imagen,
+        p: Number(o.precio), o: Math.max(Number(o.precio_min_30d) || 0, Number(o.precio)), real: 1, camp: (camps.find((c) => c.id === o.campana_id) || {}).titulo }); });
+  }
   OFF.length = 0; OFF.push(...reales);
 }
 
