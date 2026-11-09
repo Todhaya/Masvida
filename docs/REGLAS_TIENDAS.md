@@ -38,3 +38,18 @@ Resumen propio, no es el texto legal.
 
 **Ley aplicable**
 - Estado de Washington (EE. UU.). Cualquier pleito iría a los tribunales del condado de King.
+
+## niba (Awin 118409) · energía
+
+Pedida el 9 nov 2026 con el sí de Alba. Paga hasta 45 € por alta confirmada (contrato digital, scoring aprobado y suministro activado). Awin le pone nivel de pago 4 (riesgo) y tarda unos 108 días de media en pagar.
+Resumen propio de su ficha, no es el texto legal.
+
+**Lo que no se puede hacer**
+- Pujar en anuncios por «niba», «niba luz» ni sus errores de escritura.
+- **Comparar niba con Iberdrola** (son del mismo grupo): en el comparador no pueden salir una al lado de la otra como alternativas.
+- Tráfico incentivado sin su aprobación (sorteos, premios, promociones no oficiales). El reembolso a la usuaria **queda en «comprobar»** hasta que respondan: se lo preguntamos al pedir el programa.
+- Cambiar precios, condiciones o mensajes; correos masivos sin su permiso; dominios que imiten su marca.
+
+## Octopus Energy (Awin 116547) · energía
+
+Pedida (pendiente). Hasta 31,50 € por alta efectiva. Awin le pone nivel de pago 4 (riesgo) y tarda unos 71 días de media en pagar. No contar con el dinero hasta que llegue.
