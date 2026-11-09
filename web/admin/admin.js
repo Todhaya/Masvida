@@ -1,7 +1,7 @@
 // Viwai · panel de administración. Datos en Supabase; solo entra quien está en la tabla `admins` (RLS).
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 import {
-  resumenMes, reparto100, progresoObjetivos, ultimosMeses, kpis, descuentoReal, estadoCampana, parseComisionesCSV,
+  resumenMes, reparto100, progresoObjetivos, publicidad, ultimosMeses, kpis, descuentoReal, estadoCampana, parseComisionesCSV,
 } from "./calculos.js";
 import { PAL, GRIS, donut, lineas, barras, ranking, anillo, mini, delta, pintaDonut } from "./graficos.js";
 
@@ -317,7 +317,7 @@ V.resumen = async (m) => {
     </div>
     <div class="g2i">
       <div class="caja"><div class="ch"><b>Objetivos</b><a href="#dinero" style="font-size:13px">detalle</a></div>
-        <div class="rings">${progresoObjetivos(meses, aj.objetivos).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#6A4CF5" })}<div><b>${esc(o.nombre)}</b><span>${o.falta > 0 ? `faltan ${eur(o.falta)}` : "¡conseguido!"}</span></div></div>`).join("")}</div></div>
+        <div class="rings">${progresoObjetivos(meses, aj.objetivos).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#6A4CF5" })}<div><b>${esc(o.nombre)}</b><span>${o.pendiente ? "apunta tus gastos" : o.falta > 0 ? `faltan ${eur(o.falta)}` : "¡conseguido!"}</span></div></div>`).join("")}</div></div>
       <div class="caja"><div class="ch"><b>Altas en la lista de espera</b><span class="note">14 días</span></div>
         ${barras(dias(14).map((d) => ({ l: String(+d.slice(8)), v: lista.filter((x) => x.consentimiento.slice(0, 10) === d).length })), { c: "#6A4CF5", alto: 120 })}</div>
     </div>
@@ -421,11 +421,13 @@ V.kpis = async (m) => {
 };
 
 V.dinero = async (m) => {
-  const [aj, comisiones, movimientos, gastos] = await Promise.all([ajustes(), cargar("comisiones", { orden: "fecha", desc: true }), cargar("movimientos"), cargar("gastos")]);
+  const [aj, comisiones, movimientos, gastos, casas] = await Promise.all([ajustes(), cargar("comisiones", { orden: "fecha", desc: true }), cargar("movimientos"), cargar("gastos"), cargar("hogares", { select: "creado" })]);
+  const casasMes = casas.reduce((a, h) => ((a[String(h.creado).slice(0, 7)] = (a[String(h.creado).slice(0, 7)] || 0) + 1), a), { _total: casas.length });
   const meses = ultimosMeses(new Date(), 12).map((y) => resumenMes({ comisiones, movimientos, gastos }, y, aj.reservas));
   const anyo = meses.reduce((t, r) => { for (const k of Object.keys(r)) if (k !== "ym") t[k] = (t[k] || 0) + r[k]; return t; }, {});
   const rep = reparto100(anyo);
   const res = aj.reservas || {}, obj = aj.objetivos || {};
+  const pub = publicidad(meses, obj, casasMes);
   const bloques = rep ? [["usuarias", "A usuarias", "var(--mint)"], ["gastos", "Gastos", "var(--sky)"], ["irpf", "IRPF", "var(--peach)"], ["colchon", "Colchón", "var(--butter)"], ["tuyo", "Tuyo", "var(--lav)"]] : [];
   const mesAct = meses[meses.length - 1];
   const porRed = Object.entries(comisiones.filter((c) => c.estado !== "anulada" && c.fecha >= haceDias(365)).reduce((acc, c) => ((acc[c.red] = (acc[c.red] || 0) + Number(c.comision || 0)), acc), {})).sort((x, y) => y[1] - x[1]);
@@ -445,11 +447,18 @@ V.dinero = async (m) => {
       ${rep ? donut(bloques.map(([k, l], i) => ({ k, l, v: Math.max(0, rep[k]), c: [PAL[1], PAL[3], PAL[4], PAL[2], PAL[0]][i] })), { centro: "de 100 €", fmt: (v) => v.toFixed(2) + " €" })
       : `<p class="note">Cuando entren las primeras comisiones confirmadas verás aquí el reparto real. Con tus ajustes: de cada beneficio apartas un ${res.irpf_pct ?? 0} % para IRPF y un ${res.colchon_pct ?? 0} % de colchón.</p>`}
       <p class="note">El IVA no entra en estas cuentas: si alguna red te paga IVA aparte, ese dinero es de Hacienda entero. Esto es una guía para apartar dinero, no asesoramiento fiscal.</p></div>
-      <div class="caja"><div class="ch"><b>Objetivos</b></div><div class="rings">${progresoObjetivos(meses, obj).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#1FA37A" })}<div><b>${esc(o.nombre)}</b><span>${o.falta > 0 ? `faltan ${eur(o.falta)}${o.clave === "marca" ? "" : " al mes"}` : "¡conseguido!"}</span><br><span>${esc(o.nota)}</span></div></div>`).join("")}</div></div>
+      <div class="caja"><div class="ch"><b>Objetivos</b></div><div class="rings">${progresoObjetivos(meses, obj).map((o) => `<div class="rg">${anillo(o.pct, { t: o.nombre, c: "#1FA37A" })}<div><b>${esc(o.nombre)}</b><span>${o.pendiente ? "apunta tus gastos fijos abajo" : o.falta > 0 ? `faltan ${eur(o.falta)}${o.clave === "marca" ? "" : " al mes"}` : "¡conseguido!"}</span><br><span>${esc(o.nota)}</span></div></div>`).join("")}</div></div>
+    </div>
+    <div class="caja" style="margin-top:12px"><div class="ch"><b>Publicidad</b><span class="note">se apunta como gasto (categoría «publicidad»)</span></div>
+      ${pub.puede ? `<div class="tiles">${kpi("Puedes invertir este mes", eur(pub.presupuesto), `el ${pub.pct} % del excedente medio (${eur(pub.excedente)})`, "", { ico: "grafico", tono: TONO.mint })}
+        ${kpi("Gastado el último mes", eur(pub.gastado), pub.nuevas ? `${num(pub.nuevas)} casas nuevas` : "sin casas nuevas", "", { ico: "euro", tono: TONO.sky })}
+        ${kpi("Coste por casa nueva", pub.coste != null ? eur(pub.coste) : "—", pub.vuelta != null ? `se recupera en ${String(pub.vuelta).replace(".", ",")} meses` : "con datos de un mes con anuncios", "", { ico: "casa", tono: TONO.butter })}</div>
+        <p class="note">Regla: solo se invierte el excedente (margen − gastos fijos), nunca tu dinero. Si una casa tarda más de 6 meses en devolver lo que costó traerla, para ese canal.</p>`
+      : `<p class="note">Todavía no: la publicidad empieza cuando el margen (comisiones menos reembolsos) cubra los gastos fijos tres meses seguidos. ${pub.excedente < 0 ? `Ahora faltan ${eur(-pub.excedente)} al mes.` : "Apunta tus gastos fijos para medirlo."} Mientras, crecemos con redes, invitaciones y boca a boca.</p>`}
     </div>
     <details class="caja" style="margin-top:12px"><summary>Mes a mes</summary><div style="margin-top:10px">
-    <div class="tw"><table><thead><tr><th>Mes</th><th class="n">Comisión confirmada</th><th class="n">Pendiente</th><th class="n">A usuarias</th><th class="n">Gastos</th><th class="n">IRPF</th><th class="n">Colchón</th><th class="n">Disponible</th></tr></thead>
-    <tbody>${meses.slice().reverse().map((r) => `<tr><td>${r.ym}</td><td class="n">${eur(r.confirmada)}</td><td class="n">${eur(r.pendiente)}</td><td class="n">${eur(r.aUsuarias)}</td><td class="n">${eur(r.gastos)}</td><td class="n">${eur(r.irpf)}</td><td class="n">${eur(r.colchon)}</td><td class="n"><b>${eur(r.disponible)}</b></td></tr>`).join("")}</tbody></table></div>
+    <div class="tw"><table><thead><tr><th>Mes</th><th class="n">Comisión confirmada</th><th class="n">Pendiente</th><th class="n">A usuarias</th><th class="n">Gastos fijos</th><th class="n">Publicidad</th><th class="n">IRPF</th><th class="n">Colchón</th><th class="n">Disponible</th></tr></thead>
+    <tbody>${meses.slice().reverse().map((r) => `<tr><td>${r.ym}</td><td class="n">${eur(r.confirmada)}</td><td class="n">${eur(r.pendiente)}</td><td class="n">${eur(r.aUsuarias)}</td><td class="n">${eur(r.gastosFijos)}</td><td class="n">${eur(r.publicidad)}</td><td class="n">${eur(r.irpf)}</td><td class="n">${eur(r.colchon)}</td><td class="n"><b>${eur(r.disponible)}</b></td></tr>`).join("")}</tbody></table></div>
     </div></details>
     <details class="caja" style="margin-top:12px"><summary>Ajustes de objetivos y reservas</summary><div style="margin-top:10px">
     <form id="fAj" class="caja grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
@@ -457,6 +466,7 @@ V.dinero = async (m) => {
       <label class="f">Cuota de autónoma al mes (€)<input type="number" step="any" name="cuota_autonoma" value="${obj.cuota_autonoma ?? ""}"></label>
       <label class="f">Neto que quieres al mes (€)<input type="number" step="any" name="neto_mensual" value="${obj.neto_mensual ?? ""}"></label>
       <label class="f">Para dejar el trabajo, al mes (€)<input type="number" step="any" name="dejar_trabajo" value="${obj.dejar_trabajo ?? ""}"></label>
+      <label class="f">Publicidad (% del excedente)<input type="number" step="any" name="publicidad_pct" value="${obj.publicidad_pct ?? 50}"></label>
       <label class="f">Reserva IRPF (% del beneficio)<input type="number" step="any" name="irpf_pct" value="${res.irpf_pct ?? ""}"></label>
       <label class="f">Colchón (% del beneficio)<input type="number" step="any" name="colchon_pct" value="${res.colchon_pct ?? ""}"></label>
       <div class="row"><button class="btn">Guardar ajustes</button><span class="note" id="ajMsg"></span></div>
@@ -470,7 +480,7 @@ V.dinero = async (m) => {
     e.preventDefault();
     const f = new FormData(e.target), n = (k) => (f.get(k) === "" ? null : Number(f.get(k)));
     const filas = [
-      { clave: "objetivos", valor: { marca_oepm: n("marca_oepm"), cuota_autonoma: n("cuota_autonoma"), neto_mensual: n("neto_mensual"), dejar_trabajo: n("dejar_trabajo") } },
+      { clave: "objetivos", valor: { marca_oepm: n("marca_oepm"), cuota_autonoma: n("cuota_autonoma"), neto_mensual: n("neto_mensual"), dejar_trabajo: n("dejar_trabajo"), publicidad_pct: n("publicidad_pct") } },
       { clave: "reservas", valor: { irpf_pct: n("irpf_pct"), colchon_pct: n("colchon_pct") } },
     ];
     const { error } = await sb.from("ajustes").upsert(filas);

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  gastosDelMes, resumenMes, reparto100, progresoObjetivos, kpis, descuentoReal,
+  gastosDelMes, resumenMes, reparto100, progresoObjetivos, publicidad, kpis, descuentoReal,
   estadoCampana, parseComisionesCSV, ultimosMeses,
 } from "../web/admin/calculos.js";
 
@@ -96,4 +96,22 @@ test("CSV de comisiones: con cabecera, coma decimal y filas erróneas", () => {
 
 test("últimos meses en orden", () => {
   assert.deepEqual(ultimosMeses(new Date("2027-02-15T00:00:00Z"), 3), ["2026-12", "2027-01", "2027-02"]);
+});
+
+test("publicidad: se separa de los gastos fijos y solo se invierte el excedente", () => {
+  const gastos = [{ fecha: "2027-01-01", importe: 20, periodicidad: "mensual", categoria: "herramientas" }, { fecha: "2027-01-10", importe: 50, categoria: "publicidad" }];
+  const r = resumenMes({ comisiones: [{ fecha: "2027-01-05", estado: "confirmada", comision: 200 }], movimientos: [], gastos }, "2027-01", {});
+  assert.equal(r.publicidad, 50); assert.equal(r.gastosFijos, 20); assert.equal(r.gastos, 70);
+  const meses = [{ ym: "a", margen: 120, gastosFijos: 20 }, { ym: "b", margen: 120, gastosFijos: 20 }, { ym: "c", margen: 120, gastosFijos: 20, publicidad: 40 }, { ym: "d" }];
+  const p = publicidad(meses, { publicidad_pct: 50 }, { c: 4, _total: 10 });
+  assert.equal(p.excedente, 100); assert.equal(p.presupuesto, 50); assert.equal(p.coste, 10);
+  assert.equal(p.porCasa, 12); assert.equal(p.vuelta, 0.8);
+  assert.equal(publicidad([{ margen: 10, gastosFijos: 30 }, {}], {}).presupuesto, 0);
+});
+
+test("objetivo cubrir gastos: margen frente a gastos fijos; sin gastos apuntados queda pendiente", () => {
+  const o = progresoObjetivos([{ margen: 50, gastosFijos: 100 }, { margen: 50, gastosFijos: 100 }, { margen: 50, gastosFijos: 100 }, {}], {});
+  const g = o.find((x) => x.clave === "gastos");
+  assert.equal(g.pct, 50); assert.equal(g.falta, 50);
+  assert.equal(progresoObjetivos([{}, {}], {}).find((x) => x.clave === "gastos").pendiente, true);
 });

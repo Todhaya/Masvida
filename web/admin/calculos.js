@@ -28,12 +28,13 @@ export function resumenMes({ comisiones = [], movimientos = [], gastos = [] }, y
     .reduce((s, m) => s + Number(m.importe), 0));
   const margen = r2(confirmada - aUsuarias);
   const gasto = gastosDelMes(gastos, ym);
+  const publicidad = gastosDelMes((gastos || []).filter((g) => g.categoria === "publicidad"), ym);
   const beneficio = r2(margen - gasto);
   const base = Math.max(0, beneficio);
   const irpf = r2(base * (Number(reservas.irpf_pct) || 0) / 100);
   const colchon = r2(base * (Number(reservas.colchon_pct) || 0) / 100);
   const disponible = r2(beneficio - irpf - colchon);
-  return { ym, confirmada, pendiente, aUsuarias, margen, gastos: gasto, beneficio, irpf, colchon, disponible };
+  return { ym, confirmada, pendiente, aUsuarias, margen, gastos: gasto, publicidad, gastosFijos: r2(gasto - publicidad), beneficio, irpf, colchon, disponible };
 }
 
 // De cada 100 € de comisión, a dónde va (con los datos del periodo; si no hay, con el reparto mínimo teórico).
@@ -66,12 +67,39 @@ export function progresoObjetivos(meses, objetivos = {}) {
     clave, nombre, meta: r2(meta), valor: r2(valor),
     falta: r2(Math.max(0, meta - valor)), pct: meta > 0 ? Math.min(100, Math.round(valor / meta * 100)) : 0, nota,
   });
+  // Primer objetivo: que lo que queda de las comisiones (después de pagar a las usuarias) cubra los gastos fijos.
+  // Cuando se cumple, el excedente se puede reinvertir en publicidad.
+  const media3 = (k) => (cerrados.length ? r2(cerrados.reduce((s, m) => s + (Number(m[k]) || 0), 0) / cerrados.length) : 0);
+  const fijos = media3("gastosFijos"), margen = media3("margen");
+  const cubrir = item("gastos", "Cubrir los gastos y empezar con publicidad", fijos, margen,
+    fijos > 0 ? "Margen medio (comisiones menos reembolsos) frente a gastos fijos, 3 últimos meses cerrados" : "Apunta tus gastos fijos para medirlo");
+  if (!(fijos > 0)) { cubrir.falta = 0; cubrir.pct = 0; cubrir.pendiente = true; }
   return [
+    cubrir,
     item("marca", "Registrar la marca (OEPM)", objetivos.marca_oepm, acumulado, "Pago único con lo acumulado"),
     item("autonoma", "Cubrir la cuota de autónoma", cuota, media, "Media de los 3 últimos meses cerrados"),
     item("neto", "1.500 € netos al mes", (Number(objetivos.neto_mensual) || 0) + cuota, media, "Ya descontada la cuota de autónoma"),
     item("trabajo", "Poder dejar el trabajo", (Number(objetivos.dejar_trabajo) || 0) + cuota, media, "Ya descontada la cuota de autónoma"),
   ];
+}
+
+// Publicidad: solo con el excedente. Presupuesto = % del excedente medio (margen − gastos fijos) de los 3 últimos meses cerrados.
+// Coste por casa nueva = publicidad del mes / casas nuevas ese mes. Vuelta = meses que tarda una casa en devolver lo que costó.
+export function publicidad(meses, objetivos = {}, casasNuevas = {}) {
+  const cerrados = meses.slice(-4, -1);
+  const n = cerrados.length || 1;
+  const excedente = r2(cerrados.reduce((s, m) => s + (Number(m.margen) || 0) - (Number(m.gastosFijos) || 0), 0) / n);
+  const pct = objetivos.publicidad_pct != null && objetivos.publicidad_pct !== "" ? Number(objetivos.publicidad_pct) : 50;
+  const presupuesto = excedente > 0 ? r2(excedente * pct / 100) : 0;
+  const ultimo = cerrados[cerrados.length - 1] || {};
+  const nuevas = Number(casasNuevas[ultimo.ym]) || 0;
+  const gastado = Number(ultimo.publicidad) || 0;
+  const coste = gastado > 0 && nuevas > 0 ? r2(gastado / nuevas) : null;
+  // Margen al mes por casa: margen medio / casas activas aproximadas (las que existían)
+  const casasTot = Number(casasNuevas._total) || 0;
+  const porCasa = casasTot > 0 ? r2(cerrados.reduce((s, m) => s + (Number(m.margen) || 0), 0) / n / casasTot) : null;
+  const vuelta = coste != null && porCasa > 0 ? Math.round(coste / porCasa * 10) / 10 : null;
+  return { excedente, pct, presupuesto, puede: excedente > 0, gastado, nuevas, coste, porCasa, vuelta };
 }
 
 // KPIs por tienda o por campaña a partir de clics y comisiones.
