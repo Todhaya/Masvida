@@ -85,6 +85,7 @@ async function sincronizaRed(db, red, mod) {
           const t = buscaTienda(tiendas, red, sol);
           if (t) {
             if (t.estado !== "aprobada" && t.estado !== "pausada" && t.estado !== sol.estado) {
+              console.log(`   CAMBIO ${red} · ${t.nombre}: ${t.estado} → ${sol.estado}`);
               if (!SECO) await db.actualiza("tiendas", `id=eq.${encodeURIComponent(t.id)}`, { estado: sol.estado, programa_id: sol.programa_id });
               t.estado = sol.estado;
             }
@@ -193,6 +194,11 @@ export async function main() {
     for (const p of await awin.sinAdherir()) console.log("AWIN " + JSON.stringify(p));
   }
   if (process.env.LISTA_REDES) {
+    // Resumen de tiendas por red y estado (lo mismo que enseña el panel)
+    const ts = await db.todo("tiendas?select=nombre,red_id,estado,cashback&order=red_id,estado,nombre");
+    const g = {};
+    for (const t of ts) (g[`${t.red_id} · ${t.estado}`] ||= []).push(t.nombre + (t.cashback === true ? " (reembolso)" : ""));
+    for (const [k, v] of Object.entries(g)) console.log(`TIENDAS ${k} (${v.length}): ${v.join(", ")}`);
     if (process.env.ADMITAD_CLIENT_ID) {
       try { const tk = await admitad.token(); for (const p of await admitad.sinConectar(tk)) console.log("ADMITAD " + JSON.stringify(p)); }
       catch (e) { console.log("ADMITAD error " + e.message); }
