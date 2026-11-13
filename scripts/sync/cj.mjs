@@ -25,9 +25,10 @@ export function leeAnunciantes(xml) {
 
 export async function* productos(prog, max) {
   let n = 0;
-  for (let offset = 0; n < max; offset += 500) {
-    const query = `{ shoppingProducts(companyId: "${process.env.CJ_CID}", partnerIds: ["${prog.programa_id}"], limit: ${Math.min(500, max - n)}, offset: ${offset}) {
-      totalCount count resultList { id title brand price { amount currency } salePrice { amount currency } imageLink productType availability
+  // CJ no deja pasar de 10.000 registros (offset + limit)
+  for (let offset = 0; n < max && offset < 10000; offset += 500) {
+    const query = `{ shoppingProducts(companyId: "${process.env.CJ_CID}", partnerIds: ["${prog.programa_id}"], limit: ${Math.min(500, 10000 - offset)}, offset: ${offset}) {
+      totalCount count resultList { id title brand link price { amount currency } salePrice { amount currency } imageLink productType availability
         linkCode(pid: "${process.env.CJ_PID}") { clickUrl } } } }`;
     const r = await fetch(GQL, { method: "POST", headers: H(), body: JSON.stringify({ query }) });
     if (!r.ok) throw new Error(`CJ productos ${prog.nombre}: ${r.status} ${(await r.text()).replace(/\s+/g, " ").slice(0, 900)}`);
@@ -47,6 +48,8 @@ export function aProducto(p) {
   const moneda = p.salePrice?.currency || p.price?.currency || "EUR";
   const url = p.linkCode?.clickUrl;
   if (!p.id || !p.title || !url || !Number.isFinite(precio) || moneda !== "EUR") return null;
+  // Catálogos de varios países (TOUS EU…): fuera los productos de otras webs (Portugal, Alemania, Eslovaquia…)
+  if (p.link && /\/(pt|de|sk|cs|cz|pl|fr|it|nl)([-_][a-z]{2})?\//i.test(new URL(p.link, "https://x").pathname + "/")) return null;
   return {
     ref: String(p.id), titulo: p.title, marca: p.brand || null,
     precio: Math.round(precio * 100) / 100,

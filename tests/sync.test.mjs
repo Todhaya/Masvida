@@ -158,3 +158,11 @@ test("Fuera productos para adultos", async () => {
   assert.equal(pasaFiltro({ ...base, titulo: "Succionador" }), false);
   assert.equal(pasaFiltro({ ...base, titulo: "Peluche de unicornio 30 cm" }), true);
 });
+
+test("CJ: solo productos de la web española en catálogos de varios países", async () => {
+  const { aProducto } = await import("../scripts/sync/cj.mjs");
+  const base = { id: "1", title: "Collar oso", price: { amount: "99", currency: "EUR" }, linkCode: { clickUrl: "https://www.anrdoezrs.net/x" } };
+  assert.ok(aProducto({ ...base, link: "https://www.tous.com/es-es/collar-oso" }));
+  assert.equal(aProducto({ ...base, link: "https://www.tous.com/pt-pt/colar-urso" }), null);
+  assert.equal(aProducto({ ...base, link: "https://www.tous.com/de/kette" }), null);
+});
