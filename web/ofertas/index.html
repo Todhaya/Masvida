@@ -124,13 +124,18 @@ footer a{color:var(--brand-strong)}
 .tienda{display:flex;flex-direction:column;gap:6px;border-radius:24px;padding:22px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink);text-decoration:none}
 .tienda:hover{box-shadow:inset 0 0 0 2px var(--brand)}
 .tienda b{font-size:22px;letter-spacing:-.02em}.tienda span{color:var(--muted);font-size:15px}.tienda i{font-style:normal;font-weight:800;color:var(--brand-strong);margin-top:auto;padding-top:8px}
-.chollos{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:28px}
-.chollo{display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink);text-decoration:none}
-.chollo img{width:100%;aspect-ratio:1;object-fit:cover;background:var(--cream)}
-.chollo div{padding:16px;display:flex;flex-direction:column;gap:4px}
-.chollo .t{font-weight:700;line-height:1.3}.chollo .p{font-size:24px;font-weight:800;letter-spacing:-.03em}
-.chollo .d{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;font-size:13px;border-radius:999px;padding:3px 10px;align-self:flex-start}
-.chollo small{color:var(--muted);font-size:13px}
+.chollos{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:28px}
+.chollo{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink);text-decoration:none;transition:box-shadow .15s,transform .15s}
+.chollo:hover{box-shadow:inset 0 0 0 2px var(--brand);transform:translateY(-2px)}
+.chollo .im{position:relative;background:#fff;aspect-ratio:1;display:flex;align-items:center;justify-content:center;padding:12px}
+.chollo img{width:100%;height:100%;object-fit:contain}
+.chollo .d{position:absolute;top:10px;left:10px;background:var(--gold);color:var(--ink);font-weight:800;font-size:12px;border-radius:999px;padding:3px 9px}
+.chollo .tx{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1;border-top:1px solid var(--line)}
+.chollo .t{font-weight:600;font-size:15px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.chollo .p{font-size:21px;font-weight:800;letter-spacing:-.03em;margin-top:auto;padding-top:6px}
+.chollo small{color:var(--muted);font-size:12.5px;line-height:1.35}
+.chollo .ti{font-weight:700;color:var(--ink);opacity:.75}
+@media (max-width:520px){.chollos{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.chollo .t{font-size:14px}.chollo .p{font-size:18px}.chollo .tx{padding:10px 11px 12px}}
 .vacio{border-radius:24px;padding:26px;background:var(--cream);margin-top:24px;font-weight:600;max-width:46em}
 .trucos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:28px}
 .truco{border-radius:24px;padding:22px;background:var(--surface)}
@@ -173,7 +178,7 @@ footer a{color:var(--brand-strong)}
     <span class="res" id="res" aria-live="polite"></span>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <select id="tienda" aria-label="Tienda"><option value="">Todas las tiendas</option></select>
-      <select id="orden" aria-label="Ordenar"><option value="relevancia">Más relevantes</option><option value="precio">Más baratos</option><option value="descuento">Más rebajados (de verdad)</option></select>
+      <select id="orden" aria-label="Ordenar"><option value="relevancia">Recomendados</option><option value="precio">Más baratos</option><option value="descuento">Más rebajados (de verdad)</option></select>
     </div>
   </div>
   <div class="chollos" id="lista"></div>
@@ -199,11 +204,13 @@ const est = { q: "", cat: null, tienda: null, orden: "relevancia", desde: 0 };
 const params = new URLSearchParams(location.search);
 est.q = params.get("q") || ""; est.cat = params.get("cat"); $("q").value = est.q;
 
+const marca = m => m ? m.replace(/(^|[\s-])(\p{L})/gu, (x, a, b) => a + b.toUpperCase()) : "";
 function tarjeta(p) {
-  return `<a class="chollo" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" target="_blank" rel="sponsored noopener">${p.imagen ? `<img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}<div>
-    ${p.descuento ? `<span class="d">-${p.descuento} % de verdad</span>` : ""}<span class="t">${esc(p.titulo)}</span>
+  return `<a class="chollo" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" target="_blank" rel="sponsored noopener">
+    <span class="im"><img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.chollo').remove()">${p.descuento ? `<span class="d">-${p.descuento} %</span>` : ""}</span>
+    <span class="tx"><span class="t">${esc(p.titulo)}</span>
     <span class="p">${eur(p.precio)}</span>${p.descuento ? `<small>Precio más bajo de los 30 días anteriores: ${eur(p.precio_min_30d)}</small>` : ""}
-    <small>${esc(p.tienda)}${p.marca ? " · " + esc(p.marca) : ""}</small></div></a>`;
+    <small><span class="ti">${esc(p.tienda)}</span>${p.marca ? " · " + esc(marca(p.marca)) : ""}</small></span></a>`;
 }
 
 async function busca(anadir = false) {
@@ -237,6 +244,12 @@ $("f").onsubmit = e => { e.preventDefault(); est.q = $("q").value.trim(); busca(
 $("tienda").onchange = e => { est.tienda = e.target.value || null; busca(); };
 $("orden").onchange = e => { est.orden = e.target.value; busca(); };
 $("mas").onclick = () => busca(true);
+// Al llegar al final carga más sola (el botón queda por si acaso)
+let cargando = false;
+if ("IntersectionObserver" in window) new IntersectionObserver(async (e) => {
+  if (!e[0].isIntersecting || $("mas").hidden || cargando) return;
+  cargando = true; await busca(true); cargando = false;
+}, { rootMargin: "600px" }).observe($("mas"));
 arranca();
 </script>
 </body>

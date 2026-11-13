@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { categoriza } from "../scripts/sync/categorias.mjs";
+import { categoriza, limpiaTitulo } from "../scripts/sync/categorias.mjs";
 import { ofertasDeFlujo, desescapa } from "../scripts/sync/yml.mjs";
 import { slug } from "../scripts/sync/base.mjs";
 import { buscaTienda, filaProducto } from "../scripts/sync/sincronizar.mjs";
@@ -16,6 +16,11 @@ test("categorías: secador de pelo y secadora no se confunden", () => {
   assert.equal(categoriza("Producto raro", "Hogar > Textil > Cojines"), "hogar");
   assert.equal(categoriza("Cosa sin pistas", "", "moda"), "moda");
   assert.equal(categoriza("Cosa sin pistas"), "otros");
+  assert.equal(categoriza("Copos de Cereales sin Gluten y sin Lactosa 300 gr", "", "belleza"), "alimentacion");
+  assert.equal(categoriza("Grisines Ondulados Sin Gluten 150 gr", "", "belleza"), "alimentacion");
+  assert.equal(categoriza("Funda Magnética Transparente para iPhone 16"), "tecnologia");
+  assert.equal(categoriza("Muñeca Glame Up 30 cm con maquillaje"), "peques");
+  assert.equal(categoriza("Pasta de dientes 75 ml"), "belleza");
 });
 
 async function* trozosDe(texto, n = 37) { for (let i = 0; i < texto.length; i += n) yield texto.slice(i, i + n); }
@@ -138,4 +143,10 @@ test("CJ: comisiones con su estado y el id de clic (sid → shopperId)", () => {
   assert.equal(cjComision({ ...base, actionStatus: "closed" }).estado, "pagada");
   assert.equal(cjComision({ ...base, actionStatus: "locked", validationStatus: "DECLINED" }).estado, "anulada");
   assert.equal(cjComision({ ...base, shopperId: "otra-cosa" }).clic_id, null);
+});
+
+test("Títulos sin reclamos delante", () => {
+  assert.equal(limpiaTitulo("¡19% DTO! Gingilacer Cepillo Dental"), "Gingilacer Cepillo Dental");
+  assert.equal(limpiaTitulo("-30% dto Secador  iónico"), "Secador iónico");
+  assert.equal(limpiaTitulo("Cepillo 100% bambú"), "Cepillo 100% bambú");
 });

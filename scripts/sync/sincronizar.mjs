@@ -5,7 +5,7 @@
 //    y GitHub manda un correo.
 // Con DRY_RUN=1 no escribe nada: solo cuenta lo que haría.
 import { supabase, slug, trozos } from "./base.mjs";
-import { categoriza, categoriaTiendaPorDefecto } from "./categorias.mjs";
+import { categoriza, categoriaTiendaPorDefecto, limpiaTitulo } from "./categorias.mjs";
 import * as admitad from "./admitad.mjs";
 import * as cj from "./cj.mjs";
 import * as awin from "./awin.mjs";
@@ -28,7 +28,7 @@ export function filaProducto(tienda, o, visto) {
   return {
     id: `${tienda.id}:${o.ref}`.slice(0, 200),
     tienda_id: tienda.id,
-    titulo: o.titulo.slice(0, 300),
+    titulo: limpiaTitulo(o.titulo).slice(0, 300),
     marca: o.marca?.slice(0, 80) || null,
     categoria: categoriza(o.titulo, o.categoria_tienda, categoriaTiendaPorDefecto(tienda.categoria)),
     categoria_tienda: o.categoria_tienda?.slice(0, 200) || null,
