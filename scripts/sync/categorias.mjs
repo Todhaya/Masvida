@@ -25,6 +25,9 @@ const REGLAS = CATEGORIAS.map(([clave, , palabras]) => [clave, new RegExp("(^|[^
 // Palabras que no dejan duda y pasan por delante del orden general
 // (p. ej. «Copos de cereales sin gluten» en una perfumería es comida, aunque la tienda sea de belleza).
 const SEGURAS = [
+  // cosas de casa que llevan «ropa» o «zapato» en el nombre
+  ["hogar", ["detergente", "suavizante", "cesto", "cesto para ropa", "cesta para ropa", "zapatero", "zapateros", "percha", "perchas", "tendedero",
+    "organizador", "lavanderia", "quitapelusas", "burro para ropa", "armario", "bolsa para ropa sucia"]],
   ["alimentacion", ["sin gluten", "sin lactosa", "galletas", "cereales", "grisines", "infusion", "mermelada", "frutos secos"]],
   ["tecnologia", ["funda", "protector de pantalla", "phone case", "case for"]],
 ].map(([k, ps]) => [k, new RegExp("(^|[^a-z0-9])(" + ps.map((p) => escapa(p)).join("|") + ")s?($|[^a-z0-9])")]);

@@ -59,7 +59,7 @@ async function sincronizaRed(db, red, mod) {
         if (ids.has(id)) id = `${id}-${red}`;
         ids.add(id);
         t = { id, nombre: limpiaNombre(prog.nombre), red_id: red, programa_id: prog.programa_id, web_url: prog.web_url,
-          cashback: prog.cashback, comision_pct: prog.comision_pct ?? null, estado: "aprobada", alta_auto: true, catalogo: true, max_productos: 3000, categoria: null,
+          cashback: prog.cashback, comision_pct: prog.comision_pct ?? null, logo_url: prog.logo_url || null, enlace: prog.enlace || null, estado: "aprobada", alta_auto: true, catalogo: true, max_productos: 3000, categoria: null,
           notas: `Alta automática el ${hoy}. Revisa en su programa si permite mostrar el catálogo y devolver cashback.` };
         if (!SECO) await db.inserta("tiendas", [t]);
         tiendas.push(t);
@@ -69,6 +69,8 @@ async function sincronizaRed(db, red, mod) {
         if (t.estado !== "aprobada" && t.estado !== "pausada") cambios.estado = "aprobada";
         if (t.cashback == null && prog.cashback != null) cambios.cashback = prog.cashback;
         if (prog.comision_pct != null) cambios.comision_pct = prog.comision_pct;
+        if (prog.logo_url) cambios.logo_url = prog.logo_url;
+        if (prog.enlace) cambios.enlace = prog.enlace;
         if (!SECO) await db.actualiza("tiendas", `id=eq.${encodeURIComponent(t.id)}`, cambios);
         Object.assign(t, cambios);
       }
@@ -189,6 +191,7 @@ export async function main() {
     if (r.mensaje) console.log("   " + r.mensaje.replace(/\n/g, "\n   "));
     if (!r.ok) fallos++;
   }
+  if (process.env.AWIN_TOKEN && !SECO) await cargaPromociones(db).catch((e) => console.log("   promociones: " + e.message));
   if (!SECO) await aplicaPropuestas(db).catch((e) => console.log("   propuestas: " + e.message));
   // Reembolsos: la parte de cada casa de las comisiones nuevas o que han cambiado de estado
   if (!SECO) await db.rpc("reparte_comisiones").then((r) => console.log("== reembolsos " + JSON.stringify(r))).catch((e) => console.log("   reembolsos: " + e.message));
@@ -213,6 +216,20 @@ export async function main() {
   }
   if (process.env.EXPORTA) await exportaCandidatos(db, Number(process.env.EXPORTA) || 400);
   if (fallos) process.exitCode = 1;
+}
+
+// Promociones y códigos de Awin → tabla promociones (las enseña Black Friday)
+export async function cargaPromociones(db) {
+  const tiendas = await db.todo("tiendas?select=id,programa_id&red_id=eq.awin&estado=eq.aprobada");
+  const porProg = new Map(tiendas.map((t) => [t.programa_id, t.id]));
+  const visto = new Date().toISOString();
+  const filas = (await awin.promociones()).filter((p) => porProg.has(p.programa_id)).map((p) => ({
+    id: `awin:${p.ref}`, tienda_id: porProg.get(p.programa_id), tipo: p.tipo, titulo: p.titulo, descripcion: p.descripcion,
+    codigo: p.codigo, url: p.url, inicio: p.inicio, fin: p.fin, visto,
+  }));
+  for (const tr of trozos(filas, 500)) await db.inserta("promociones", tr, "id");
+  console.log(`== promociones: ${filas.length}`);
+  return filas.length;
 }
 
 // La selección que propone Claude (data/escaparate.json) entra como «propuesto», con título en español,

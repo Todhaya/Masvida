@@ -65,3 +65,10 @@ test("Awin: salta la foto «noimage» y usa la grande", async () => {
   assert.equal(fotoReal({ merchant_image_url: "", aw_image_url: "https://images2.productserve.com/noimage.gif", large_image: "https://tienda.es/a.jpg" }), "https://tienda.es/a.jpg");
   assert.equal(fotoReal({ aw_image_url: "https://images2.productserve.com/noimage.gif" }), null);
 });
+
+test("Awin: promoción con código y enlace de seguimiento", async () => {
+  const { aPromocion } = await import("../scripts/sync/awin.mjs");
+  const p = aPromocion({ promotionId: 9, type: "voucher", title: "-20 % Black Friday", url: "https://t.es", urlTracking: "https://www.awin1.com/x", voucher: { code: "BF20" }, advertiser: { id: 123 }, endDate: "2026-11-30T23:59:00Z" });
+  assert.deepEqual([p.tipo, p.codigo, p.url, p.programa_id], ["codigo", "BF20", "https://www.awin1.com/x", "123"]);
+  assert.equal(aPromocion({ promotionId: 1, title: "x" }), null);
+});

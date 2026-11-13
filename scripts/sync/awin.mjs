@@ -55,6 +55,7 @@ export function aPrograma(p) {
     nombre: p.name,
     web_url: p.displayUrl || null,
     enlace: enlaceTienda(p.id),
+    logo_url: p.logoUrl || null,
     cashback: null, // Awin no lo dice por API: se comprueba en las condiciones de cada tienda
     pais: p.primaryRegion?.countryCode || null,
     feeds: [],
@@ -221,5 +222,33 @@ export function aComision(t) {
     clic_id: ref && UUID.test(ref) ? ref : null,
     importe_venta: t.saleAmount?.amount ?? null, comision: Number(t.commissionAmount?.amount) || 0,
     estado, fecha: t.transactionDate,
+  };
+}
+
+// Promociones y códigos activos de las tiendas en las que estamos (API de promociones de Awin).
+export async function promociones() {
+  const pub = process.env.AWIN_PUBLISHER_ID, out = [];
+  for (let page = 1; page <= 10; page++) {
+    const r = await fetch(`${API}/publisher/${pub}/promotions?accessToken=${encodeURIComponent(process.env.AWIN_TOKEN)}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filters: { membership: "joined", status: "active", regionCodes: ["ES"] }, pagination: { page, pageSize: 200 } }),
+    });
+    if (!r.ok) throw new Error(`Awin promociones: ${r.status} ${(await r.text()).slice(0, 200)}`);
+    const j = await r.json();
+    const lista = j.data || [];
+    out.push(...lista.map(aPromocion).filter(Boolean));
+    if (lista.length < 200) break;
+  }
+  return out;
+}
+
+export function aPromocion(p) {
+  const url = p.urlTracking || p.url;
+  if (!p.promotionId || !p.title || !url || !p.advertiser?.id) return null;
+  return {
+    ref: String(p.promotionId), programa_id: String(p.advertiser.id),
+    tipo: /voucher/i.test(p.type || "") || p.voucher?.code ? "codigo" : "oferta",
+    titulo: String(p.title).slice(0, 200), descripcion: p.description ? String(p.description).slice(0, 500) : null,
+    codigo: p.voucher?.code || null, url, inicio: p.startDate || null, fin: p.endDate || null,
   };
 }

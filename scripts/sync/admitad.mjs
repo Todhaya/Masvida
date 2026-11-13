@@ -38,6 +38,7 @@ export function aPrograma(p) {
     nombre: p.name,
     web_url: p.site_url || null,
     enlace: p.gotolink || null,
+    logo_url: p.image || null,
     cashback: tipos.length ? tipos.some((t) => t.includes("cashback")) : null,
     feeds: feedsParaEspana(p.feeds_info || []),
     catalogos: (p.feeds_info || []).map((f) => f.name).filter(Boolean),

@@ -205,7 +205,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const eur = n => Number(n).toLocaleString("es-ES", { style: "currency", currency: "EUR" });
 const rpc = (f, body) => fetch(`${C.supabaseUrl}/rest/v1/rpc/${f}`, { method: "POST", headers: H, body: JSON.stringify(body || {}) }).then(r => r.ok ? r.json() : []).catch(() => []);
-const SUBS = { ropa: "Ropa", calzado: "Calzado", bolsos: "Bolsos", joyas: "Joyas y relojes", accesorios: "Accesorios" };
+const SUBS = { ropa: "Ropa", calzado: "Calzado", bolsos: "Bolsos", joyas: "Joyas", bisuteria: "Bisutería", relojes: "Relojes", accesorios: "Accesorios" };
 const est = { q: "", cat: null, sub: null, tienda: null, orden: "relevancia", desde: 0 };
 const params = new URLSearchParams(location.search);
 est.q = params.get("q") || ""; est.cat = params.get("cat"); est.sub = params.get("sub"); $("q").value = est.q;

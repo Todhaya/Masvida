@@ -174,3 +174,10 @@ test("Comisión: el porcentaje más alto, sin pagos fijos", async () => {
   assert.equal(maxPct(["10 EUR"]), null);
   assert.equal(pctAwin({ commissionRange: [{ min: 2, max: 6, type: "percentage" }, { min: 5, max: 5, type: "fix" }] }), 6);
 });
+
+test("Cosas de casa con «ropa» o «zapato» en el nombre van a Hogar", () => {
+  assert.equal(categoriza("Detergente para ropa de color 2 L"), "hogar");
+  assert.equal(categoriza("Cesto para ropa sucia plegable"), "hogar");
+  assert.equal(categoriza("Zapatero de 5 baldas"), "hogar");
+  assert.equal(categoriza("Zapatillas de running"), "deporte");
+});
