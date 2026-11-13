@@ -55,7 +55,12 @@
     const orden = ["moda", "belleza", "peques", "hogar", "cocina", "electrodomesticos", "tecnologia", "deporte", "mascotas", "alimentacion", "viajes", "otros"].filter((k) => n[k]);
     const mio = (k) => ctx.catOn(APP[k] || k);
     const ordenadas = orden.filter(mio).concat(orden.filter((k) => !mio(k)));
-    ctx.el.innerHTML = ctx.top
+    // Bajadas de verdad (campañas): al menos un 10 % bajo el precio más bajo que habíamos visto
+    const ch = self.viwaiCatalogo.chollos ? await self.viwaiCatalogo.chollos() : [];
+    const camp = self.viwaiCampana;
+    const bajadas = ch.length ? `<div class="view" style="gap:8px"><div class="row-h"><div><h2>${esc(camp && camp.empezada ? camp.titulo + ": bajadas de verdad" : "Bajadas de verdad")}</h2><span class="freq">Más baratos que nunca desde que los seguimos</span></div></div><div class="rail">${ch.map((p) => ctx.card(self.viwaiCatalogo.aOferta({ ...p, precio_min_30d: p.minimo_antes }))).join("")}</div></div>` : "";
+    if (E.cat || E.q) return; // la usuaria ya ha cambiado de vista mientras cargaba
+    ctx.el.innerHTML = bajadas + ctx.top
       + `<div class="view" style="gap:10px"><div class="row-h"><div><h2>Categorías</h2><span class="freq">Las tuyas, primero</span></div></div>
          <div class="ccats">${ordenadas.map((k) => `<button class="ccat${mio(k) ? " mio" : ""}" data-ccat="${k}"><i>${ico(ICO[k] || "caja")}</i><span>${esc(NOMBRES[k] || k)}<small>${num(n[k])}</small></span></button>`).join("")}</div></div>`
       + ctx.capr;

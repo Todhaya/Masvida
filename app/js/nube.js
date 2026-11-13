@@ -159,6 +159,21 @@ async function arranca() {
 
 // Catálogo de la web → formato de las ofertas de la app (categorías de la app: super, belleza, mascotas, ninos, moda, deporte, tecnologia, hogar)
 const CAT_APP = { alimentacion: "super", belleza: "belleza", mascotas: "mascotas", peques: "ninos", moda: "moda", deporte: "deporte", tecnologia: "tecnologia", hogar: "hogar", cocina: "hogar", electrodomesticos: "hogar" };
+// Aviso de campaña en Inicio: cuenta atrás la semana antes y «ya ha empezado» mientras dura
+function avisoCampana(c, hoy) {
+  const el = document.getElementById("camp-aviso");
+  if (!el || !c) return;
+  const dias = Math.ceil((new Date(c.inicio) - new Date(hoy)) / 864e5);
+  if (dias > 7) return;
+  const fin = new Date(c.fin).toLocaleDateString("es-ES", { day: "numeric", month: "long" });
+  el.innerHTML = `<button class="tile wide" data-v="ofertas" style="background:var(--ink);color:var(--bg);text-align:left">
+    <span style="opacity:.75">${dias > 0 ? "Muy pronto" : "Ya ha empezado"}</span>
+    <span class="big">${dias > 0 ? `${c.titulo} en ${dias} ${dias === 1 ? "día" : "días"}` : c.titulo}</span>
+    <span style="opacity:.85">${dias > 0 ? "Te enseñaremos solo las bajadas de verdad" : `Solo bajadas de verdad, hasta el ${fin}`}</span></button>`;
+  el.hidden = false;
+  globalThis.viwaiCampana = { ...c, empezada: dias <= 0 };
+}
+
 // Producto del catálogo → oferta de la app («c» es la categoría de la app, «cat» la del catálogo)
 const aOferta = (p) => ({
   id: p.id, c: CAT_APP[p.categoria] || "hogar", cat: p.categoria, n: p.titulo, s: p.tienda, t: p.tienda_id, url: p.url, img: p.imagen,
@@ -172,13 +187,15 @@ async function ofertasReales() {
   globalThis.viwaiCatalogo = {
     cats: () => sb.rpc("categorias_catalogo").then((r) => r.data || [], () => []),
     subs: (cat) => sb.rpc("subcategorias_catalogo", { cat }).then((r) => r.data || [], () => []),
+    chollos: () => sb.rpc("chollos_automaticos", { limite: 12 }).then((r) => r.data || [], () => []),
     busca: (o) => sb.rpc("buscar_productos", { q: o.q || null, cat: o.cat || null, sub: o.sub || null, orden: o.orden || "relevancia", limite: o.limite || 30, desde: o.desde || 0 }).then((r) => r.data || [], () => []),
     aOferta,
   };
   // Chollos de campaña (Black Friday…): se ven dentro de la app para que el clic quede a nombre de la casa
   // y la compra sume reembolso. Si se abrieran en la web, el clic sería anónimo.
   const hoy = new Date().toISOString().slice(0, 10);
-  const { data: camps } = await sb.from("campanas").select("id,titulo").gte("fin", hoy).then((r) => r, () => ({}));
+  const { data: camps } = await sb.from("campanas").select("id,titulo,inicio,fin").gte("fin", hoy).then((r) => r, () => ({}));
+  avisoCampana((camps || []).sort((a, b) => a.inicio.localeCompare(b.inicio))[0], hoy);
   if (camps?.length) {
     const [{ data: co }, { data: ti }] = await Promise.all([
       sb.from("ofertas").select("titulo,tienda_id,url,imagen,categoria,precio,precio_min_30d,campana_id").in("campana_id", camps.map((c) => c.id)).neq("categoria", "tienda"),

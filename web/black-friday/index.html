@@ -250,7 +250,16 @@ footer a{color:var(--brand-strong)}
     });
   }
   const ch = ofertas.filter(o => o.categoria !== "tienda");
-  if (!ch.length) { document.getElementById("vacio").hidden = false; return; }
+  // Sin chollos elegidos a mano: los que de verdad han bajado (al menos un 10 % bajo el precio más bajo que habíamos visto)
+  if (!ch.length) {
+    const auto = await fetch(C.supabaseUrl + "/rest/v1/rpc/chollos_automaticos", { method: "POST", headers: { ...H, "Content-Type": "application/json" }, body: JSON.stringify({ limite: 24 }) }).then(r => r.ok ? r.json() : []).catch(() => []);
+    if (!auto.length) { document.getElementById("vacio").hidden = false; return; }
+    const dia = d => new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+    document.getElementById("chollos").innerHTML = auto.map(o => `<a class="chollo" href="${esc(o.url)}" data-tienda="${esc(o.tienda_id)}" target="_blank" rel="sponsored noopener"><img src="${esc(o.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.chollo').remove()"><div>
+      <span class="d">-${o.bajada} % de verdad</span><span class="t">${esc(o.titulo)}</span><span class="p">${eur(o.precio)}</span>
+      <small>Precio más bajo que habíamos visto desde el ${dia(o.desde)}: ${eur(o.minimo_antes)}</small><small>${esc(o.tienda)}</small></div></a>`).join("");
+    return;
+  }
   document.getElementById("chollos").innerHTML = ch.map(o => {
     const d = o.precio && o.precio_min_30d && o.precio < o.precio_min_30d ? Math.round((1 - o.precio / o.precio_min_30d) * 100) : null;
     return `<a class="chollo" href="${esc(o.url)}" data-tienda="${esc(o.tienda_id)}" target="_blank" rel="sponsored noopener">${o.imagen ? `<img src="${esc(o.imagen)}" alt="" loading="lazy">` : ""}<div>
