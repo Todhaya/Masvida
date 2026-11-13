@@ -23,6 +23,14 @@ export async function programas() {
     try {
       const feeds = await listaFeeds();
       for (const p of lista) p.feeds = feeds.get(p.programa_id) || [];
+      if (process.env.LISTA_REDES) {
+        const csv = await textoPosiblementeGzip(await fetch(process.env.AWIN_FEED_LIST));
+        const filas = leeCSV(csv), cab = filas.shift() || [];
+        console.log("AWIN_FEEDS cabecera: " + cab.join(" | "));
+        const ids = new Set(lista.map((p) => p.programa_id));
+        console.log("AWIN_FEEDS total filas: " + filas.length);
+        for (const f of filas) if (ids.has(String(f[cab.findIndex((c) => /advertiser ?id/i.test(c))]).trim())) console.log("AWIN_FEEDS " + f.slice(0, 12).join(" | "));
+      }
     } catch (e) { console.log("   Awin: sin catálogos (" + e.message + ")"); }
   }
   return lista;
