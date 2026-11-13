@@ -16,6 +16,7 @@
     ayudas: ["ayudas", "Las ayudas, bonos y deducciones que te pueden tocar.", ["Revisa la lista.", "Toca «Cómo pedirla» para ver los pasos y papeles.", "Si cambia tu situación, actualiza el perfil."]],
     gasolina: ["gasolina", "La gasolinera más barata cerca, con precios oficiales del día.", ["Mira la lista.", "Toca «Cómo llegar»."]],
     ofertas: ["ofertas", "Ofertas en lo que compras, con lo que te devolvemos al lado.", ["Busca o entra en una categoría.", "Toca «Ver oferta»: compras en la tienda al mismo precio."]],
+    reclamar: ["monedas", "Recuperar el dinero que te deben: vuelos con retraso, trenes, cobros de más, garantías y devoluciones.", ["Elige qué ha pasado y responde a unas preguntas.", "Te decimos si te toca, cuánto y hasta cuándo.", "Copia la carta y envíala tú. Márcala como enviada y te avisamos si no responden."]],
     reembolso: ["reembolso", "Lo que te devolvemos por tus compras y lo que llevas acumulado.", ["Lo pendiente se confirma cuando la tienda valida la compra.", "Desde 10 € confirmados, «Retirar a mi cuenta»."]],
     menu: ["menu", "Planificar las comidas y tener la lista hecha.", ["Acepta o cambia los platos propuestos.", "En «Compra» tienes la lista por pasillos.", "Marca lo que ya tienes en casa."]],
     tareas: ["tareas", "Repartir las tareas de casa sin discutir.", ["Elige por turnos o equilibrado.", "Marca lo hecho y suma estrellas.", "Canjead premios en «Premios»."]],
