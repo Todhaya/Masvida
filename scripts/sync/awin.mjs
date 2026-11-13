@@ -4,6 +4,7 @@
 // (lleva nuestra clave; por eso va en los secretos). Sin él solo se dan de alta las tiendas.
 import { createGunzip } from "node:zlib";
 import { Readable } from "node:stream";
+import { lectorDe, productosWeb } from "./webs.mjs";
 
 const API = "https://api.awin.com";
 const FEEDS = "https://productdata.awin.com";
@@ -83,6 +84,11 @@ export const urlFeed = (fid, clave = process.env.AWIN_FEED_KEY) =>
 
 export async function* productos(prog, max) {
   let n = 0;
+  // Sin catálogo en Awin: si hay lector de su web (scripts/sync/webs.mjs), se usa con nuestro enlace de Awin
+  if (!(prog.feeds || []).length && lectorDe(prog)) {
+    yield* productosWeb(prog, max, (destino) => `${enlaceTienda(prog.programa_id)}&ued=${encodeURIComponent(destino)}`);
+    return;
+  }
   for (const feed of prog.feeds || []) {
     if (n >= max) return;
     const r = await fetch(/^https?:/.test(feed) ? feed : urlFeed(feed), { signal: AbortSignal.timeout(6 * 60e3) });
