@@ -181,3 +181,11 @@ test("Cosas de casa con «ropa» o «zapato» en el nombre van a Hogar", () => {
   assert.equal(categoriza("Zapatero de 5 baldas"), "hogar");
   assert.equal(categoriza("Zapatillas de running"), "deporte");
 });
+
+test("CJ: fuera los productos que llevan a la web de otro país", async () => {
+  const { deOtroPais } = await import("../scripts/sync/cj.mjs");
+  assert.equal(deOtroPais("https://www.dpbolvw.net/click-1-2?url=https%3A%2F%2Fwww.tous.com%2Fsk-sk%2Fnausnice"), true);
+  assert.equal(deOtroPais("https://www.dpbolvw.net/click-1-2?url=https%3A%2F%2Fwww.tous.com%2Fes-es%2Fanillo"), false);
+  assert.equal(deOtroPais("https://www.tous.com/pt-pt/colar"), true);
+  assert.equal(deOtroPais(null), false);
+});

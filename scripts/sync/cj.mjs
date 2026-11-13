@@ -45,13 +45,23 @@ export async function* productos(prog, max) {
   }
 }
 
+// La web de destino es de otro país (/sk-sk/, /pt/…). Mira también el destino que va dentro del enlace de clic (url=…).
+const OTRO = /^(pt|de|sk|cs|cz|pl|fr|it|nl|en|hu|ro|at|be)([-_][a-z]{2})?$/i;
+export function deOtroPais(enlace) {
+  if (!enlace) return false;
+  let t = String(enlace);
+  for (let i = 0; i < 3; i++) { try { const d = decodeURIComponent(t); if (d === t) break; t = d; } catch { break; } }
+  // solo el primer tramo de la ruta (tous.com/sk-sk/…), para no confundir «-de-» o «/it/» dentro del nombre
+  return t.split(/https?:\/\//).slice(1).some((u) => OTRO.test(u.split(/[?#]/)[0].split("/")[1] || ""));
+}
+
 export function aProducto(p) {
   const precio = Number(p.salePrice?.amount ?? p.price?.amount);
   const moneda = p.salePrice?.currency || p.price?.currency || "EUR";
   const url = p.linkCode?.clickUrl;
   if (!p.id || !p.title || !url || !Number.isFinite(precio) || moneda !== "EUR") return null;
   // Catálogos de varios países (TOUS EU…): fuera los productos de otras webs (Portugal, Alemania, Eslovaquia…)
-  if (p.link && /\/(pt|de|sk|cs|cz|pl|fr|it|nl)([-_][a-z]{2})?\//i.test(new URL(p.link, "https://x").pathname + "/")) return null;
+  if (deOtroPais(p.link) || deOtroPais(url)) return null;
   return {
     ref: String(p.id), titulo: p.title, marca: p.brand || null,
     precio: Math.round(precio * 100) / 100,

@@ -170,9 +170,15 @@ footer a{color:var(--brand-strong)}
 .grupos h2{font-size:clamp(26px,3.6vw,38px);letter-spacing:-.035em}
 .gfila{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
 .gfila::-webkit-scrollbar{display:none}
-.g{flex:none;border:0;border-radius:14px;padding:10px 14px;font:700 14px var(--f);background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
-.g small{font-weight:600;color:var(--muted);font-size:12px}
-.g[aria-pressed=true]{background:var(--brand-strong);color:#fff;box-shadow:none}.g[aria-pressed=true] small{color:rgba(255,255,255,.75)}
+.g{flex:none;width:96px;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:2px;font:700 13px/1.2 var(--f);color:var(--ink);text-align:center}
+.g i{width:54px;height:54px;border-radius:18px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);display:grid;place-items:center;transition:transform .15s}
+.g i svg{width:24px;height:24px}
+.g small{display:block;font-weight:600;color:var(--muted);font-size:11.5px}
+.g:hover i{transform:translateY(-2px)}
+.g[aria-pressed=true] i{background:var(--brand-strong);color:#fff;box-shadow:none}
+.g:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:14px}
+/* En pantallas anchas, las categorías y los grupos caben en varias filas (sin esconderse por la derecha) */
+@media (min-width:760px){.cats{flex-wrap:wrap;overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0}.gfila{flex-wrap:wrap;overflow:visible}}
 .barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:26px 0 6px}
 .barra select{border:1.5px solid var(--line);border-radius:999px;padding:10px 14px;font:600 14px var(--f);background:var(--surface);color:var(--ink)}
 .res{color:var(--muted);font-weight:600}
@@ -225,6 +231,14 @@ const rpc = (f, body) => fetch(`${C.supabaseUrl}/rest/v1/rpc/${f}`, { method: "P
 const ORDEN = ["moda", "belleza", "peques", "hogar", "cocina", "electrodomesticos", "tecnologia", "deporte", "mascotas", "alimentacion", "viajes", "otros"];
 const ICO = { moda: "ropa", belleza: "perfume", peques: "bebe", hogar: "hogar", cocina: "olla", electrodomesticos: "lavadora", tecnologia: "movil", deporte: "pesa", mascotas: "perro", alimentacion: "compra", viajes: "maleta", otros: "caja" };
 let SUBN = {};
+const SUBICO = { ropa: "ropa", calzado: "pisadas", bolsos: "bolso", joyas: "joya", bisuteria: "destellos", relojes: "reloj-pulsera", accesorios: "gafas",
+  perfumes: "perfume", maquillaje: "pincel", cabello: "tijeras", facial: "flor", corporal: "bano", salud: "farmacia", afeitado: "tijeras",
+  bebe: "bebe", construccion: "bloques", munecas: "corazon", juegos: "puzle", educativos: "libro", manualidades: "paleta", exterior: "bici",
+  textil: "cama", orden: "caja", limpieza: "gota", decoracion: "lampara", jardin: "hoja", muebles: "sofa",
+  energia: "bateria", movil: "movil", audio: "auriculares", informatica: "portatil", imagen: "camara",
+  ciclismo: "bici", fitness: "pesa", montana: "montana", agua: "gota", sartenes: "olla", utensilios: "cubiertos", mesa: "cubiertos", conservar: "caja",
+  clima: "termometro", singluten: "hoja", dulce: "galleta", bebidas: "cafe", perros: "perro", gatos: "gato", maletas: "maleta" };
+const subIco = (cat, sub) => sub === "mas" ? "mas" : sub === "cocina" ? "olla" : sub === "limpieza" && cat === "electrodomesticos" ? "lavadora" : sub === "relojes" && cat === "tecnologia" ? "reloj-pulsera" : SUBICO[sub] || "rejilla";
 const est = { q: "", cat: null, sub: null, tienda: null, orden: "relevancia", desde: 0 };
 const params = new URLSearchParams(location.search);
 est.q = params.get("q") || ""; est.cat = params.get("cat"); est.sub = params.get("sub"); $("q").value = est.q;
@@ -278,8 +292,8 @@ async function pintaSubs() {
   if (g.hidden) return;
   $("gtit").textContent = NOMBRES[est.cat] || est.cat;
   const total = filas.reduce((a, f) => a + Number(f.n), 0);
-  $("subs").innerHTML = `<button class="g" data-s="" aria-pressed="${!est.sub}">Todo<small>${total.toLocaleString("es-ES")}</small></button>`
-    + filas.map(f => `<button class="g" data-s="${esc(f.sub)}" aria-pressed="${est.sub === f.sub}">${esc(f.nombre || f.sub)}<small>${Number(f.n).toLocaleString("es-ES")}</small></button>`).join("");
+  $("subs").innerHTML = `<button class="g" data-s="" aria-pressed="${!est.sub}"><i>${viwaiIcono("rejilla")}</i><span>Todo<small>${total.toLocaleString("es-ES")}</small></span></button>`
+    + filas.map(f => `<button class="g" data-s="${esc(f.sub)}" aria-pressed="${est.sub === f.sub}"><i>${viwaiIcono(subIco(est.cat, f.sub))}</i><span>${esc(f.nombre || f.sub)}<small>${Number(f.n).toLocaleString("es-ES")}</small></span></button>`).join("");
 }
 $("cats").onclick = async e => { const b = e.target.closest("button"); if (!b) return; est.cat = b.dataset.c || null; est.sub = null; $("cats").querySelectorAll(".cat").forEach(x => x.setAttribute("aria-pressed", x === b)); await pintaSubs(); busca(); if (est.cat) $("grupos").scrollIntoView({ behavior: "smooth", block: "start" }); };
 $("subs").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.sub = b.dataset.s || null; $("subs").querySelectorAll(".g").forEach(x => x.setAttribute("aria-pressed", x === b)); busca(); };
