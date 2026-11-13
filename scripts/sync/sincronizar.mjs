@@ -59,7 +59,7 @@ async function sincronizaRed(db, red, mod) {
         if (ids.has(id)) id = `${id}-${red}`;
         ids.add(id);
         t = { id, nombre: limpiaNombre(prog.nombre), red_id: red, programa_id: prog.programa_id, web_url: prog.web_url,
-          cashback: prog.cashback, estado: "aprobada", alta_auto: true, catalogo: true, max_productos: 3000, categoria: null,
+          cashback: prog.cashback, comision_pct: prog.comision_pct ?? null, estado: "aprobada", alta_auto: true, catalogo: true, max_productos: 3000, categoria: null,
           notas: `Alta automática el ${hoy}. Revisa en su programa si permite mostrar el catálogo y devolver cashback.` };
         if (!SECO) await db.inserta("tiendas", [t]);
         tiendas.push(t);
@@ -68,6 +68,7 @@ async function sincronizaRed(db, red, mod) {
         const cambios = { programa_id: prog.programa_id };
         if (t.estado !== "aprobada" && t.estado !== "pausada") cambios.estado = "aprobada";
         if (t.cashback == null && prog.cashback != null) cambios.cashback = prog.cashback;
+        if (prog.comision_pct != null) cambios.comision_pct = prog.comision_pct;
         if (!SECO) await db.actualiza("tiendas", `id=eq.${encodeURIComponent(t.id)}`, cambios);
         Object.assign(t, cambios);
       }

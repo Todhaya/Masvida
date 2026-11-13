@@ -5,6 +5,7 @@
 import { createGunzip } from "node:zlib";
 import { Readable } from "node:stream";
 import { lectorDe, productosWeb } from "./webs.mjs";
+import { maxPct } from "./comision.mjs";
 
 const API = "https://api.awin.com";
 const FEEDS = "https://productdata.awin.com";
@@ -20,6 +21,13 @@ export async function programas() {
   const r = await fetch(`${API}/publishers/${pub}/programmes?relationship=joined&accessToken=${encodeURIComponent(process.env.AWIN_TOKEN)}`);
   if (!r.ok) throw new Error(`Awin tiendas: ${r.status} ${(await r.text()).slice(0, 200)}`);
   const lista = (await r.json()).map(aPrograma);
+  // Comisión de cada tienda (porcentaje más alto que publica)
+  for (const p of lista) {
+    try {
+      const d = await fetch(`${API}/publishers/${pub}/programmedetails?advertiserId=${p.programa_id}&relationship=joined&accessToken=${encodeURIComponent(process.env.AWIN_TOKEN)}`);
+      if (d.ok) p.comision_pct = pctAwin(await d.json());
+    } catch (e) { /* sin comisión: no pasa nada */ }
+  }
   // Catálogos de producto (si hay clave de Create-a-Feed)
   if (process.env.AWIN_FEED_LIST) {
     try {
@@ -37,6 +45,8 @@ export async function programas() {
   }
   return lista;
 }
+
+export const pctAwin = (det) => maxPct((det?.commissionRange || []).filter((c) => !c.type || /percent/i.test(c.type)).map((c) => `${c.max ?? c.min}%`));
 
 export function aPrograma(p) {
   return {

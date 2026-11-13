@@ -166,3 +166,11 @@ test("CJ: solo productos de la web española en catálogos de varios países", a
   assert.equal(aProducto({ ...base, link: "https://www.tous.com/pt-pt/colar-urso" }), null);
   assert.equal(aProducto({ ...base, link: "https://www.tous.com/de/kette" }), null);
 });
+
+test("Comisión: el porcentaje más alto, sin pagos fijos", async () => {
+  const { maxPct } = await import("../scripts/sync/comision.mjs");
+  const { pctAwin } = await import("../scripts/sync/awin.mjs");
+  assert.equal(maxPct(["4.5%", "8 %", "5 €"]), 8);
+  assert.equal(maxPct(["10 EUR"]), null);
+  assert.equal(pctAwin({ commissionRange: [{ min: 2, max: 6, type: "percentage" }, { min: 5, max: 5, type: "fix" }] }), 6);
+});

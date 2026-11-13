@@ -1,4 +1,5 @@
 // Viwai · Admitad: programas aprobados del espacio web y sus catálogos de producto (YML).
+import { maxPct } from "./comision.mjs";
 // Necesita ADMITAD_CLIENT_ID, ADMITAD_CLIENT_SECRET y ADMITAD_WEBSITE_ID (espacio web www.viwai.es).
 import { ofertasDeFlujo, textoDeRespuesta } from "./yml.mjs";
 
@@ -40,6 +41,7 @@ export function aPrograma(p) {
     cashback: tipos.length ? tipos.some((t) => t.includes("cashback")) : null,
     feeds: feedsParaEspana(p.feeds_info || []),
     catalogos: (p.feeds_info || []).map((f) => f.name).filter(Boolean),
+    comision_pct: maxPct((p.actions || []).map((a) => a.payment_size)),
   };
 }
 

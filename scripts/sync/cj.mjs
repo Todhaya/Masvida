@@ -1,4 +1,5 @@
 // Viwai · CJ: anunciantes aceptados y sus productos para España (API GraphQL de productos).
+import { maxPct } from "./comision.mjs";
 // Necesita CJ_TOKEN (token de acceso personal), CJ_CID (id de la cuenta) y CJ_PID (id del sitio promocional).
 
 const GQL = "https://ads.api.cj.com/query";
@@ -20,6 +21,7 @@ export function leeAnunciantes(xml) {
     web_url: tag(m[1], "program-url"),
     cashback: null,
     relacion: tag(m[1], "relationship-status"),
+    comision_pct: maxPct([...m[1].matchAll(/<default[^>]*>([^<]*)<\/default>/g)].map((x) => x[1])),
   })).filter((a) => a.programa_id && (!a.relacion || a.relacion === "joined"));
 }
 
