@@ -232,13 +232,17 @@ footer a{color:var(--brand-strong)}
   const pon = (id, url, texto) => { const k = nombre(id).toLowerCase(); if (vistas.has(k) || !url) return; vistas.add(k); tarjetas.push({ id, url, texto }); };
   ofertas.filter(o => o.categoria === "tienda").forEach(o => pon(o.tienda_id, o.url, o.titulo));
   tiendas.filter(t => t.enlace && t.id !== "petolo").forEach(t => { const pr = promos.find(p => p.tienda_id === t.id); pon(t.id, t.enlace, pr ? pr.titulo : (CATS[t.categoria] || "Ver sus ofertas")); });
+  // Orden fijo que decide Alba (13 nov 2026); las demás, detrás
+  const ORDEN = ["amazon", "ecoflow", "mibro", "tous", "primor", "eurekakids", "juguetesonline", "temu", "aliexpress"];
+  const clave = id => { const k = nombre(id).toLowerCase().normalize("NFD").replace(/[^a-z]/g, ""); const i = ORDEN.findIndex(o => k.startsWith(o) || String(id).toLowerCase().replace(/[^a-z]/g, "").startsWith(o)); return i < 0 ? 99 : i; };
+  tarjetas.sort((a, b) => clave(a.id) - clave(b.id));
   document.getElementById("tiendas").innerHTML = tarjetas.map(o => `<a class="tienda" href="${esc(o.url)}" data-tienda="${esc(o.id)}" target="_blank" rel="sponsored noopener"><span class="ti" aria-hidden="true">${esc(nombre(o.id))[0]}<img src="${esc(logo(o.id))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span><b>${esc(nombre(o.id))}</b><span>${esc(o.texto)}</span><i>Ver ofertas →</i></a>`).join("");
   // Una tarjeta por tienda (con sus promociones dentro), sin repetir la misma promoción
   const porTienda = new Map();
   promos.forEach(p => { const g = porTienda.get(p.tienda_id) || { ...p, lista: [] }; if (!g.lista.some(x => x.titulo.toLowerCase().split("|")[0].trim() === p.titulo.toLowerCase().split("|")[0].trim())) g.lista.push(p); porTienda.set(p.tienda_id, g); });
   if (porTienda.size) {
     document.getElementById("promos-band").hidden = false;
-    document.getElementById("promos").innerHTML = [...porTienda.values()].map(g => `<a class="promo" href="${esc(g.lista[0].url)}" data-tienda="${esc(g.tienda_id)}" target="_blank" rel="sponsored noopener">
+    document.getElementById("promos").innerHTML = [...porTienda.values()].sort((a, b) => clave(a.tienda_id) - clave(b.tienda_id)).map(g => `<a class="promo" href="${esc(g.lista[0].url)}" data-tienda="${esc(g.tienda_id)}" target="_blank" rel="sponsored noopener">
       <span class="pt"><img src="${esc(g.logo_url || `/img/logos/${g.tienda_id}.png`)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${esc(g.tienda)}</span>
       ${g.lista.slice(0, 3).map(p => `<b>${esc(p.titulo.split("|")[0].trim())}</b>${p.codigo ? `<button type="button" class="cod" data-cod="${esc(p.codigo)}">Código: ${esc(p.codigo)} · copiar</button>` : ""}`).join("")}
       ${g.lista[0].fin ? `<small>Hasta el ${new Date(g.lista[0].fin).toLocaleDateString("es-ES", { day: "numeric", month: "long" })}</small>` : ""}<i>Ir a la tienda →</i></a>`).join("");
