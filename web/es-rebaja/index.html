@@ -143,7 +143,8 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
     const otra = !tienda && !/viwai\./.test(h);
     const trozos = u.pathname.split("/").filter(Boolean).map(s => decodeURIComponent(s).replace(/\.(html?|php)$/i, ""));
     const largo = trozos.sort((a, b) => b.split(/[-_]/).length - a.split(/[-_]/).length)[0] || "";
-    const q = largo.split(/[-_+\s]+/).filter(w => w.length > 1 && !/\d{3,}/.test(w) && !/^(p|dp|item|product|producto|es|es-es)$/i.test(w)).slice(0, 6).join(" ");
+    const VACIAS = /^(p|dp|item|items|product|products|producto|productos|es|es-es|de|del|la|las|el|los|con|sin|y|e|o|para|por|en|un|una|al|a)$/i;
+    const q = largo.split(/[-_+\s]+/).filter(w => w.length > 1 && !/\d{3,}/.test(w) && !VACIAS.test(w)).slice(0, 4).join(" ");
     return { q, tienda, otra };
   }
 
@@ -157,9 +158,13 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
     }
     if (!l.q) return estado("Escribe el nombre del producto o pega su enlace.");
     estado("Buscando…");
-    let filas = await rpc("buscar_productos", { q: l.q, tienda: l.tienda, orden: "relevancia", limite: 12, desde: 0 });
-    if (l.tienda && filas && !filas.length) filas = await rpc("buscar_productos", { q: l.q, orden: "relevancia", limite: 12, desde: 0 });
-    if (!filas) return estado("Ahora mismo no podemos comprobarlo. Inténtalo de nuevo en un rato.");
+    const pide = (q, tienda) => rpc("buscar_productos", { q, tienda: tienda || null, orden: "relevancia", limite: 12, desde: 0 });
+    const corta = l.q.split(" ").slice(0, 2).join(" ");
+    let filas = await pide(l.q, l.tienda);
+    if (l.tienda && !(filas && filas.length)) filas = await pide(l.q);
+    if (!(filas && filas.length) && corta !== l.q) filas = await pide(corta, l.tienda);
+    if (!filas && !l.otra) return estado("Ahora mismo no podemos comprobarlo. Inténtalo de nuevo en un rato.");
+    filas = filas || [];
     if (!filas.length) return estado(l.otra ? "De esa tienda aún no guardamos precios, y no tenemos ese producto en las nuestras." : `No encontramos «${l.q}» entre los productos que seguimos. Prueba con menos palabras o con la marca.`);
     if (l.otra) { estado("De esa tienda aún no guardamos precios. Estos productos parecidos sí los seguimos en nuestras tiendas:"); }
     else if (filas.length === 1) return muestra(filas[0]);
