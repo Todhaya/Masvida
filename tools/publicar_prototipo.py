@@ -18,6 +18,8 @@ for js in ("js/archivos.js", "vendor/qrcode.js", "js/codigos.js"):
 # El lector de códigos se carga al escanear; en el prototipo va incluido porque no hay carpeta vendor/
 cuerpo = cuerpo.replace('<script>\n' + open("app/js/codigos.js", encoding="utf-8").read(), "<script>\n" + open("app/vendor/html5-qrcode.min.js", encoding="utf-8").read() + "</script>\n<script>\n" + open("app/js/codigos.js", encoding="utf-8").read(), 1)
 cuerpo = cuerpo.replace('<script src="js/ayuda.js"></script>', "<script>\n" + open("app/js/ayuda.js", encoding="utf-8").read() + "</script>")
+for js in ("js/cesta.js", "js/catalogo.js"):
+    cuerpo = cuerpo.replace(f'<script src="{js}"></script>', "<script>\n" + open("app/" + js, encoding="utf-8").read() + "</script>")
 # Bienvenida de muestra (como la ve una casa nueva), desde «Tú»: sin guardar nada
 ayu = open("app/js/ayudas.js", encoding="utf-8").read()
 bv = "\n".join(l for l in open("app/js/bienvenida.js", encoding="utf-8").read().splitlines() if not l.startswith("import "))
