@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Es rebaja de verdad? · Viwai</title>
+<meta name="description" content="Pega el enlace o escribe el nombre del producto y mira a qué precio lo hemos visto antes. Comprueba si una oferta de Black Friday es rebaja de verdad.">
+<meta property="og:title" content="¿Es rebaja de verdad? · Viwai">
+<meta property="og:description" content="Comprueba si un descuento es de verdad: el precio de hoy contra el más bajo que hemos visto.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="/diseno/tokens.css">
+<style>
+/* Estilo de los anuncios: bandas a sangre de color pastel, titulares grandes y pantallas reales de la app */
+:root{
+  --bg:#FAFAF8; --ink:#0F0F0E; --muted:#55544F; --line:#E4E3DE; --surface:#FFFFFF;
+  --peach:#FFD9C7; --lav:#E4DDFF; --mint:#CDEFDD; --sky:#D5E7FF; --butter:#FFEFB5; --cream:#FFF4C9;
+  --brand:#7B5CFF; --brand-strong:#5B3FE0; --wave:#7B5CFF; --gold:#F5B400; --p-ink:#0F0F0E;
+  --f:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-weight:800;letter-spacing:-.04em;line-height:1.02;margin:0;text-wrap:balance}
+h2{font-size:clamp(34px,5.4vw,64px)}
+h3{font-size:21px;letter-spacing:-.02em}
+p{margin:0}
+.eye{display:block;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:16px}
+header{position:sticky;top:0;z-index:5;background:rgba(250,250,248,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+header .in{display:flex;justify-content:space-between;align-items:center;padding-block:12px}
+.logo{display:flex;align-items:center;color:var(--ink)}
+.btn{border:0;border-radius:999px;padding:15px 24px;font:800 16px var(--f);background:var(--ink);color:#FAFAF8;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.lila{background:var(--brand-strong);color:#fff}
+.btn.peach{background:var(--peach);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+
+
+.hero{background:var(--ink);color:#FAFAF8;padding-block:72px 56px}
+.hero .eye{color:var(--gold);opacity:1}
+.hero h1{font-size:clamp(40px,6.4vw,84px);letter-spacing:-.045em}
+.hero h1 .c{color:var(--peach)}
+.hero .sub{font-size:clamp(18px,2vw,22px);font-weight:700;line-height:1.35;margin-top:18px;max-width:30em;opacity:.9}
+.busca{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;max-width:760px}
+.busca input{flex:1 1 280px;min-width:0;border:0;border-radius:999px;padding:16px 22px;font:600 17px var(--f);background:#FAFAF8;color:#0F0F0E}
+.busca .btn{background:var(--peach);color:#0F0F0E}
+.hero small{display:block;margin-top:12px;font-size:14px;opacity:.65}
+.band{padding-block:48px}
+.estado{font-weight:700;color:var(--muted);scroll-margin-top:90px}
+.res{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:16px}
+.res button{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;text-align:left;border:0;background:var(--surface);border-radius:20px;padding:10px;cursor:pointer;box-shadow:inset 0 0 0 1.5px var(--line);font:inherit;color:var(--ink);min-width:0}
+.res button:hover{box-shadow:inset 0 0 0 2px var(--brand)}
+.res img{width:64px;height:64px;object-fit:contain;border-radius:12px;background:#fff}
+.res b{display:block;font-size:15px;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.res span{font-size:13px;color:var(--muted)}
+.ver{display:grid;grid-template-columns:200px 1fr;gap:28px;background:var(--surface);border-radius:30px;padding:24px;box-shadow:0 30px 60px -40px rgba(30,20,60,.4);margin-top:8px}
+.ver>img{width:100%;aspect-ratio:1;object-fit:contain;border-radius:20px;background:#fff}
+.ver .d{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ver h2{font-size:clamp(24px,3vw,34px)}
+.veredicto{border-radius:20px;padding:16px 18px;font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.25}
+.veredicto small{display:block;font-weight:600;font-size:15px;letter-spacing:0;margin-top:6px;opacity:.8}
+.si{background:var(--mint)}.igual{background:var(--butter)}.no{background:var(--peach)}.poco{background:var(--sky)}
+.cifras{display:flex;gap:22px;flex-wrap:wrap}
+.cifras div{display:flex;flex-direction:column}
+.cifras b{font-size:26px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.cifras span{font-size:13px;color:var(--muted)}
+.graf svg{width:100%;height:120px;display:block}
+.graf p{font-size:13px;color:var(--muted)}
+.acciones{display:flex;gap:10px;flex-wrap:wrap}
+.avisa{display:grid;gap:10px;background:var(--lav);border-radius:20px;padding:16px}
+.avisa .fila{display:flex;gap:8px;flex-wrap:wrap}
+.avisa input[type=email]{flex:1 1 220px;min-width:0;border:2px solid var(--ink);border-radius:999px;padding:12px 18px;font:600 16px var(--f);background:var(--surface);color:var(--ink)}
+.avisa .chk{display:flex;gap:8px;font-size:14px;color:var(--muted);align-items:flex-start}
+.avisa .chk input{margin-top:4px;accent-color:var(--brand-strong)}
+.trampa{position:absolute;left:-9999px}
+.como{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.como div{border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.como p{font-size:15px;opacity:.85}
+@media (max-width:760px){.ver{grid-template-columns:1fr}.ver>img{max-width:150px}.como{grid-template-columns:1fr}}
+.menu{display:flex;gap:18px;margin-left:auto;margin-right:16px;align-items:center}.menu a{color:inherit;font-weight:700;text-decoration:none;font-size:15px}.menu a:hover{text-decoration:underline}.menu a[aria-current]{color:var(--brand-strong,#5B3FE0)}@media(max-width:520px){.menu{gap:12px;margin-right:10px}.menu a{font-size:14px}.menu .bfl{display:none}}
+</style>
+</head>
+<body>
+<header><div class="in"><a class="logo" href="/" aria-label="Viwai"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2621 850" height="40" role="img" aria-label="Viwai"><g transform="translate(0 850.5) scale(1 -1)"><path transform="translate(0 0)" d="M226 0 11 546H173L291 219L409 546H571L356 0Z" fill="currentColor"/><path transform="translate(562 0)" d="M55 595V745H205V595ZM55 0V546H205V0Z" fill="currentColor"/><path d="M877.0 471.0 C967.2 471.0 991.8 75.0 1082.0 75.0 C1172.2 75.0 1196.8 471.0 1287.0 471.0 C1377.2 471.0 1401.8 75.0 1492.0 75.0 C1582.2 75.0 1606.8 471.0 1697.0 471.0" fill="none" stroke="var(--wave)" stroke-width="150" stroke-linecap="round"/><path transform="translate(1812.0 0)" d="M224 -12Q136 -12 84.5 30.0Q33 72 33 146Q33 215 81.0 260.0Q129 305 227 321L378 345V360Q378 391 353.5 412.0Q329 433 287 433Q247 433 216.5 411.0Q186 389 172 353L52 410Q76 478 141.5 518.0Q207 558 294 558Q363 558 416.0 533.0Q469 508 498.5 463.5Q528 419 528 360V0H388V51Q326 -12 224 -12ZM188 151Q188 126 207.0 112.0Q226 98 254 98Q310 98 344.0 133.0Q378 168 378 218V235L254 213Q222 207 205.0 192.5Q188 178 188 151Z" fill="currentColor"/><path transform="translate(2375.0 0)" d="M44 0V546H194V0Z" fill="currentColor"/><circle cx="2494.0" cy="733.5" r="117.0" fill="#F5B400"/><circle cx="2494.0" cy="733.5" r="74.88" fill="none" stroke="#FFF4C9" stroke-width="19.5"/></g></svg></a><nav class="menu" aria-label="Secciones"><a href="/ofertas/">Ofertas</a><a class="bfl" href="/black-friday/">Black Friday</a><a class="bfl" href="/es-rebaja/" aria-current="page">¿Es rebaja?</a></nav><a class="btn lila" href="/#lista">Apúntate</a></div></header>
+<main>
+<section class="hero"><div class="in">
+  <span class="eye">Comprobador de precios</span>
+  <h1>¿Es rebaja <span class="c">de verdad?</span></h1>
+  <p class="sub">Pega el enlace del producto o escribe su nombre. Te decimos a qué precio lo hemos visto antes y si hoy está de verdad más barato.</p>
+  <form class="busca" id="fb" role="search"><input id="q" type="text" inputmode="search" autocomplete="off" placeholder="Enlace del producto o nombre (p. ej. «Tous pulsera oso»)" aria-label="Enlace o nombre del producto"><button class="btn" type="submit">Comprobar</button></form>
+  <small>Tous, Primor, Eurekakids, Juguetes Online, EcoFlow, Mibro, AliExpress y más tiendas.</small>
+</div></section>
+
+<section class="band"><div class="in">
+  <p class="estado" id="estado" hidden></p>
+  <div id="ver"></div>
+  <div class="res" id="res"></div>
+</div></section>
+
+<section class="band cream"><div class="in">
+  <div class="sec-h"><span class="eyebrow">Cómo lo sabemos</span><h2>Precios guardados, no prometidos</h2></div>
+  <div class="como">
+    <div class="mint"><b>Guardamos el precio cada día</b><p>De cada producto de nuestras tiendas, para saber cuánto costaba de verdad antes de las ofertas.</p></div>
+    <div class="butter"><b>Lo comparamos con el más bajo</b><p>Por ley, una rebaja se calcula sobre el precio más bajo de los 30 días anteriores. Si sube en octubre para «bajar» en noviembre, lo verás.</p></div>
+    <div class="sky"><b>Sin letra pequeña</b><p>Si aún tenemos pocos días de un producto, te lo decimos. El precio que vale es el de la tienda al comprar.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="in">
+  <nav><a href="/legal/aviso-legal.html">Aviso legal</a><a href="/legal/privacidad.html">Privacidad</a><a href="/legal/cookies.html">Cookies</a><a href="/legal/condiciones.html">Condiciones</a></nav>
+  <p class="aviso">Los enlaces de esta página son de afiliación: si compras desde ellos, la tienda nos paga por la recomendación y a ti te cuesta lo mismo. En la web no hay reembolso; eso llega con la app. Como Afiliado de Amazon, Viwai obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Precios y disponibilidad pueden cambiar: el precio que vale es el de la tienda en el momento de comprar.</p>
+</div></footer>
+
+<script src="/config.js"></script>
+<script src="/cuenta.js" defer></script>
+<script type="module" src="/clic.js"></script>
+<script>
+(() => {
+  const C = window.VIWAI || {}, H = { apikey: C.supabaseAnonKey, "Content-Type": "application/json" };
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const eur = n => Number(n).toLocaleString("es-ES", { style: "currency", currency: "EUR" });
+  const dia = d => new Date(d + "T12:00").toLocaleDateString("es-ES", { day: "numeric", month: "long" });
+  const rpc = (f, b) => fetch(C.supabaseUrl + "/rest/v1/rpc/" + f, { method: "POST", headers: H, body: JSON.stringify(b) }).then(r => r.ok ? r.json() : null).catch(() => null);
+  const TIENDAS = [[/tous\./, "tous"], [/primor\./, "primor"], [/eurekakids\./, "eurekakids"], [/juguetesonline\./, "juguetesonline"], [/ecoflow/, "ecoflow"], [/mibro/, "mibro"], [/aliexpress\./, "aliexpress"]];
+  const SIN = [[/amazon\./, "Amazon"], [/temu\./, "Temu"]];
+  const estado = t => { const e = $("#estado"); e.textContent = t || ""; e.hidden = !t; };
+
+  // De un enlace sacamos la tienda y las palabras del producto (lo que va en la dirección)
+  function lee(txt) {
+    let u; try { u = new URL(txt.trim()); } catch { return { q: txt.trim() }; }
+    const h = u.hostname.toLowerCase();
+    const sin = SIN.find(([re]) => re.test(h)); if (sin) return { sin: sin[1] };
+    const tienda = (TIENDAS.find(([re]) => re.test(h)) || [])[1] || null;
+    const trozos = u.pathname.split("/").filter(Boolean).map(s => decodeURIComponent(s).replace(/\.(html?|php)$/i, ""));
+    const largo = trozos.sort((a, b) => b.split(/[-_]/).length - a.split(/[-_]/).length)[0] || "";
+    const q = largo.split(/[-_+\s]+/).filter(w => w.length > 1 && !/\d{3,}/.test(w) && !/^(p|dp|item|product|producto|es|es-es)$/i.test(w)).slice(0, 6).join(" ");
+    return { q, tienda };
+  }
+
+  async function busca(txt) {
+    $("#ver").innerHTML = ""; $("#res").innerHTML = "";
+    const l = lee(txt);
+    if (l.sin) return estado(`De ${l.sin} todavía no guardamos el historial de precios. Mira las tiendas que sí comprobamos en la página de Black Friday.`);
+    if (!l.q) return estado("Escribe el nombre del producto o pega su enlace.");
+    estado("Buscando…");
+    let filas = await rpc("buscar_productos", { q: l.q, tienda: l.tienda, orden: "relevancia", limite: 12, desde: 0 });
+    if (l.tienda && filas && !filas.length) filas = await rpc("buscar_productos", { q: l.q, orden: "relevancia", limite: 12, desde: 0 });
+    if (!filas) return estado("Ahora mismo no podemos comprobarlo. Inténtalo de nuevo en un rato.");
+    if (!filas.length) return estado(`No encontramos «${l.q}» entre los productos que seguimos. Prueba con menos palabras o con la marca.`);
+    if (filas.length === 1) return muestra(filas[0]);
+    estado("¿Cuál es? Elige el producto:"); setTimeout(() => $("#estado").scrollIntoView({ behavior: "smooth" }), 50);
+    $("#res").innerHTML = filas.map((p, i) => `<button type="button" data-i="${i}"><img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span><b>${esc(p.titulo)}</b><span>${esc(p.tienda)} · ${eur(p.precio)}</span></span></button>`).join("");
+    $("#res").onclick = e => { const b = e.target.closest("[data-i]"); if (b) { muestra(filas[b.dataset.i]); scrollTo({ top: $("#estado").offsetTop - 80, behavior: "smooth" }); } };
+  }
+
+  function grafico(h) {
+    if (h.length < 2) return "";
+    const W = 600, A = 110, ps = h.map(x => Number(x.precio)), mn = Math.min(...ps), mx = Math.max(...ps), r = mx - mn || 1;
+    const pts = ps.map((p, i) => `${(i / (ps.length - 1) * W).toFixed(1)},${(8 + (1 - (p - mn) / r) * (A - 16)).toFixed(1)}`).join(" ");
+    return `<div class="graf"><svg viewBox="0 0 ${W} ${A}" preserveAspectRatio="none" role="img" aria-label="Evolución del precio"><polyline points="${pts}" fill="none" stroke="var(--brand-strong)" stroke-width="3" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg><p>Del ${dia(h[0].fecha)} a hoy · entre ${eur(mn)} y ${eur(mx)}</p></div>`;
+  }
+
+  async function muestra(p) {
+    estado(""); $("#res").innerHTML = "";
+    const h = (await rpc("historial_precio", { pid: p.id })) || [];
+    const hoy = Number(p.precio), antes = h.slice(0, -1).map(x => Number(x.precio));
+    const minAntes = antes.length ? Math.min(...antes) : (p.precio_min_30d ? Number(p.precio_min_30d) : null);
+    const cuando = antes.length ? h.slice(0, -1).find(x => Number(x.precio) === minAntes)?.fecha : null;
+    const desde = h.length ? h[0].fecha : null, dias = h.length;
+    let v;
+    if (minAntes == null) v = ["poco", "Todavía no tenemos su precio de antes", "Lo acabamos de empezar a seguir. Vuelve en unos días y te lo diremos."];
+    else if (hoy <= minAntes * 0.97) v = ["si", `Sí: es el precio más bajo que hemos visto (−${Math.round((1 - hoy / minAntes) * 100)} %)`, `Antes, lo más barato que lo vimos fue ${eur(minAntes)}${cuando ? " el " + dia(cuando) : ""}.`];
+    else if (hoy <= minAntes * 1.01) v = ["igual", "Está a su precio más bajo, pero no ha bajado más", `Ya lo vimos a ${eur(minAntes)}${cuando ? " el " + dia(cuando) : ""}. Si no lo necesitas ya, puedes esperar.`];
+    else v = ["no", "No: lo hemos visto más barato", `Estuvo a ${eur(minAntes)}${cuando ? " el " + dia(cuando) : ""}. Hoy cuesta ${eur(hoy - minAntes)} más.`];
+    const nota = desde && dias < 30 ? `<p class="graf"><small>Lo seguimos desde el ${dia(desde)}: con más días, la comparación será más completa.</small></p>` : "";
+    const avisos = C.avisos ? `<form class="avisa" id="fa" novalidate><b>Avísame si baja de ${eur(hoy)}</b><div class="fila"><input type="email" name="email" autocomplete="email" placeholder="Tu correo" aria-label="Tu correo"><button class="btn lila" type="submit">Avísame</button></div><input class="trampa" name="web" tabindex="-1" autocomplete="off" aria-hidden="true"><label class="chk"><input type="checkbox" name="ok"><span>Quiero que Viwai me escriba cuando baje este producto y con ofertas de esta tienda. Puedo darme de baja cuando quiera. <a href="/legal/privacidad.html">Privacidad</a></span></label><p class="estado" id="fam" hidden></p></form>` : "";
+    $("#ver").innerHTML = `<article class="ver"><img src="${esc(p.imagen)}" alt="" referrerpolicy="no-referrer"><div class="d">
+      <span class="eyebrow">${esc(p.tienda)}</span><h2>${esc(p.titulo)}</h2>
+      <div class="veredicto ${v[0]}">${esc(v[1])}<small>${esc(v[2])}</small></div>
+      <div class="cifras"><div><b>${eur(hoy)}</b><span>Hoy</span></div>${minAntes != null ? `<div><b>${eur(minAntes)}</b><span>Lo más barato antes</span></div>` : ""}</div>
+      ${grafico(h)}${nota}
+      <div class="acciones"><a class="btn" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" data-origen="web-es-rebaja" target="_blank" rel="sponsored noopener">Ver en ${esc(p.tienda)} →</a><button class="btn ghost" type="button" id="otro">Comprobar otro</button></div>
+      ${avisos}</div></article>`;
+    $("#estado").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("#otro").onclick = () => { $("#ver").innerHTML = ""; $("#q").value = ""; $("#q").focus(); };
+    const f = $("#fa");
+    if (f) f.addEventListener("submit", async e => {
+      e.preventDefault(); const m = $("#fam"), di = t => { m.textContent = t; m.hidden = false; };
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email.value.trim())) return di("Revisa tu correo: parece que falta algo.");
+      if (!f.ok.checked) return di("Marca la casilla para que podamos escribirte.");
+      const r = await fetch(C.supabaseUrl + "/functions/v1/avisame", { method: "POST", headers: H, body: JSON.stringify({ email: f.email.value.trim(), web: f.web.value, origen: "es-rebaja", tiendas: [p.tienda_id], producto: p.id, precio: hoy }) }).catch(() => null);
+      di(r && r.ok ? "Te hemos enviado un correo: pulsa el botón de dentro para confirmar." : "Ahora mismo no hemos podido apuntarte. Inténtalo de nuevo en un rato.");
+    });
+  }
+
+  $("#fb").addEventListener("submit", e => { e.preventDefault(); const t = $("#q").value; history.replaceState(null, "", "?q=" + encodeURIComponent(t)); busca(t); });
+  const q0 = new URLSearchParams(location.search).get("q"); if (q0) { $("#q").value = q0; busca(q0); }
+})();
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors(o) });
   if (req.method !== "POST") return json(o, { error: "metodo" }, 405);
   if (!KEY || !LISTA || !PLANTILLA) return json(o, { error: "no_configurado" }, 503);
-  let b: { email?: string; tiendas?: string[]; origen?: string; web?: string };
+  let b: { email?: string; tiendas?: string[]; origen?: string; web?: string; producto?: string; precio?: number };
   try { b = await req.json(); } catch { return json(o, { error: "datos" }, 400); }
   if (b.web) return json(o, { ok: true }); // campo trampa: los robots lo rellenan
   const email = String(b.email ?? "").trim().toLowerCase();
@@ -36,7 +36,8 @@ Deno.serve(async (req) => {
       includeListIds: [LISTA],
       templateId: PLANTILLA,
       redirectionUrl: "https://www.viwai.es/black-friday/?confirmado=1",
-      attributes: { TIENDAS: tiendas.join(","), ORIGEN: String(b.origen ?? "web").slice(0, 40), CONSENTIMIENTO: new Date().toISOString() },
+      attributes: { TIENDAS: tiendas.join(","), ORIGEN: String(b.origen ?? "web").slice(0, 40), CONSENTIMIENTO: new Date().toISOString(),
+        ...(b.producto ? { ALERTA_PRODUCTO: String(b.producto).slice(0, 120), ALERTA_PRECIO: Number(b.precio) || null } : {}) },
     }),
   });
   if (!r.ok && r.status !== 204) {
