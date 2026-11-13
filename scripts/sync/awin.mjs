@@ -63,11 +63,13 @@ export function feedsPorTienda(csv) {
   const busca = (...n) => cab.findIndex((c) => n.some((x) => c === x || c.replace(/[^a-z]/g, "") === x.replace(/[^a-z]/g, "")));
   const [iAdv, iFeed, iLang, iMem, iUrl] = [busca("advertiser id", "advertiserid"), busca("feed id", "feedid"), busca("language"),
     busca("membership status", "membershipstatus"), busca("url", "download url")];
+  const iFmt = busca("datafeed format", "format");
   const m = new Map();
   for (const f of filas) {
     if (!f[iAdv] || !f[iFeed]) continue;
     if (iMem >= 0 && !/^\s*(active|joined)\s*$/i.test(f[iMem] || "")) continue;
-    if (iLang >= 0 && f[iLang] && !/^es/i.test(f[iLang])) continue;
+    if (iLang >= 0 && f[iLang] && !/^(es|spanish|español|castellano)/i.test(f[iLang].trim())) continue;
+    if (iFmt >= 0 && /google/i.test(f[iFmt] || "")) continue; // los de formato Google no se descargan con la API de feeds
     const id = String(f[iAdv]).trim();
     if (!m.has(id)) m.set(id, []);
     m.get(id).push(iUrl >= 0 && f[iUrl] ? f[iUrl].trim() : String(f[iFeed]).trim());

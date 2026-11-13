@@ -46,3 +46,16 @@ test("Awin y Admitad: comisiones al formato del panel", async () => {
   const ad = (await import("../scripts/sync/admitad.mjs")).aComision({ action_id: 5, advcampaign_id: 6115, payment: "1.50", cart: "30", status: "declined", action_date: "2026-11-27 12:00:00", subid: "x" });
   assert.deepEqual([ad.red, ad.estado, ad.comision, ad.clic_id], ["admitad", "anulada", 1.5, null]);
 });
+
+test("lista de catálogos real: idioma «Spanish» y se saltan los de formato Google", () => {
+  const csv = [
+    "Advertiser ID,Advertiser Name,Primary Region,Membership Status,Datafeed Format,Feed ID,Feed Name,Language,Vertical,Last Imported,Last Checked,No of products,URL",
+    "25464,Primor ES,ES,active,Awin,87529,Primor,Spanish,,x,x,26861,",
+    "112796,JUGUETESONLINE ES,ES,active,Google,F3328,,Spanish,Retail,x,x,2001,",
+    "11640,Aliexpress ES,ES,active,Awin,38653,Computer,English,,x,x,895,",
+  ].join("\n");
+  const m = feedsPorTienda(csv);
+  assert.deepEqual(m.get("25464"), ["87529"]);
+  assert.equal(m.has("112796"), false);
+  assert.equal(m.has("11640"), false);
+});
