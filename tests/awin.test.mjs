@@ -59,3 +59,9 @@ test("lista de catálogos real: idioma «Spanish» y se saltan los de formato Go
   assert.equal(m.has("112796"), false);
   assert.equal(m.has("11640"), false);
 });
+
+test("Awin: salta la foto «noimage» y usa la grande", async () => {
+  const { fotoReal } = await import("../scripts/sync/awin.mjs");
+  assert.equal(fotoReal({ merchant_image_url: "", aw_image_url: "https://images2.productserve.com/noimage.gif", large_image: "https://tienda.es/a.jpg" }), "https://tienda.es/a.jpg");
+  assert.equal(fotoReal({ aw_image_url: "https://images2.productserve.com/noimage.gif" }), null);
+});

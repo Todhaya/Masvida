@@ -207,7 +207,7 @@ est.q = params.get("q") || ""; est.cat = params.get("cat"); $("q").value = est.q
 const marca = m => m ? m.replace(/(^|[\s-])(\p{L})/gu, (x, a, b) => a + b.toUpperCase()) : "";
 function tarjeta(p) {
   return `<a class="chollo" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" target="_blank" rel="sponsored noopener">
-    <span class="im"><img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.chollo').remove()">${p.descuento ? `<span class="d">-${p.descuento} %</span>` : ""}</span>
+    <span class="im"><img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.chollo').remove()" onload="if(this.naturalWidth<120)this.closest('.chollo').remove()">${p.descuento ? `<span class="d">-${p.descuento} %</span>` : ""}</span>
     <span class="tx"><span class="t">${esc(p.titulo)}</span>
     <span class="p">${eur(p.precio)}</span>${p.descuento ? `<small>Precio más bajo de los 30 días anteriores: ${eur(p.precio_min_30d)}</small>` : ""}
     <small><span class="ti">${esc(p.tienda)}</span>${p.marca ? " · " + esc(marca(p.marca)) : ""}</small></span></a>`;

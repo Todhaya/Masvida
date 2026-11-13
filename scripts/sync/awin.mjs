@@ -8,7 +8,8 @@ import { Readable } from "node:stream";
 const API = "https://api.awin.com";
 const FEEDS = "https://productdata.awin.com";
 const COLUMNAS = ["aw_product_id", "product_name", "aw_deep_link", "merchant_image_url", "aw_image_url", "merchant_category",
-  "category_name", "search_price", "rrp_price", "currency", "brand_name", "in_stock"];
+  "category_name", "search_price", "rrp_price", "currency", "brand_name", "in_stock",
+  "large_image", "alternate_image", "merchant_thumb_url", "aw_thumb_url"];
 
 export const enlaceTienda = (programaId, publisher = process.env.AWIN_PUBLISHER_ID) =>
   `https://www.awin1.com/cread.php?awinmid=${programaId}&awinaffid=${publisher}`;
@@ -96,6 +97,10 @@ export async function* productos(prog, max) {
   }
 }
 
+// Primera foto de verdad: Awin rellena con «noimage.gif» cuando la tienda no le pasa la suya.
+const FOTOS = ["merchant_image_url", "large_image", "alternate_image", "aw_image_url", "merchant_thumb_url", "aw_thumb_url"];
+export const fotoReal = (p) => FOTOS.map((c) => String(p[c] ?? "").trim()).find((u) => /^https?:\/\//.test(u) && !/noimage|no_image|placeholder/i.test(u)) || null;
+
 export function aProducto(p) {
   const precio = Number(String(p.search_price ?? "").replace(",", "."));
   const antes = Number(String(p.rrp_price ?? "").replace(",", "."));
@@ -105,7 +110,7 @@ export function aProducto(p) {
     ref: String(p.aw_product_id), titulo: p.product_name, marca: p.brand_name || null,
     precio: Math.round(precio * 100) / 100,
     precio_tachado: Number.isFinite(antes) && antes > precio ? Math.round(antes * 100) / 100 : null,
-    moneda: "EUR", imagen: p.merchant_image_url || p.aw_image_url || null, url: p.aw_deep_link,
+    moneda: "EUR", imagen: fotoReal(p), url: p.aw_deep_link,
     categoria_tienda: p.merchant_category || p.category_name || null,
     disponible: p.in_stock == null || p.in_stock === "" || /^(1|yes|true|si|sí)$/i.test(String(p.in_stock)),
   };
