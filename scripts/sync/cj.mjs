@@ -21,6 +21,8 @@ export function leeAnunciantes(xml) {
     web_url: tag(m[1], "program-url"),
     cashback: null,
     relacion: tag(m[1], "relationship-status"),
+    // Enlace profundo de CJ a la portada de la tienda (para Black Friday y las tarjetas de tienda)
+    enlace: tag(m[1], "program-url") ? `https://www.anrdoezrs.net/links/${process.env.CJ_PID}/type/dlg/${tag(m[1], "program-url")}` : null,
     comision_pct: maxPct([...m[1].matchAll(/<default[^>]*>([^<]*)<\/default>/g)].map((x) => x[1])),
   })).filter((a) => a.programa_id && (!a.relacion || a.relacion === "joined"));
 }

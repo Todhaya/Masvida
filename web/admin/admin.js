@@ -27,6 +27,12 @@ async function cargar(tabla, { select = "*", orden, desc = false, desde, campoFe
   return (cache[k] = data || []);
 }
 const limpiar = () => Object.keys(cache).forEach((k) => delete cache[k]);
+// Productos que ve la usuaria en la web (sin repetidos, sin descartados): lo mismo que cuentan las categorías de Ofertas
+async function enLaWeb() {
+  const { data } = await sb.rpc("categorias_catalogo");
+  return (data || []).reduce((a, c) => a + Number(c.n || 0), 0);
+}
+
 async function cuenta(tabla, filtro) {
   let q = sb.from(tabla).select("*", { count: "exact", head: true });
   if (filtro) q = filtro(q);
@@ -354,7 +360,7 @@ V.kpis = async (m) => {
     cargar("metricas", { orden: "fecha" }), cargar("clics", { select: "id,tienda_id,creado", desde: haceDias(400), campoFecha: "creado" }),
     cargar("tiendas", { select: "id,nombre,estado,red_id" }, true), cargar("envios"),
   ]);
-  const [hogares, nProductos] = await Promise.all([cuenta("hogares"), cuenta("productos")]);
+  const [hogares, nProductos, nWeb] = await Promise.all([cuenta("hogares"), cuenta("productos"), enLaWeb()]);
   const suma = (a) => a.reduce((x, y) => x + (y || 0), 0);
   const ser = (fuente, campo, k = n) => diario(k, metricas.filter((x) => x.fuente === fuente), "fecha", (x) => x[campo]);
   const par = (f) => { const a = f(2 * n); return [suma(a.slice(n)), suma(a.slice(0, n)), a.slice(n)]; };
@@ -408,7 +414,7 @@ V.kpis = async (m) => {
     ${g("Tiendas", `
       ${kpi("Aprobadas", num(tiendas.filter((t) => t.estado === "aprobada").length), "", "afiliados", { ico: "ok", tono: TONO.mint })}
       ${kpi("Esperando respuesta", num(tiendas.filter((t) => t.estado === "pedida").length), "", "afiliados", { ico: "reloj", tono: TONO.butter })}
-      ${kpi("Productos en el catálogo", num(nProductos), "", "catalogo", { ico: "caja", tono: TONO.sky })}`)}
+      ${kpi("Productos en la web", num(nWeb), `${num(nProductos)} cargados (con repetidos y descartados)`, "catalogo", { ico: "caja", tono: TONO.sky })}`)}
     ${g("Redes y avisos", `
       ${redesSoc.map((x) => kpi("Seguidores en " + x.r.replace(/^./, (c) => c.toUpperCase()), x.ult ? num(x.ult) : "—", x.ult ? "" : "apúntalos en Hoy → métricas", "", { ico: "gente", tono: x.r === "instagram" ? TONO.rosa : x.r === "tiktok" ? TONO.lav : TONO.sky, spark: x.serie, delta: x.ult ? delta(x.ult, x.antes) : "" })).join("")}
       ${kpi("Avisos enviados", num(env), env ? `${pct((abr / env) * 100)} abiertos · ${pct((clE / env) * 100)} con clic` : "push y correo", "envios", { ico: "punto", tono: TONO.peach })}`)}
@@ -526,7 +532,7 @@ V.afiliados = async (m) => {
   ]);
   const porTienda = (id) => kpis(clics.filter((c) => c.tienda_id === id), comisiones.filter((c) => c.tienda_id === id && c.fecha >= haceDias(90)));
   const tiendas = await cargar("tiendas", {}, true);
-  const [syncs, nProductos] = await Promise.all([cargar("sincronizaciones", { orden: "inicio", desc: true }, true), cuenta("productos")]);
+  const [syncs, nProductos, nWeb] = await Promise.all([cargar("sincronizaciones", { orden: "inicio", desc: true }, true), cuenta("productos"), enLaWeb()]);
   const ultimas = Object.values(syncs.reduce((a, x) => (a[x.red] ??= x, a), {}));
   const fallan = ultimas.filter((x) => !x.ok);
   const ult = syncs[0];
@@ -535,7 +541,7 @@ V.afiliados = async (m) => {
       `<a class="btn sec" href="/ofertas/" target="_blank" rel="noopener">Ver el buscador</a>`)}
     <div class="tiles">
       ${kpi("Aprobadas", num(n("aprobada")), "venden ya en Viwai", "", { ico: "ok", tono: TONO.mint })}${kpi("Esperando respuesta", num(n("pedida")), "solicitudes enviadas", "", { ico: "reloj", tono: TONO.butter })}
-      ${kpi("Rechazadas", num(n("rechazada")), "se pueden volver a pedir", "", { ico: "x", tono: TONO.peach })}${kpi("Productos en el catálogo", num(nProductos), ult ? "carga del " + fecha(ult.inicio) : "", "catalogo", { ico: "caja", tono: TONO.sky })}
+      ${kpi("Rechazadas", num(n("rechazada")), "se pueden volver a pedir", "", { ico: "x", tono: TONO.peach })}${kpi("Productos en la web", num(nWeb), `${num(nProductos)} cargados${ult ? " · carga del " + fecha(ult.inicio) : ""}`, "catalogo", { ico: "caja", tono: TONO.sky })}
       ${kpi("Clics · 90 días", num(clics.length), "a todas las tiendas", "", { ico: "clic", tono: TONO.lav, spark: diario(30, clics, "creado") })}
     </div>
     <div class="g2i">
