@@ -74,6 +74,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 .avisa input[type=email]{flex:1 1 220px;min-width:0;border:2px solid var(--ink);border-radius:999px;padding:12px 18px;font:600 16px var(--f);background:var(--surface);color:var(--ink)}
 .avisa .chk{display:flex;gap:8px;font-size:14px;color:var(--muted);align-items:flex-start}
 .avisa .chk input{margin-top:4px;accent-color:var(--brand-strong)}
+.afi{flex-basis:100%;font-size:12px;color:var(--muted);margin:-2px 0 0 4px}
 .trampa{position:absolute;left:-9999px}
 .como{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .como div{border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:6px}
@@ -111,7 +112,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
 
 <footer><div class="in">
   <nav><a href="/legal/aviso-legal.html">Aviso legal</a><a href="/legal/privacidad.html">Privacidad</a><a href="/legal/cookies.html">Cookies</a><a href="/legal/condiciones.html">Condiciones</a></nav>
-  <p class="aviso">Los enlaces de esta página son de afiliación: si compras desde ellos, la tienda nos paga por la recomendación y a ti te cuesta lo mismo. En la web no hay reembolso; eso llega con la app. Como Afiliado de Amazon, Viwai obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. Precios y disponibilidad pueden cambiar: el precio que vale es el de la tienda en el momento de comprar.</p>
+  <p class="aviso">Viwai es gratis porque, cuando compras desde nuestros enlaces, la tienda nos paga una pequeña comisión. A ti te cuesta lo mismo, y eso no cambia lo que te enseñamos: una oferta solo sale aquí si el precio es de verdad. Como Afiliado de Amazon, Viwai obtiene ingresos por las compras adscritas que cumplen los requisitos aplicables. El precio que vale es el de la tienda en el momento de comprar.</p>
 </div></footer>
 
 <script src="/config.js"></script>
@@ -151,7 +152,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
     const l = lee(txt);
     if (l.sin) {
       estado(`De ${l.sin} todavía no guardamos el historial de precios, así que no podemos decirte si es rebaja de verdad.`);
-      $("#ver").innerHTML = `<div class="acciones">${l.enlace ? `<a class="btn" href="${esc(l.enlace)}" data-tienda="amazon" data-origen="web-es-rebaja" target="_blank" rel="sponsored noopener">Ver la oferta en Amazon →</a>` : ""}<a class="btn ghost" href="/black-friday/">Ver las tiendas que sí comprobamos</a></div>`;
+      $("#ver").innerHTML = `<div class="acciones">${l.enlace ? `<a class="btn" href="${esc(l.enlace)}" data-tienda="amazon" data-origen="web-es-rebaja" target="_blank" rel="sponsored noopener">Ver la oferta en Amazon →</a>` : ""}<a class="btn ghost" href="/black-friday/">Ver las tiendas que sí comprobamos</a>${l.enlace ? `<span class="afi">Enlace de afiliado: a ti te cuesta lo mismo.</span>` : ""}</div>`;
       return;
     }
     if (!l.q) return estado("Escribe el nombre del producto o pega su enlace.");
@@ -193,7 +194,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
       <div class="veredicto ${v[0]}">${esc(v[1])}<small>${esc(v[2])}</small></div>
       <div class="cifras"><div><b>${eur(hoy)}</b><span>Hoy</span></div>${minAntes != null ? `<div><b>${eur(minAntes)}</b><span>Lo más barato antes</span></div>` : ""}</div>
       ${grafico(h)}${nota}
-      <div class="acciones"><a class="btn" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" data-origen="web-es-rebaja" target="_blank" rel="sponsored noopener">Ver en ${esc(p.tienda)} →</a><button class="btn ghost" type="button" id="otro">Comprobar otro</button></div>
+      <div class="acciones"><a class="btn" href="${esc(p.url)}" data-tienda="${esc(p.tienda_id)}" data-origen="web-es-rebaja" target="_blank" rel="sponsored noopener">Ver en ${esc(p.tienda)} →</a><button class="btn ghost" type="button" id="otro">Comprobar otro</button><span class="afi">Enlace de afiliado: a ti te cuesta lo mismo.</span></div>
       ${avisos}</div></article>`;
     $("#estado").scrollIntoView({ behavior: "smooth", block: "start" });
     $("#otro").onclick = () => { $("#ver").innerHTML = ""; $("#q").value = ""; $("#q").focus(); };
