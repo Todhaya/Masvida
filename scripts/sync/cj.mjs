@@ -26,7 +26,7 @@ export function leeAnunciantes(xml) {
 export async function* productos(prog, max) {
   let n = 0;
   for (let offset = 0; n < max; offset += 500) {
-    const query = `{ shoppingProducts(companyId: "${process.env.CJ_CID}", partnerIds: ["${prog.programa_id}"], targetCountry: "ES", limit: ${Math.min(500, max - n)}, offset: ${offset}) {
+    const query = `{ shoppingProducts(companyId: "${process.env.CJ_CID}", partnerIds: ["${prog.programa_id}"], limit: ${Math.min(500, max - n)}, offset: ${offset}) {
       totalCount count resultList { id title brand price { amount currency } salePrice { amount currency } imageLink productType availability
         linkCode(pid: "${process.env.CJ_PID}") { clickUrl } } } }`;
     const r = await fetch(GQL, { method: "POST", headers: H(), body: JSON.stringify({ query }) });
