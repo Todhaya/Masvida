@@ -189,3 +189,11 @@ test("CJ: fuera los productos que llevan a la web de otro país", async () => {
   assert.equal(deOtroPais("https://www.tous.com/pt-pt/colar"), true);
   assert.equal(deOtroPais(null), false);
 });
+
+test("Fuera recambios y embalaje", async () => {
+  const { pasaFiltro } = await import("../scripts/sync/filtro.mjs");
+  const base = { precio: 20, imagen: "x.jpg" };
+  assert.equal(pasaFiltro({ ...base, titulo: "Movimiento NH35 de repuesto" }), false);
+  assert.equal(pasaFiltro({ ...base, titulo: "Bolsa pequeña de algodón para joyería, 100 uds" }), false);
+  assert.equal(pasaFiltro({ ...base, titulo: "Pulsera de plata" }), true);
+});
