@@ -159,13 +159,22 @@ async function arranca() {
 
 // Catálogo de la web → formato de las ofertas de la app (categorías de la app: super, belleza, mascotas, ninos, moda, deporte, tecnologia, hogar)
 const CAT_APP = { alimentacion: "super", belleza: "belleza", mascotas: "mascotas", peques: "ninos", moda: "moda", deporte: "deporte", tecnologia: "tecnologia", hogar: "hogar", cocina: "hogar", electrodomesticos: "hogar" };
+// Producto del catálogo → oferta de la app («c» es la categoría de la app, «cat» la del catálogo)
+const aOferta = (p) => ({
+  id: p.id, c: CAT_APP[p.categoria] || "hogar", cat: p.categoria, n: p.titulo, s: p.tienda, t: p.tienda_id, url: p.url, img: p.imagen,
+  p: Number(p.precio), o: Number(p.precio_min_30d) > Number(p.precio) ? Number(p.precio_min_30d) : Number(p.precio), real: 1,
+});
 async function ofertasReales() {
   if (typeof OFF === "undefined") return;
   const lotes = await Promise.all(Object.keys(CAT_APP).map((cat) => sb.rpc("buscar_productos", { cat, limite: 8 }).then((r) => r.data || [], () => [])));
-  const reales = lotes.flat().map((p) => ({
-    c: CAT_APP[p.categoria] || "hogar", n: p.titulo, s: p.tienda, t: p.tienda_id, url: p.url, img: p.imagen,
-    p: Number(p.precio), o: Number(p.precio_min_30d) > Number(p.precio) ? Number(p.precio_min_30d) : Number(p.precio), real: 1,
-  })).filter((o) => o.p > 0);
+  const reales = lotes.flat().map(aOferta).filter((o) => o.p > 0);
+  // Para js/catalogo.js: el catálogo entero, con las mismas reglas que la web
+  globalThis.viwaiCatalogo = {
+    cats: () => sb.rpc("categorias_catalogo").then((r) => r.data || [], () => []),
+    subs: (cat) => sb.rpc("subcategorias_catalogo", { cat }).then((r) => r.data || [], () => []),
+    busca: (o) => sb.rpc("buscar_productos", { q: o.q || null, cat: o.cat || null, sub: o.sub || null, orden: o.orden || "relevancia", limite: o.limite || 30, desde: o.desde || 0 }).then((r) => r.data || [], () => []),
+    aOferta,
+  };
   // Chollos de campaña (Black Friday…): se ven dentro de la app para que el clic quede a nombre de la casa
   // y la compra sume reembolso. Si se abrieran en la web, el clic sería anónimo.
   const hoy = new Date().toISOString().slice(0, 10);

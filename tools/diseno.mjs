@@ -45,4 +45,5 @@ for (const destino of ["app/diseno", "web/diseno"]) {
 }
 // Lógica compartida entre la web y la app (cada una se publica por separado)
 fs.copyFileSync(path.join(raiz, "web/clic.js"), path.join(raiz, "app/js/clic.js"));
-console.log("Copiado a app/diseno y web/diseno (y web/clic.js → app/js/clic.js)");
+fs.copyFileSync(path.join(raiz, "web/cesta.js"), path.join(raiz, "app/js/cesta.js"));
+console.log("Copiado a app/diseno y web/diseno (y web/clic.js y web/cesta.js → app/js)");
