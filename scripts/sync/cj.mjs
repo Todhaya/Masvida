@@ -30,9 +30,9 @@ export async function* productos(prog, max) {
       totalCount count resultList { id title brand price { amount currency } salePrice { amount currency } imageLink productType availability
         linkCode(pid: "${process.env.CJ_PID}") { clickUrl } } } }`;
     const r = await fetch(GQL, { method: "POST", headers: H(), body: JSON.stringify({ query }) });
-    if (!r.ok) throw new Error(`CJ productos ${prog.nombre}: ${r.status} ${(await r.text()).slice(0, 200)}`);
+    if (!r.ok) throw new Error(`CJ productos ${prog.nombre}: ${r.status} ${(await r.text()).replace(/\s+/g, " ").slice(0, 900)}`);
     const j = await r.json();
-    if (j.errors?.length) throw new Error(`CJ productos ${prog.nombre}: ${j.errors[0].message}`);
+    if (j.errors?.length) throw new Error(`CJ productos ${prog.nombre}: ${JSON.stringify(j.errors).slice(0, 900)}`);
     const lista = j.data?.shoppingProducts?.resultList || [];
     for (const p of lista) {
       const o = aProducto(p);
