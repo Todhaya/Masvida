@@ -90,7 +90,7 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
   <h1>¿Es rebaja <span class="c">de verdad?</span></h1>
   <p class="sub">Pega el enlace del producto o escribe su nombre. Te decimos a qué precio lo hemos visto antes y si hoy está de verdad más barato.</p>
   <form class="busca" id="fb" role="search"><input id="q" type="text" inputmode="search" autocomplete="off" placeholder="Enlace del producto o nombre (p. ej. «Tous pulsera oso»)" aria-label="Enlace o nombre del producto"><button class="btn" type="submit">Comprobar</button></form>
-  <small>Tous, Primor, Eurekakids, Juguetes Online, EcoFlow, Mibro, AliExpress y más tiendas.</small>
+  <small>Comprobamos los productos de Tous, Primor, Eurekakids, Juguetes Online, EcoFlow, Mibro, AliExpress y el resto de tiendas de Viwai. De Amazon y Temu aún no guardamos precios.</small>
 </div></section>
 
 <section class="band"><div class="in">
@@ -133,26 +133,36 @@ header .in{display:flex;justify-content:space-between;align-items:center;padding
   function lee(txt) {
     let u; try { u = new URL(txt.trim()); } catch { return { q: txt.trim() }; }
     const h = u.hostname.toLowerCase();
-    const sin = SIN.find(([re]) => re.test(h)); if (sin) return { sin: sin[1] };
+    const sin = SIN.find(([re]) => re.test(h));
+    if (sin) {
+      const asin = sin[1] === "Amazon" && (u.pathname.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i) || [])[1];
+      return { sin: sin[1], enlace: asin ? `https://www.amazon.es/dp/${asin.toUpperCase()}?tag=viwai-21` : null };
+    }
     const tienda = (TIENDAS.find(([re]) => re.test(h)) || [])[1] || null;
+    const otra = !tienda && !/viwai\./.test(h);
     const trozos = u.pathname.split("/").filter(Boolean).map(s => decodeURIComponent(s).replace(/\.(html?|php)$/i, ""));
     const largo = trozos.sort((a, b) => b.split(/[-_]/).length - a.split(/[-_]/).length)[0] || "";
     const q = largo.split(/[-_+\s]+/).filter(w => w.length > 1 && !/\d{3,}/.test(w) && !/^(p|dp|item|product|producto|es|es-es)$/i.test(w)).slice(0, 6).join(" ");
-    return { q, tienda };
+    return { q, tienda, otra };
   }
 
   async function busca(txt) {
     $("#ver").innerHTML = ""; $("#res").innerHTML = "";
     const l = lee(txt);
-    if (l.sin) return estado(`De ${l.sin} todavía no guardamos el historial de precios. Mira las tiendas que sí comprobamos en la página de Black Friday.`);
+    if (l.sin) {
+      estado(`De ${l.sin} todavía no guardamos el historial de precios, así que no podemos decirte si es rebaja de verdad.`);
+      $("#ver").innerHTML = `<div class="acciones">${l.enlace ? `<a class="btn" href="${esc(l.enlace)}" data-tienda="amazon" data-origen="web-es-rebaja" target="_blank" rel="sponsored noopener">Ver la oferta en Amazon →</a>` : ""}<a class="btn ghost" href="/black-friday/">Ver las tiendas que sí comprobamos</a></div>`;
+      return;
+    }
     if (!l.q) return estado("Escribe el nombre del producto o pega su enlace.");
     estado("Buscando…");
     let filas = await rpc("buscar_productos", { q: l.q, tienda: l.tienda, orden: "relevancia", limite: 12, desde: 0 });
     if (l.tienda && filas && !filas.length) filas = await rpc("buscar_productos", { q: l.q, orden: "relevancia", limite: 12, desde: 0 });
     if (!filas) return estado("Ahora mismo no podemos comprobarlo. Inténtalo de nuevo en un rato.");
-    if (!filas.length) return estado(`No encontramos «${l.q}» entre los productos que seguimos. Prueba con menos palabras o con la marca.`);
-    if (filas.length === 1) return muestra(filas[0]);
-    estado("¿Cuál es? Elige el producto:"); setTimeout(() => $("#estado").scrollIntoView({ behavior: "smooth" }), 50);
+    if (!filas.length) return estado(l.otra ? "De esa tienda aún no guardamos precios, y no tenemos ese producto en las nuestras." : `No encontramos «${l.q}» entre los productos que seguimos. Prueba con menos palabras o con la marca.`);
+    if (l.otra) { estado("De esa tienda aún no guardamos precios. Estos productos parecidos sí los seguimos en nuestras tiendas:"); }
+    else if (filas.length === 1) return muestra(filas[0]);
+    else estado("¿Cuál es? Elige el producto:"); setTimeout(() => $("#estado").scrollIntoView({ behavior: "smooth" }), 50);
     $("#res").innerHTML = filas.map((p, i) => `<button type="button" data-i="${i}"><img src="${esc(p.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span><b>${esc(p.titulo)}</b><span>${esc(p.tienda)} · ${eur(p.precio)}</span></span></button>`).join("");
     $("#res").onclick = e => { const b = e.target.closest("[data-i]"); if (b) { muestra(filas[b.dataset.i]); scrollTo({ top: $("#estado").offsetTop - 80, behavior: "smooth" }); } };
   }
