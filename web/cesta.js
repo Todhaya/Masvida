@@ -106,9 +106,9 @@
     const grupos = {};
     L.forEach((x) => (grupos[x.tienda_id] = grupos[x.tienda_id] || []).push(x));
     const total = L.reduce((s, x) => s + Number(x.precio || 0), 0);
-    cuerpo.innerHTML = `<ol class="cs-pasos"><li>Aquí tienes lo que has guardado, separado por tienda.</li>
-      <li>Toca <b>«Abrir en la tienda»</b>: se abre el producto en su web. Añádelo a su carrito allí y vuelve aquí.</li>
-      <li>Marca <b>«Ya está en su carrito»</b>. Cuando tengas todo, paga en la web de cada tienda.</li></ol>`
+    cuerpo.innerHTML = `<ol class="cs-pasos"><li><span>Aquí tienes lo que has guardado, separado por tienda.</span></li>
+      <li><span>Toca <b>«Abrir en la tienda»</b>: se abre el producto en su web. Añádelo a su carrito allí y vuelve aquí.</span></li>
+      <li><span>Marca <b>«Ya está en su carrito»</b>. Cuando tengas todo, paga en la web de cada tienda.</span></li></ol>`
       + Object.values(grupos).map((g) => {
         const hechos = g.filter((x) => x.hecho).length, nom = esc(g[0].tienda);
         return `<section class="cs-tienda"><h3>${nom}<span>${eur(g.reduce((s, x) => s + Number(x.precio || 0), 0))}</span></h3>
