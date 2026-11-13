@@ -155,6 +155,8 @@ footer a{color:var(--brand-strong)}
 .chip{border:0;border-radius:999px;padding:9px 15px;font:700 14px var(--f);background:rgba(255,255,255,.7);color:var(--ink);cursor:pointer}
 .chip[aria-pressed=true]{background:var(--ink);color:#FAFAF8}
 .chip small{opacity:.6;font-weight:600;margin-left:4px}
+.pista{margin-top:14px;font-size:15px;opacity:.8}
+.subs{margin-top:10px}.subs .chip{padding:7px 13px;font-size:13px;background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 1.5px rgba(15,15,14,.15)}.subs .chip[aria-pressed=true]{background:var(--brand-strong);color:#fff;box-shadow:none}
 .barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:26px 0 6px}
 .barra select{border:1.5px solid var(--line);border-radius:999px;padding:10px 14px;font:600 14px var(--f);background:var(--surface);color:var(--ink)}
 .res{color:var(--muted);font-weight:600}
@@ -172,6 +174,8 @@ footer a{color:var(--brand-strong)}
   <h1>¿Qué necesitas?</h1>
   <form class="busca" id="f" role="search"><input id="q" type="search" placeholder="Busca «secador», «colchón», «zapatillas»…" aria-label="Buscar productos" autocomplete="off"><button class="btn lila">Buscar</button></form>
   <div class="chips" id="cats" role="group" aria-label="Categorías"></div>
+  <p class="pista">Guarda con <b>«+ Cesta»</b> lo que te guste de cualquier tienda. Luego, desde tu cesta, lo pasas a cada tienda.</p>
+  <div class="chips subs" id="subs" role="group" aria-label="Tipo de producto" hidden></div>
 </div></section>
 <section class="band" style="padding-top:20px"><div class="in">
   <div class="barra">
@@ -201,9 +205,10 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const eur = n => Number(n).toLocaleString("es-ES", { style: "currency", currency: "EUR" });
 const rpc = (f, body) => fetch(`${C.supabaseUrl}/rest/v1/rpc/${f}`, { method: "POST", headers: H, body: JSON.stringify(body || {}) }).then(r => r.ok ? r.json() : []).catch(() => []);
-const est = { q: "", cat: null, tienda: null, orden: "relevancia", desde: 0 };
+const SUBS = { ropa: "Ropa", calzado: "Calzado", bolsos: "Bolsos", joyas: "Joyas y relojes", accesorios: "Accesorios" };
+const est = { q: "", cat: null, sub: null, tienda: null, orden: "relevancia", desde: 0 };
 const params = new URLSearchParams(location.search);
-est.q = params.get("q") || ""; est.cat = params.get("cat"); $("q").value = est.q;
+est.q = params.get("q") || ""; est.cat = params.get("cat"); est.sub = params.get("sub"); $("q").value = est.q;
 
 const marca = m => m ? m.replace(/(^|[\s-])(\p{L})/gu, (x, a, b) => a + b.toUpperCase()) : "";
 function tarjeta(p) {
@@ -217,7 +222,7 @@ function tarjeta(p) {
 async function busca(anadir = false) {
   if (!anadir) est.desde = 0;
   $("lista").classList.add("carga");
-  const filas = await rpc("buscar_productos", { q: est.q || null, cat: est.cat, tienda: est.tienda, orden: est.orden, limite: 40, desde: est.desde });
+  const filas = await rpc("buscar_productos", { q: est.q || null, cat: est.cat, sub: est.sub, tienda: est.tienda, orden: est.orden, limite: 40, desde: est.desde });
   $("lista").classList.remove("carga");
   const total = filas[0]?.total || 0;
   $("lista").innerHTML = (anadir ? $("lista").innerHTML : "") + filas.map(tarjeta).join("");
@@ -228,7 +233,7 @@ async function busca(anadir = false) {
   const v = $("vacio");
   v.hidden = !!total;
   v.innerHTML = est.q ? `No hemos encontrado «${esc(est.q)}» en las tiendas asociadas. Prueba con otra palabra.` : `<span style="display:flex;gap:14px;align-items:center">${viwaiIcono("tienda")}<span><b>Estamos preparando el catálogo.</b><br>Muy pronto verás aquí las mejores ofertas de nuestras tiendas. Mientras, mira los <a href="/black-friday/">chollos de Black Friday</a>.</span></span>`;
-  const u = new URLSearchParams(); if (est.q) u.set("q", est.q); if (est.cat) u.set("cat", est.cat);
+  const u = new URLSearchParams(); if (est.q) u.set("q", est.q); if (est.cat) u.set("cat", est.cat); if (est.sub) u.set("sub", est.sub);
   history.replaceState(null, "", u.toString() ? "?" + u : location.pathname);
 }
 
@@ -238,10 +243,18 @@ async function arranca() {
     fetch(`${C.supabaseUrl}/rest/v1/tiendas_publicas?select=id,nombre&order=nombre`, { headers: H }).then(r => r.ok ? r.json() : []).catch(() => []),
   ]);
   $("cats").innerHTML = `<button class="chip" data-c="" aria-pressed="${!est.cat}">Todo</button>` + cats.map(c => `<button class="chip" data-c="${esc(c.categoria)}" aria-pressed="${est.cat === c.categoria}">${esc(NOMBRES[c.categoria] || c.categoria)}<small>${c.n}</small></button>`).join("");
+  pintaSubs();
   $("tienda").innerHTML += tiendas.map(t => `<option value="${esc(t.id)}">${esc(t.nombre)}</option>`).join("");
   busca();
 }
-$("cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.cat = b.dataset.c || null; document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b)); busca(); };
+async function pintaSubs() {
+  const s = $("subs");
+  const filas = est.cat ? (await rpc("subcategorias_catalogo", { cat: est.cat })).filter(f => f.sub) : [];
+  s.hidden = filas.length < 2;
+  s.innerHTML = s.hidden ? "" : `<button class="chip" data-s="" aria-pressed="${!est.sub}">Todo ${esc(NOMBRES[est.cat] || "")}</button>` + filas.map(f => `<button class="chip" data-s="${esc(f.sub)}" aria-pressed="${est.sub === f.sub}">${esc(SUBS[f.sub] || f.sub)}<small>${f.n}</small></button>`).join("");
+}
+$("cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.cat = b.dataset.c || null; est.sub = null; $("cats").querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b)); pintaSubs(); busca(); };
+$("subs").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.sub = b.dataset.s || null; $("subs").querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b)); busca(); };
 $("f").onsubmit = e => { e.preventDefault(); est.q = $("q").value.trim(); busca(); };
 $("tienda").onchange = e => { est.tienda = e.target.value || null; busca(); };
 $("orden").onchange = e => { est.orden = e.target.value; busca(); };

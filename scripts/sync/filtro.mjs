@@ -11,6 +11,7 @@ const FUERA = [
   // piezas, recambios y material industrial
   "replacement", "spare", "part", "parts", "accessory kit", "screw", "screws", "bolt", "bolts", "nut", "nuts", "bearing", "gasket", "valve", "spring",
   "pcb", "module", "sensor", "relay", "resistor", "capacitor", "connector", "terminal", "wire", "cable tie", "diy kit", "industrial", "wholesale", "bulk",
+  "movimiento de reloj", "caja de reloj", "esfera de reloj", "bisel", "watch movement", "watch case",
   "belt", "pulley", "nozzle", "fitting", "adapter plate", "bracket", "mount",
   // poco apropiado para una app familiar
   "sexy", "erotic", "adult", "lingerie", "tactical", "airsoft", "vape", "e-cigarette",

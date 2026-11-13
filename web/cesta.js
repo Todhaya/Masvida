@@ -1,6 +1,7 @@
 // Viwai · «Mi cesta»: guarda productos de varias tiendas, los agrupa por tienda y ayuda a pasarlos a cada tienda.
 // Las tiendas no dejan meter productos en su carrito desde fuera, así que la cesta es una lista guiada:
-// por cada producto, «Añadir en la tienda» abre su página (con nuestro enlace de afiliación) y lo marca como hecho.
+// por cada producto, «Abrir en la tienda» abre su página (con nuestro enlace de afiliación) y la usuaria marca
+// «Ya está en su carrito» cuando lo ha añadido allí.
 // Se guarda solo en este navegador (sin cuenta). Los enlaces llevan rel="sponsored" y data-tienda: clic.js apunta el clic.
 (function () {
   const K = "viwai-cesta";
@@ -11,7 +12,7 @@
   let L = lee();
 
   const css = `
-  .cs-add{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--ink);color:#FAFAF8;font:800 22px/1 var(--f);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px -6px rgba(0,0,0,.4)}
+  .cs-add{position:absolute;right:8px;bottom:8px;height:36px;padding:0 13px;border-radius:999px;border:0;background:var(--ink);color:#FAFAF8;font:800 14px/1 var(--f);cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 6px 16px -6px rgba(0,0,0,.4)}
   .cs-add[aria-pressed=true]{background:var(--brand-strong)}
   .cs-add:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
   .cs-btn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;border:0;border-radius:999px;padding:14px 20px;background:var(--brand-strong);color:#fff;font:800 16px var(--f);cursor:pointer;box-shadow:0 14px 30px -12px rgba(60,30,160,.6);display:flex;gap:8px;align-items:center}
@@ -35,6 +36,15 @@
   .cs-item.hecho .cs-ir{background:var(--mint);color:var(--ink)}
   .cs-item.hecho .t{opacity:.6}
   .cs-q{border:0;background:none;color:var(--muted);font:600 13px var(--f);text-decoration:underline;cursor:pointer;padding:4px}
+  .cs-pasos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:p}
+  .cs-pasos li{display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:14px;line-height:1.4;counter-increment:p}
+  .cs-pasos li::before{content:counter(p);width:28px;height:28px;border-radius:50%;background:var(--brand-strong);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .cs-prog{font-size:13px;font-weight:700;color:var(--muted)}
+  .cs-prog.ok{color:var(--ink);background:var(--mint);border-radius:12px;padding:8px 10px}
+  .cs-ya{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:600;cursor:pointer}
+  .cs-ya input{width:18px;height:18px;accent-color:var(--brand-strong)}
+  .cs-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:25;background:var(--ink);color:#FAFAF8;border-radius:999px;padding:10px 10px 10px 18px;font:700 14px var(--f);display:flex;gap:12px;align-items:center;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);max-width:calc(100% - 32px)}
+  .cs-toast button{border:0;border-radius:999px;background:#FAFAF8;color:var(--ink);font:800 13px var(--f);padding:7px 12px;cursor:pointer}
   .cs-vacia{text-align:center;color:var(--muted);padding:30px 10px}
   .cs-pie{display:flex;justify-content:space-between;font-weight:800;font-size:17px;padding-top:4px}
   .cs-vaciar{align-self:center}`;
@@ -50,23 +60,33 @@
     btn.setAttribute("aria-label", `Mi cesta, ${L.length} productos`);
     document.querySelectorAll(".cs-add").forEach((b) => {
       const dentro = L.some((x) => x.id === b.dataset.id);
-      b.setAttribute("aria-pressed", dentro); b.textContent = dentro ? "✓" : "+";
+      b.setAttribute("aria-pressed", dentro); b.textContent = dentro ? "✓ En tu cesta" : "+ Cesta";
       b.setAttribute("aria-label", dentro ? "Quitar de mi cesta" : "Añadir a mi cesta");
     });
   }
 
   // Botón «+» en cada tarjeta de producto (lo llama la página al pintar)
   window.viwaiCestaBoton = (p) =>
-    `<button type="button" class="cs-add" data-id="${esc(p.id)}" data-p='${esc(JSON.stringify({ id: p.id, tienda_id: p.tienda_id, tienda: p.tienda, titulo: p.titulo, precio: p.precio, imagen: p.imagen, url: p.url }))}' aria-pressed="false" aria-label="Añadir a mi cesta">+</button>`;
+    `<button type="button" class="cs-add" data-id="${esc(p.id)}" data-p='${esc(JSON.stringify({ id: p.id, tienda_id: p.tienda_id, tienda: p.tienda, titulo: p.titulo, precio: p.precio, imagen: p.imagen, url: p.url }))}' aria-pressed="false" aria-label="Añadir a mi cesta">+ Cesta</button>`;
 
   document.addEventListener("click", (e) => {
     const b = e.target.closest(".cs-add"); if (!b) return;
     e.preventDefault(); e.stopPropagation();
     const id = b.dataset.id;
     if (L.some((x) => x.id === id)) L = L.filter((x) => x.id !== id);
-    else { try { L.push({ ...JSON.parse(b.dataset.p), hecho: false }); } catch (err) { return; } }
+    else { try { L.push({ ...JSON.parse(b.dataset.p), hecho: false }); } catch (err) { return; } aviso(L.length === 1 ? "Guardado. Sigue añadiendo de cualquier tienda" : "Guardado en tu cesta"); }
     guarda(L); pintaBoton();
   }, true);
+
+  let toast = null, tt = 0;
+  function aviso(txt) {
+    if (toast) toast.remove();
+    toast = document.createElement("div"); toast.className = "cs-toast"; toast.setAttribute("role", "status");
+    toast.innerHTML = `<span>${esc(txt)}</span><button type="button" data-cs-ver>Ver cesta</button>`;
+    document.body.appendChild(toast);
+    clearTimeout(tt); tt = setTimeout(() => { if (toast) { toast.remove(); toast = null; } }, 4000);
+  }
+  document.addEventListener("click", (e) => { if (e.target.closest("[data-cs-ver]")) { if (toast) { toast.remove(); toast = null; } abre(); } });
 
   let panel = null;
   function abre() {
@@ -86,22 +106,30 @@
     const grupos = {};
     L.forEach((x) => (grupos[x.tienda_id] = grupos[x.tienda_id] || []).push(x));
     const total = L.reduce((s, x) => s + Number(x.precio || 0), 0);
-    cuerpo.innerHTML = `<p class="cs-ayuda">Tus productos, separados por tienda. Las tiendas no dejan llenar su carrito desde fuera: toca «Añadir en la tienda» en cada uno, lo añades allí y vuelves. Te lo marcamos como hecho.</p>`
-      + Object.values(grupos).map((g) => `<section class="cs-tienda"><h3>${esc(g[0].tienda)}<span>${eur(g.reduce((s, x) => s + Number(x.precio || 0), 0))}</span></h3>`
+    cuerpo.innerHTML = `<ol class="cs-pasos"><li>Aquí tienes lo que has guardado, separado por tienda.</li>
+      <li>Toca <b>«Abrir en la tienda»</b>: se abre el producto en su web. Añádelo a su carrito allí y vuelve aquí.</li>
+      <li>Marca <b>«Ya está en su carrito»</b>. Cuando tengas todo, paga en la web de cada tienda.</li></ol>`
+      + Object.values(grupos).map((g) => {
+        const hechos = g.filter((x) => x.hecho).length, nom = esc(g[0].tienda);
+        return `<section class="cs-tienda"><h3>${nom}<span>${eur(g.reduce((s, x) => s + Number(x.precio || 0), 0))}</span></h3>
+        <p class="cs-prog${hechos === g.length ? " ok" : ""}">${hechos === g.length ? `Todo en el carrito de ${nom}. Ya puedes pagar allí.` : `${hechos} de ${g.length} en el carrito de ${nom}`}</p>`
         + g.map((x) => `<div class="cs-item${x.hecho ? " hecho" : ""}"><img src="${esc(x.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="t">${esc(x.titulo)}</span>
-          <span class="acc"><span class="p">${eur(x.precio)}</span><a class="cs-ir" href="${esc(x.url)}" data-tienda="${esc(x.tienda_id)}" data-cs-ir="${esc(x.id)}" target="_blank" rel="sponsored noopener">${x.hecho ? "✓ Añadido" : "Añadir en la tienda"}</a><button class="cs-q" data-cs-quita="${esc(x.id)}">Quitar</button></span></div>`).join("")
-        + `</section>`).join("")
-      + `<div class="cs-pie"><span>Total aproximado</span><span>${eur(total)}</span></div><p class="cs-ayuda">Los precios son los de anoche: el que vale es el de la tienda.</p><button class="btn ghost cs-vaciar" data-cs="vaciar">Vaciar cesta</button>`;
+          <span class="acc"><span class="p">${eur(x.precio)}</span><a class="cs-ir" href="${esc(x.url)}" data-tienda="${esc(x.tienda_id)}" target="_blank" rel="sponsored noopener">Abrir en la tienda ↗</a></span>
+          <span class="acc"><label class="cs-ya"><input type="checkbox" data-cs-ya="${esc(x.id)}"${x.hecho ? " checked" : ""}> Ya está en su carrito</label><button class="cs-q" data-cs-quita="${esc(x.id)}">Quitar</button></span></div>`).join("")
+        + `</section>`;
+      }).join("")
+      + `<div class="cs-pie"><span>Total aproximado</span><span>${eur(total)}</span></div><p class="cs-ayuda">Los precios son los de anoche: el que vale es el de la tienda. Comprar desde aquí te cuesta lo mismo.</p><button class="btn ghost cs-vaciar" data-cs="vaciar">Vaciar cesta</button>`;
   }
 
   document.addEventListener("click", (e) => {
     if (e.target === btn || e.target.closest(".cs-btn")) { abre(); return; }
     if (!panel || !panel.contains(e.target)) return;
-    const a = e.target.closest("[data-cs]"), ir = e.target.closest("[data-cs-ir]"), q = e.target.closest("[data-cs-quita]");
+    const a = e.target.closest("[data-cs]"), q = e.target.closest("[data-cs-quita]");
     if (a && a.dataset.cs === "cerrar") cierra();
     if (a && a.dataset.cs === "vaciar") { L = []; guarda(L); pintaBoton(); pintaPanel(); }
     if (q) { L = L.filter((x) => x.id !== q.dataset.csQuita); guarda(L); pintaBoton(); pintaPanel(); }
-    if (ir) { const x = L.find((y) => y.id === ir.dataset.csIr); if (x) { x.hecho = true; guarda(L); setTimeout(pintaPanel, 300); } }
+    const ya = e.target.closest("[data-cs-ya]");
+    if (ya) { const x = L.find((y) => y.id === ya.dataset.csYa); if (x) { x.hecho = ya.checked; guarda(L); pintaPanel(); } }
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && panel) cierra(); });
   // Otra pestaña cambió la cesta
