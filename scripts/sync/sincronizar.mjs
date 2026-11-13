@@ -30,7 +30,8 @@ export function filaProducto(tienda, o, visto) {
     tienda_id: tienda.id,
     titulo: limpiaTitulo(o.titulo).slice(0, 300),
     marca: o.marca?.slice(0, 80) || null,
-    categoria: categoriza(o.titulo, o.categoria_tienda, categoriaTiendaPorDefecto(tienda.categoria)),
+    // Tienda de un solo tipo (Primor, Juguetes Online…): todo a su categoría. Tiendas de todo: por palabras.
+    categoria: categoriaTiendaPorDefecto(tienda.categoria) !== "otros" ? categoriaTiendaPorDefecto(tienda.categoria) : categoriza(o.titulo, o.categoria_tienda),
     categoria_tienda: o.categoria_tienda?.slice(0, 200) || null,
     precio: o.precio,
     precio_tachado: o.precio_tachado && o.precio_tachado > o.precio ? o.precio_tachado : null,

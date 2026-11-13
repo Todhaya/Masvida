@@ -150,3 +150,11 @@ test("Títulos sin reclamos delante", () => {
   assert.equal(limpiaTitulo("-30% dto Secador  iónico"), "Secador iónico");
   assert.equal(limpiaTitulo("Cepillo 100% bambú"), "Cepillo 100% bambú");
 });
+
+test("Fuera productos para adultos", async () => {
+  const { pasaFiltro } = await import("../scripts/sync/filtro.mjs");
+  const base = { precio: 39, imagen: "x.jpg" };
+  assert.equal(pasaFiltro({ ...base, titulo: "Satisfyer Pro 2 succionador de clítoris" }), false);
+  assert.equal(pasaFiltro({ ...base, titulo: "Succionador" }), false);
+  assert.equal(pasaFiltro({ ...base, titulo: "Peluche de unicornio 30 cm" }), true);
+});

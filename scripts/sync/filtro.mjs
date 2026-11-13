@@ -14,6 +14,8 @@ const FUERA = [
   "belt", "pulley", "nozzle", "fitting", "adapter plate", "bracket", "mount",
   // poco apropiado para una app familiar
   "sexy", "erotic", "adult", "lingerie", "tactical", "airsoft", "vape", "e-cigarette",
+  "satisfyer", "womanizer", "succionador", "succionadores", "vibrador", "vibradores", "consolador", "dildo", "juguete sexual", "juguetes sexuales",
+  "juguete erotico", "erotico", "erotica", "lubricante", "plug anal", "anal", "estimulador de clitoris", "clitoris", "masturbador", "preservativo", "preservativos", "condon", "sex toy", "vibrator",
 ];
 const RE = new RegExp("(^|[^a-z0-9])(" + FUERA.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")s?($|[^a-z0-9])");
 
