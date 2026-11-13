@@ -14,6 +14,7 @@
 <script>window.VIWAI_CLICS_MANUAL=true</script>
 <link rel="stylesheet" href="diseno/tokens.css">
 <script src="js/seguimiento.js"></script>
+<script src="js/reclamaciones.js"></script>
 <script src="js/archivos.js"></script>
 <script src="vendor/qrcode.js"></script>
 <script src="js/codigos.js"></script>
@@ -134,6 +135,7 @@ button{cursor:pointer}
 .opt .m{grid-column:1/-1;font-size:13px;color:var(--muted)}
 .opt .btns{grid-column:1/-1}
 .aff{font-size:11.5px;color:var(--muted)}
+.rc-ta{border:0;background:var(--bg);border-radius:14px;padding:12px 14px;font:inherit;width:100%;box-sizing:border-box;color:var(--ink);resize:vertical}.rc-carta{font-size:13.5px;line-height:1.5}
 .prog{height:6px;background:var(--sunk);border-radius:5px;overflow:hidden}
 .prog i{display:block;height:100%;background:var(--ink);width:0;transition:width .9s}
 .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
@@ -525,6 +527,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
       <button class="hr" data-v="gasolina"><i style="background:var(--sky)"><svg data-ico="gasolina"></svg></i><span><b>Gasolina</b><small>La más barata para ti, con tus tarjetas</small></span><span class='tag' id='tag-gasolina'></span></button>
       <button class="hr" data-v="ayudas"><i style="background:var(--lav)"><svg data-ico="ayudas"></svg></i><span><b>Ayudas y ventajas</b><small>Subvenciones según tu perfil y otras bonificaciones</small></span><span class='tag' id='tag-ayudas'></span></button>
       <button class="hr" data-v="reembolso"><i style="background:var(--mint)"><svg data-ico="reembolso"></svg></i><span><b>Tu reembolso</b><small>Lo que te devolvemos por tus compras</small></span><span class='tag' id='tag-reembolso'></span></button>
+      <button class="hr" data-v="reclamar"><i style="background:var(--peach)"><svg data-ico="monedas"></svg></i><span><b>Recupera tu dinero</b><small>Vuelos, trenes, cobros de más, garantías y devoluciones</small></span><span class='tag' id='tag-reclamar'></span></button>
     </div>
   </section>
 
@@ -550,6 +553,7 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.6}
   <section class="view" id="v-reembolso" hidden><div id="reemb" class="view"></div></section>
   <section class="view" id="v-docs" hidden><div id="docs-box" class="view"></div></section>
   <section class="view" id="v-pedidos" hidden><div id="peds-box" class="view"></div></section>
+  <section class="view" id="v-reclamar" hidden><div id="rcl-box" class="view"></div></section>
   <section class="view" id="v-wallet" hidden><div id="wal-box" class="view"></div></section>
   <section class="view" id="v-mant" hidden><div id="mant-box" class="view"></div></section>
   <section class="view" id="v-cal" hidden><div id="cal-box" class="view"></div></section>
@@ -933,7 +937,7 @@ let MANT=S.get("mant",[["Revisión de la caldera","Obligatoria · última en ene
 const CAL=[["Natación","Jueves 17:30","Jue","i"],["Fin de semana en la otra casa","Viernes a domingo · el menú se ajusta solo","Vie–Dom","i"],["Cumpleaños de la tía Ana","Te sugerimos ideas de regalo","Dom","u",1],["Reunión del cole","Martes 17:00","Mar","i"]];
 const li=([n,m,t,c])=>`<div class="li"><span><span class="n">${n}</span><br><span class="m">${m}</span></span><span class="pl pl-${c}">${t}</span></div>`;
 function renderHogar(){
-  docsRender();pedsRender();walRender();mantRender();
+  docsRender();pedsRender();rclRender();walRender();mantRender();
   renderMenu();renderEvento();tkRender();arRender();famRender();calRender();shRender();tallaRender();venderRender();venderRender();
 }
 let TASKS=S.get("tasks",[["Reservar la sala del parque","Laura",1],["Comprar decoración","Marc",1],["Mandar invitaciones","Laura",0],["Encargar la tarta","Ana",0]]);
@@ -1076,11 +1080,11 @@ function renderMenu(){
    <div class="btns"><button class="btn pri" data-toast="Pegarías el texto de la receta o una foto y la leeríamos por ti">Añadir receta</button></div>`;
 }
 /* NAVEGACIÓN */
-const TT={inicio:["Viwai · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],ofertas:["Elegidas para ti","Ofertas"],
+const TT={inicio:["Viwai · ahorro sin esfuerzo","Lo que ahorras, lo vives"],ahorro:["Paga menos en lo de siempre","Ahorro"],facturas:["Comprueba","¿Pagas de más?"],luz:["Con Datadis","Tu luz"],gasolina:["Hoy","Gasolina"],ayudas:["Para tu perfil","Ayudas y ventajas"],reembolso:["Lo que te devolvemos","Tu reembolso"],reclamar:["Sin comisiones","Recupera tu dinero"],ofertas:["Elegidas para ti","Ofertas"],
  hogar:["Tu casa, sin olvidos","Hogar"],docs:["Te avisamos antes","Documentos y fechas"],pedidos:["En camino","Pedidos"],wallet:["Siempre a mano","Wallet"],mant:["Que no se te pase","Mantenimiento"],cal:["Toda la familia","Calendario"],menu:["Esta semana","Menú y compra"],tareas:["Entre todos","Tareas de casa"],armario:["Uno por persona","Armario"],talla:["Ofertas en su talla","Lo que le falta"],vender:["Segunda vida","Vender o pasar"],familia:["Casa compartida","Tu familia"],eventos:["Organízalo entre todos","Eventos"],dinero:["Módulo de pago","Mi dinero"],perfil:["Tu nivel y tu perfil","Tú"]};
-const PARENT={facturas:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",vender:"talla",familia:"perfil",eventos:"hogar",dinero:"perfil"};
+const PARENT={facturas:"ahorro",reclamar:"ahorro",luz:"ahorro",gasolina:"ahorro",ayudas:"ahorro",reembolso:"ahorro",docs:"hogar",pedidos:"hogar",wallet:"hogar",mant:"hogar",cal:"hogar",menu:"hogar",tareas:"hogar",armario:"hogar",talla:"armario",vender:"talla",familia:"perfil",eventos:"hogar",dinero:"perfil"};
 const LBL={ahorro:"Ahorro",hogar:"Hogar",perfil:"Tú",armario:"Armario",talla:"Lo que le falta"};
-const SEC={inicio:"lav",facturas:"peach",luz:"peach",ayudas:"butter",gasolina:"sky",reembolso:"lav",ahorro:"lav",dinero:"lav",ofertas:"cream",perfil:"lav",armario:"mint",talla:"mint",vender:"mint",familia:"mint",cal:"sky",tareas:"sky",eventos:"sky",hogar:"sky",menu:"cream",docs:"butter",pedidos:"butter",wallet:"butter",mant:"butter"};
+const SEC={inicio:"lav",reclamar:"mint",facturas:"peach",luz:"peach",ayudas:"butter",gasolina:"sky",reembolso:"lav",ahorro:"lav",dinero:"lav",ofertas:"cream",perfil:"lav",armario:"mint",talla:"mint",vender:"mint",familia:"mint",cal:"sky",tareas:"sky",eventos:"sky",hogar:"sky",menu:"cream",docs:"butter",pedidos:"butter",wallet:"butter",mant:"butter"};
 function go(v){const top=PARENT[v]||v;if(SEC[v])document.body.dataset.sec=SEC[v];else delete document.body.dataset.sec;document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.querySelectorAll("#tabs button").forEach(b=>b.dataset.v===top?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
  $("#back").hidden=!PARENT[v];if(PARENT[v]){$("#back").dataset.v=PARENT[v];$("#back-l").textContent=LBL[PARENT[v]]}
  $("#eyebrow").textContent=TT[v][0];$("#title").textContent=TT[v][1];window.scrollTo(0,0);if(self.viwaiAyuda)viwaiAyuda(v)}
@@ -1108,7 +1112,7 @@ function renderHogarDash(){
     <div class="hd-tl">${prox.map(x=>{const [bg,fg]=tono(x.v);return`<button class="hd-ev" data-v="docs"><span class="d" style="background:${bg};color:${fg}">${x.v<=0?"Hoy":x.v===1?"Mañana":x.v<60?"En "+x.v+" días":"En "+Math.round(x.v/30)+" meses"}</span><span class="n">${x.n}</span><span class="pb"><i style="width:${Math.max(6,100-Math.min(100,x.v/90*100))}%;background:${fg}"></i></span></button>`}).join("")}</div>
   </div>`;
 }
-function renderHubTags(){if(typeof renderHogarDash==="function")renderHogarDash();const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet",String(WLU.length+WL0.length));t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
+function renderHubTags(){if(typeof renderHogarDash==="function")renderHogarDash();const vb=visibleBills(),rev=vb.filter(([k])=>done[k]!=null).length,t=(id,x)=>{const e=document.getElementById("tag-"+id);if(e)e.textContent=x};t("facturas",rev+"/"+vb.length);t("luz",luzOn?"Conectada":"Conectar");t("gasolina","1,539 €");t("ayudas",myAids().length);t("reembolso","10,02 €");try{const ab=RCL.filter(r=>["borrador","enviada","respuesta"].includes(r.estado)).length;t("reclamar",ab?ab+(ab===1?" abierta":" abiertas"):"Gratis")}catch(e){}t("docs",DOCX.filter(x=>x.v<=30).length+" pronto");t("pedidos",PDX.filter(p=>p.st<3).length+" en camino");t("wallet",String(WLU.length+WL0.length));t("mant",MTX.filter(m=>mtLeft(m)<=0).length+" toca");t("cal",evOn(0).length?evOn(0).length+" hoy":"Al día");t("menu",MW.flat().filter(x=>x.r&&!x.ok).length?MW.flat().filter(x=>x.r&&!x.ok).length+" prop.":"Lista");t("eventos","1");t("armario",WD.filter(w=>w.st==="lavar").length+" en el cesto");t("familia",MEM.length);t("tareas",CH.filter(c=>nextOf(c)<=0&&!doneToday(c)).length+" hoy")}
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.tawho){taWho=b.dataset.tawho;tallaRender()}
@@ -1674,6 +1678,98 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||
   if(b.id==="pd-save"){const d=pdNew.det,n=$("#pd-n").value.trim();PDX.push({id:"p"+Date.now(),n:n||"Pedido por "+d.nombre,t:"Añadido por ti",tr:d.nombre,st:1,v:null,precio:0,num:d.numero,url:d.url});pdNew=null;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome();toast("Pedido añadido. Toca «Ver seguimiento» cuando quieras");return}
   if(b.dataset.pdrec){const p=PDX.find(x=>x.id===b.dataset.pdrec);p.st=3;p.v=0;p.dev=14;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome();toast("Marcado como entregado. Te recordamos el plazo para devolverlo");return}
   if(b.dataset.pdok){PDX.find(p=>p.id===b.dataset.pdok).dev=0;S.set("pdx",PDX);pedsRender();renderHubTags();renderHome()}});
+
+/* Recupera tu dinero: si te toca reclamar, cuánto, hasta cuándo y la carta lista (lógica en js/reclamaciones.js) */
+const RC=self.viwaiReclama;
+const RCL0=[{id:"r1",tipo:"vuelo",n:"Vuelo Barcelona – Lisboa",empresa:"Aerolínea",importe:250,estado:"enviada",enviada:fechaISOrel(-12),hasta:null,carta:""}];
+function fechaISOrel(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+let RCL=S.get("rcl",RCL0),rclNew=null,rclVer=null;
+const rclSave=()=>{S.set("rcl",RCL);renderHubTags()};
+const RC_SECT={banco:"Banco",suministro:"Luz, gas o agua",telefono:"Teléfono o internet",otro:"Suscripción u otra"};
+const RC_REF={vuelo:"Número de vuelo",equipaje:"Número de vuelo",tren:"Localizador del billete",cobro:"Número de cliente o de factura",garantia:"Número de pedido o de tique",desistimiento:"Número de pedido"};
+const rcOpts=(sel)=>`<option value="">Elige…</option>${[...RC.AEROPUERTOS].sort((a,b)=>a.n.localeCompare(b.n,"es")).map(a=>`<option value="${a.id}" ${a.id===sel?"selected":""}>${a.n} (${a.id})</option>`).join("")}<option value="otro" ${sel==="otro"?"selected":""}>Otro aeropuerto</option>`;
+const rcChips=(k,ops,v)=>`<div class="chips" style="flex-wrap:wrap">${ops.map(([x,l])=>`<button class="chip" data-rck="${k}" data-rcv="${x}" aria-pressed="${String(v)===String(x)}">${l}</button>`).join("")}</div>`;
+const rcF=(lab,html)=>`<div class="field"><span class="pk-l">${lab}</span>${html}</div>`;
+const rcIn=(k,v,type="text",ph="")=>`<input data-rci="${k}" type="${type}" value="${esc(v??"")}" placeholder="${ph}" ${type==="number"?'inputmode="decimal" min="0" step="any"':""} autocomplete="off">`;
+function rcCampos(t,d){
+  const hoy=fechaISOrel(0);
+  if(t==="vuelo"){const O=RC.aeropuerto(d.origen),fuera=(d.origen&&d.origen!=="otro"&&O&&!O.ue);
+    return rcF("Desde",`<select data-rci="origen">${rcOpts(d.origen)}</select>`)+rcF("Hasta",`<select data-rci="destino">${rcOpts(d.destino)}</select>`)
+    +(d.origen==="otro"||d.destino==="otro"?rcF("Distancia aproximada en km",rcIn("km",d.km,"number","Ej.: 1.200"))+rcF("¿Salía de un aeropuerto europeo?",rcChips("saleUE",[["si","Sí"],["no","No"]],d.saleUE===false?"no":"si"))+(d.saleUE===false?rcF("¿Llegaba a Europa?",rcChips("llegaUE",[["si","Sí"],["no","No"]],d.llegaUE?"si":"no")):""):"")
+    +(fuera||d.saleUE===false?rcF("¿La aerolínea es europea?",rcChips("aerolineaUE",[["si","Sí"],["no","No"],["nose","No lo sé"]],d.aerolineaUE===true?"si":d.aerolineaUE===false?"no":"nose")):"")
+    +rcF("¿Qué pasó?",rcChips("incidencia",[["retraso","Llegó tarde"],["cancelacion","Lo cancelaron"],["embarque","No me dejaron subir"]],d.incidencia||"retraso"))
+    +((d.incidencia||"retraso")==="retraso"?rcF("Retraso al llegar a tu destino final",rcChips("retraso",[["menos3","Menos de 3 h"],["3a4","De 3 a 4 h"],["4mas","4 h o más"]],d.retraso)):"")
+    +(d.incidencia==="cancelacion"?rcF("¿Con cuánto tiempo te avisaron?",rcChips("aviso",[["menos7","Menos de 7 días"],["7a13","De 7 a 13 días"],["14mas","14 días o más"]],d.aviso)):"")
+    +(d.incidencia!=="embarque"?rcF("¿Qué te dijeron?",rcChips("causa",[["nose","Nada / no lo sé"],["tecnica","Avería del avión"],["huelga_propia","Huelga de la aerolínea"],["externa","Mal tiempo o controladores"]],d.causa||"nose")):"")
+    +rcF("Fecha del vuelo",rcIn("fecha",d.fecha,"date"))}
+  if(t==="tren")return rcF("Fecha del viaje",rcIn("fecha",d.fecha,"date"))+rcF("Precio del billete (€)",rcIn("precio",d.precio,"number","Ej.: 45"))+rcF("Minutos de retraso al llegar",rcIn("retrasoMin",d.retrasoMin,"number","Ej.: 75"));
+  if(t==="equipaje")return rcF("¿Qué le pasó?",rcChips("problema",[["danada","Llegó rota"],["retrasada","Llegó tarde"],["perdida","No ha llegado"]],d.problema||"danada"))+rcF(d.problema==="perdida"?"Fecha del vuelo":"Día que te la entregaron",rcIn("fecha",d.fecha,"date"))+rcF("Lo que pides (€, opcional)",rcIn("importe",d.importe,"number","Ej.: 120"))+rcF("Número del parte (PIR), si lo tienes",rcIn("pir",d.pir,"text","Ej.: MADIB12345"));
+  if(t==="cobro")return rcF("¿Quién te lo ha cobrado?",rcChips("sector",Object.entries(RC_SECT),d.sector||"otro"))+rcF("Importe cobrado de más (€)",rcIn("importe",d.importe,"number","Ej.: 39"))+rcF("Fecha del cargo",rcIn("fecha",d.fecha,"date"))+rcF("Dónde aparece (opcional)",rcIn("concepto",d.concepto,"text","Ej.: la factura de octubre"));
+  if(t==="garantia")return rcF("Qué es",rcIn("producto",d.producto,"text","Ej.: la lavadora"))+rcF("Fecha de compra",rcIn("fechaCompra",d.fechaCompra,"date"))+rcF("¿Era de segunda mano?",rcChips("segundaMano",[["no","No, nuevo"],["si","Sí"]],d.segundaMano?"si":"no"));
+  if(t==="desistimiento")return rcF("Qué es",rcIn("producto",d.producto,"text","Ej.: unas zapatillas"))+rcF("Día que lo recibiste",rcIn("fechaRecibido",d.fechaRecibido,"date"))+rcF("¿La tienda te informó del plazo para devolverlo?",rcChips("informado",[["si","Sí"],["no","No"]],d.informado===false?"no":"si"));
+  return"";
+}
+function rcRes(){const box=$("#rcl-res");if(!box||!rclNew)return;const {tipo:t,d}=rclNew,r=RC.evalua(t,d,fechaISOrel(0));rclNew.r=r;
+  const [bg,fg,lab]=r.encaja==="si"?["var(--mint)","var(--vw-bien)","Te toca reclamar"]:r.encaja==="no"?["var(--peach)","var(--vw-urgente)","No te toca"]:["var(--butter)","var(--vw-atencion)","Puede que sí"];
+  const plazo=r.plazo||(r.hasta?{hasta:r.hasta,dias:r.dias}:null);
+  box.innerHTML=`<div class="card" style="background:${bg}!important;color:var(--p-ink)!important;gap:8px"><span class="pk-l" style="color:${fg}">${lab}</span>
+    ${r.importe?`<span style="font-size:30px;font-weight:800;letter-spacing:-.02em">${RC.fmt(r.importe)}</span>`:""}<span style="font-weight:700">${esc(r.motivo)}</span>
+    ${plazo&&plazo.dias>=0?`<span class="pill" style="--c:${plazo.dias<=7?"var(--vw-urgente)":"var(--vw-g4)"}"><i></i>Hasta el ${RC.fechaLarga(plazo.hasta)}${plazo.dias<=60?` · quedan ${plazo.dias} días`:""}</span>`:""}
+    ${(r.notas||[]).length?`<ul style="margin:4px 0 0;padding-left:18px;display:grid;gap:4px;font-size:14px">${r.notas.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:""}
+    ${r.plazo&&r.plazo.texto?`<span class="small">${esc(r.plazo.texto)}</span>`:""}</div>
+   ${r.encaja!=="no"?`<div class="card"><h2>Tu carta</h2>
+     ${rcF(RC.TIPOS.find(x=>x.id===t).a[0].toUpperCase()+RC.TIPOS.find(x=>x.id===t).a.slice(1)+" (nombre)",rcIn("empresa",d.empresa,"text","Ej.: Vueling"))}
+     ${rcF(RC_REF[t],rcIn("referencia",d.referencia,"text",""))}
+     ${rcF("Tu nombre y apellidos",rcIn("nombre",d.nombre??(P&&P.nombre)??"","text",""))}
+     ${rcF("Algo más que quieras contar (opcional)",`<textarea data-rci="detalle" rows="2" class="rc-ta" placeholder="Ej.: perdí la conexión y llegué al día siguiente">${esc(d.detalle||"")}</textarea>`)}
+     <div class="btns"><button class="btn pri" id="rc-carta">Ver la carta</button></div></div>`:`<div class="btns"><button class="btn" id="rc-cancel">Volver</button></div>`}`;
+}
+function rclRender(){
+  const box=$("#rcl-box");if(!box||!RC)return;
+  if(rclVer){const x=RCL.find(r=>r.id===rclVer);box.innerHTML=`<div class="card"><span class="pk-l">${esc(x.n)}</span><textarea class="rc-ta rc-carta" readonly rows="16">${esc(x.carta||"")}</textarea>
+    <div class="btns"><button class="btn pri" data-rccopy="${x.id}">Copiar la carta</button><button class="btn" id="rc-back">Volver</button></div>
+    <span class="small muted">Envíala por el formulario de reclamaciones de ${esc(x.empresa||"la empresa")} o por correo, y guarda el justificante.</span></div>`;return}
+  if(rclNew&&rclNew.carta){const t=RC.TIPOS.find(x=>x.id===rclNew.tipo);
+    box.innerHTML=`<div class="card"><span class="pk-l">${t.n}</span><h2>Tu carta, lista</h2><textarea class="rc-ta rc-carta" readonly rows="16">${esc(rclNew.carta)}</textarea>
+    <div class="btns"><button class="btn pri" id="rc-copy">Copiar</button><button class="btn" id="rc-save">Guardar y avisarme</button><button class="btn" id="rc-edit">Cambiar datos</button></div>
+    <span class="small muted">Envíala a ${t.a} por su formulario de reclamaciones o por correo, adjunta los justificantes y guarda la prueba del envío. ${esc(t.siNo||"")}</span></div>`;return}
+  if(rclNew){const t=RC.TIPOS.find(x=>x.id===rclNew.tipo);
+    box.innerHTML=`<div class="vh" style="--vt:var(--mint)"><span class="ic" style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.7);display:grid;place-items:center;flex:none">${viwaiIcono(t.ic)}</span><span class="tx"><span class="k">Recupera tu dinero</span><span class="t">${t.n}</span><span class="s">${t.s}</span></span></div>
+    <div class="card" id="rcl-form">${rcCampos(rclNew.tipo,rclNew.d)}</div><div id="rcl-res" class="view" style="gap:14px"></div>
+    <div class="btns"><button class="btn" id="rc-cancel">Cancelar</button></div>`;rcRes();return}
+  const rec=RC.recuperado(RCL),jue=RC.enJuego(RCL),abiertas=RCL.filter(r=>["borrador","enviada","respuesta"].includes(r.estado));
+  const fila=r=>{const t=RC.TIPOS.find(x=>x.id===r.tipo)||RC.TIPOS[3],av=RC.aviso(r,fechaISOrel(0)),est=(RC.ESTADOS.find(e=>e[0]===r.estado)||[])[1];
+    const [bg,fg]=r.estado==="cobrada"?["var(--mint)","var(--vw-bien)"]:r.estado==="rechazada"?["var(--peach)","var(--vw-urgente)"]:av&&av.dias<=7?["var(--peach)","var(--vw-urgente)"]:["var(--sky)","var(--vw-tinta)"];
+    return`<div class="vi"><span class="ic" style="background:var(--${r.estado==="cobrada"?"mint":"lav"})">${viwaiIcono(t.ic)}</span>
+     <span class="bd"><span class="n">${esc(r.n)}</span><span class="m">${esc(r.empresa||t.a)} · ${est}</span></span><span class="cd" style="background:${bg};color:${fg}"><b style="font-size:15px">${r.importe?RC.fmt(r.importe):"–"}</b><small>${r.estado==="cobrada"?"cobrado":"en juego"}</small></span>
+     <div class="full">${av?`<span class="small" style="color:${fg};font-weight:700">${esc(av.texto)}${r.estado==="enviada"&&av.dias===0?". "+esc(t.siNo||""):""}</span>`:""}
+      <span class="btns">${r.estado==="borrador"?`<button class="btn" data-rcst="enviada" data-rcid="${r.id}">Ya la he enviado</button>`:""}${["enviada","respuesta"].includes(r.estado)?`<button class="btn" data-rcst="cobrada" data-rcid="${r.id}">Me han pagado</button><button class="btn" data-rcst="rechazada" data-rcid="${r.id}">Me dicen que no</button>`:""}${r.carta?`<button class="btn" data-rcver="${r.id}">Ver carta</button>`:""}<button class="btn" data-rcdel="${r.id}" aria-label="Borrar ${esc(r.n)}">Borrar</button></span></div></div>`};
+  box.innerHTML=`<div class="vh" style="--vt:var(--mint)"><span class="ic" style="width:56px;height:56px;border-radius:18px;background:rgba(255,255,255,.7);display:grid;place-items:center;flex:none">${viwaiIcono("monedas")}</span>
+    <span class="tx"><span class="k">Recupera tu dinero</span><span class="t">${rec?eur(rec)+" recuperados":"Lo que es tuyo, de vuelta"}</span>
+    <span class="pills" style="margin-top:8px"><span class="pill" style="--c:var(--vw-g4)"><i></i>${eur(jue)} en juego</span><span class="pill" style="--c:var(--vw-g2)"><i></i>${abiertas.length} ${abiertas.length===1?"abierta":"abiertas"}</span></span></span></div>
+   ${RCL.length?`<div class="vg"><span class="vg-h">Tus reclamaciones<em>${RCL.length}</em></span>${[...RCL].sort((a,b)=>(a.estado==="cobrada")-(b.estado==="cobrada")).map(fila).join("")}</div>`:""}
+   <div class="hub"><span class="hub-t">¿Qué ha pasado?</span>${RC.TIPOS.map((t,i)=>`<button class="hr" data-rcnew="${t.id}"><i style="background:var(--${["sky","peach","butter","lav","mint","sky"][i]})">${viwaiIcono(t.ic)}</i><span><b>${t.n}</b><small>${t.s}</small></span><span class="tag">›</span></button>`).join("")}</div>
+   <span class="aff">Te decimos si te toca, te preparamos la carta y te recordamos los plazos. La envías tú y el dinero va entero para ti: sin comisiones. Es información general, no asesoramiento legal.</span>`;
+}
+const rcLee=()=>{if(!rclNew)return;document.querySelectorAll("#v-reclamar [data-rci]").forEach(el=>{const k=el.dataset.rci;let v=el.value;if(el.type==="number")v=v===""?"":Number(v);rclNew.d[k]=v})};
+document.addEventListener("input",e=>{const el=e.target.closest("#v-reclamar [data-rci]");if(!el||!rclNew)return;rcLee();if(["empresa","referencia","nombre","detalle"].includes(el.dataset.rci))return;if(el.tagName==="SELECT"){rclRender();return}rcRes()});
+document.addEventListener("change",e=>{const el=e.target.closest("#v-reclamar select[data-rci]");if(!el||!rclNew)return;rcLee();rclRender()});
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!b.closest("#v-reclamar"))return;const d=b.dataset;
+  if(d.rcnew){rclNew={tipo:d.rcnew,d:{}};rclRender();scrollTo({top:0});return}
+  if(d.rck){rcLee();const v=d.rcv,k=d.rck;rclNew.d[k]=["saleUE","llegaUE","segundaMano","informado"].includes(k)?v==="si":k==="aerolineaUE"?(v==="nose"?null:v==="si"):v;rclRender();return}
+  if(b.id==="rc-cancel"){rclNew=null;rclRender();return}
+  if(b.id==="rc-carta"){rcLee();rclNew.carta=RC.carta(rclNew.tipo,rclNew.d,rclNew.r);rclRender();scrollTo({top:0});return}
+  if(b.id==="rc-edit"){rclNew.carta=null;rclRender();return}
+  if(b.id==="rc-copy"||d.rccopy){const txt=d.rccopy?RCL.find(r=>r.id===d.rccopy).carta:rclNew.carta;(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("Carta copiada. Pégala en el formulario o en el correo")).catch(()=>{const ta=$("#v-reclamar .rc-carta");ta.select();toast("Selecciónala y cópiala")});return}
+  if(b.id==="rc-save"){const t=RC.TIPOS.find(x=>x.id===rclNew.tipo),x=rclNew.d,r=rclNew.r||{},O=RC.aeropuerto(x.origen),D=RC.aeropuerto(x.destino);
+    const n=t.id==="vuelo"&&O&&D?`Vuelo ${O.n} – ${D.n}`:x.producto?`${t.n.split(" ")[0]==="Devolver"?"Devolver":"Garantía"}: ${x.producto}`:t.n;
+    const hasta=(r.plazo&&r.plazo.hasta)||r.hasta||null;
+    RCL.unshift({id:"r"+Date.now(),tipo:t.id,n,empresa:x.empresa||"",importe:r.importe||Number(x.importe)||0,estado:"borrador",hasta,carta:rclNew.carta,creada:fechaISOrel(0)});rclNew=null;rclSave();rclRender();toast("Guardada. Cuando la envíes, márcala y te avisamos si no responden");return}
+  if(d.rcver){rclVer=d.rcver;rclRender();scrollTo({top:0});return}
+  if(b.id==="rc-back"){rclVer=null;rclRender();return}
+  if(d.rcst){const r=RCL.find(x=>x.id===d.rcid);r.estado=d.rcst;if(d.rcst==="enviada")r.enviada=fechaISOrel(0);if(d.rcst==="cobrada")r.cobrado=r.importe;rclSave();rclRender();toast(d.rcst==="enviada"?"Te avisamos si en un mes no han respondido":d.rcst==="cobrada"?"¡Bien! Sumado a lo recuperado":"Lo apuntamos. Mira el siguiente paso en la reclamación");return}
+  if(d.rcdel){RCL=RCL.filter(x=>x.id!==d.rcdel);rclSave();rclRender()}
+});
 
 /* Wallet: tarjetas con su código listo para la caja */
 const WL0=[{n:"Gasolinera",s:"Club · 5 cts/l de descuento",c:"peach",code:"7712 0458 9931",ic:"gasolina"},{n:"Súper del barrio",s:"Tarjeta cliente · 3 % en tu cuenta",c:"mint",code:"2210 7781 0042",ic:"compra"},{n:"Biblioteca",s:"Carné de Noa",c:"sky",code:"0042 7719",ic:"libro"},{n:"Cine · sábado 18:30",s:"2 entradas · sala 4",c:"lav",code:"CN-88213",ic:"entrada"}];

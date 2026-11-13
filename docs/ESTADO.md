@@ -10,6 +10,8 @@ Punto de partida para cualquier sesión nueva (Claude o ChatGPT). Las decisiones
 - Base de datos Supabase creada (proyecto adoznvxwqvcwyimqnxtj, Frankfurt) con las migraciones 001 y 002.
 - Vídeos en `marketing/videos/`: armario, facturas, menú. Motor para más en `marketing/motor/`.
 
+- Apartado «Recupera tu dinero» (13 nov, en Ahorro): reclamaciones de vuelos, maletas, trenes, cobros de más, garantías y devoluciones, con carta lista y plazos. Guarda en el móvil; falta pasarlo a Supabase y avisar por notificación.
+
 ## Pendiente de Alba
 1. Correo hola@viwai.es en IONOS (activación hasta 24 h).
 2. ~~Clave de Claude en Supabase~~ Hecho (9 nov); falta probar la lectura con una factura real desde la app.
