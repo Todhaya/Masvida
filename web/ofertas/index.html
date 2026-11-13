@@ -156,7 +156,23 @@ footer a{color:var(--brand-strong)}
 .chip[aria-pressed=true]{background:var(--ink);color:#FAFAF8}
 .chip small{opacity:.6;font-weight:600;margin-left:4px}
 .pista{margin-top:14px;font-size:15px;opacity:.8}
-.subs{margin-top:10px}.subs .chip{padding:7px 13px;font-size:13px;background:rgba(255,255,255,.45);box-shadow:inset 0 0 0 1.5px rgba(15,15,14,.15)}.subs .chip[aria-pressed=true]{background:var(--brand-strong);color:#fff;box-shadow:none}
+/* Categorías: fila de iconos que se desliza; grupos de la categoría elegida debajo, en su propia franja */
+.cats{display:flex;gap:6px;overflow-x:auto;scroll-snap-type:x proximity;margin:22px calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0;padding:4px max(16px, env(safe-area-inset-left, 0px)) 10px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;scroll-snap-align:start;width:92px;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;padding:4px 2px;font:700 13px/1.2 var(--f);color:var(--ink);text-align:center}
+.cat i{width:58px;height:58px;border-radius:20px;background:rgba(255,255,255,.75);display:grid;place-items:center;transition:transform .15s,background .15s}
+.cat i svg{width:26px;height:26px}
+.cat small{display:block;font-weight:600;opacity:.55;font-size:11.5px}
+.cat:hover i{transform:translateY(-2px)}
+.cat[aria-pressed=true] i{background:var(--ink);color:#FAFAF8}
+.cat:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:14px}
+.grupos{display:flex;flex-direction:column;gap:10px;margin:0 0 6px;scroll-margin-top:90px}
+.grupos h2{font-size:clamp(26px,3.6vw,38px);letter-spacing:-.035em}
+.gfila{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+.gfila::-webkit-scrollbar{display:none}
+.g{flex:none;border:0;border-radius:14px;padding:10px 14px;font:700 14px var(--f);background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.g small{font-weight:600;color:var(--muted);font-size:12px}
+.g[aria-pressed=true]{background:var(--brand-strong);color:#fff;box-shadow:none}.g[aria-pressed=true] small{color:rgba(255,255,255,.75)}
 .barra{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:26px 0 6px}
 .barra select{border:1.5px solid var(--line);border-radius:999px;padding:10px 14px;font:600 14px var(--f);background:var(--surface);color:var(--ink)}
 .res{color:var(--muted);font-weight:600}
@@ -173,11 +189,11 @@ footer a{color:var(--brand-strong)}
   <span class="eye">Todas las tiendas, un buscador</span>
   <h1>¿Qué necesitas?</h1>
   <form class="busca" id="f" role="search"><input id="q" type="search" placeholder="Busca «secador», «colchón», «zapatillas»…" aria-label="Buscar productos" autocomplete="off"><button class="btn lila">Buscar</button></form>
-  <div class="chips" id="cats" role="group" aria-label="Categorías"></div>
+  <div class="cats" id="cats" role="group" aria-label="Categorías"></div>
   <p class="pista">Guarda con <b>«+ Cesta»</b> lo que te guste de cualquier tienda. Luego, desde tu cesta, lo pasas a cada tienda.</p>
-  <div class="chips subs" id="subs" role="group" aria-label="Tipo de producto" hidden></div>
 </div></section>
-<section class="band" style="padding-top:20px"><div class="in">
+<section class="band" style="padding-top:28px"><div class="in">
+  <div class="grupos" id="grupos" hidden><h2 id="gtit"></h2><div class="gfila" id="subs" role="group" aria-label="Tipo de producto"></div></div>
   <div class="barra">
     <span class="res" id="res" aria-live="polite"></span>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -205,7 +221,10 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const eur = n => Number(n).toLocaleString("es-ES", { style: "currency", currency: "EUR" });
 const rpc = (f, body) => fetch(`${C.supabaseUrl}/rest/v1/rpc/${f}`, { method: "POST", headers: H, body: JSON.stringify(body || {}) }).then(r => r.ok ? r.json() : []).catch(() => []);
-const SUBS = { ropa: "Ropa", calzado: "Calzado", bolsos: "Bolsos", joyas: "Joyas", bisuteria: "Bisutería", relojes: "Relojes", accesorios: "Accesorios" };
+// Orden e icono de cada categoría (iconos del sistema de diseño)
+const ORDEN = ["moda", "belleza", "peques", "hogar", "cocina", "electrodomesticos", "tecnologia", "deporte", "mascotas", "alimentacion", "viajes", "otros"];
+const ICO = { moda: "ropa", belleza: "perfume", peques: "bebe", hogar: "hogar", cocina: "olla", electrodomesticos: "lavadora", tecnologia: "movil", deporte: "pesa", mascotas: "perro", alimentacion: "compra", viajes: "maleta", otros: "caja" };
+let SUBN = {};
 const est = { q: "", cat: null, sub: null, tienda: null, orden: "relevancia", desde: 0 };
 const params = new URLSearchParams(location.search);
 est.q = params.get("q") || ""; est.cat = params.get("cat"); est.sub = params.get("sub"); $("q").value = est.q;
@@ -229,7 +248,7 @@ async function busca(anadir = false) {
   est.desde += filas.length;
   if (window.viwaiCestaRefresca) viwaiCestaRefresca();
   $("mas").hidden = est.desde >= total;
-  $("res").textContent = total ? `${Number(total).toLocaleString("es-ES")} productos` : "";
+  $("res").textContent = total ? `${est.sub && SUBN[est.sub] ? SUBN[est.sub] + " · " : ""}${Number(total).toLocaleString("es-ES")} productos` : "";
   const v = $("vacio");
   v.hidden = !!total;
   v.innerHTML = est.q ? `No hemos encontrado «${esc(est.q)}» en las tiendas asociadas. Prueba con otra palabra.` : `<span style="display:flex;gap:14px;align-items:center">${viwaiIcono("tienda")}<span><b>Estamos preparando el catálogo.</b><br>Muy pronto verás aquí las mejores ofertas de nuestras tiendas. Mientras, mira los <a href="/black-friday/">chollos de Black Friday</a>.</span></span>`;
@@ -242,19 +261,28 @@ async function arranca() {
     rpc("categorias_catalogo"),
     fetch(`${C.supabaseUrl}/rest/v1/tiendas_publicas?select=id,nombre&order=nombre`, { headers: H }).then(r => r.ok ? r.json() : []).catch(() => []),
   ]);
-  $("cats").innerHTML = `<button class="chip" data-c="" aria-pressed="${!est.cat}">Todo</button>` + cats.map(c => `<button class="chip" data-c="${esc(c.categoria)}" aria-pressed="${est.cat === c.categoria}">${esc(NOMBRES[c.categoria] || c.categoria)}<small>${c.n}</small></button>`).join("");
+  const n = Object.fromEntries(cats.map(c => [c.categoria, c.n]));
+  const lista = ORDEN.filter(k => n[k]).concat(cats.map(c => c.categoria).filter(k => !ORDEN.includes(k)));
+  const boton = (k, nombre, ico, cuenta) => `<button class="cat" data-c="${esc(k)}" aria-pressed="${(est.cat || "") === k}"><i>${viwaiIcono(ico)}</i><span>${esc(nombre)}${cuenta ? `<small>${Number(cuenta).toLocaleString("es-ES")}</small>` : ""}</span></button>`;
+  $("cats").innerHTML = boton("", "Todo", "rejilla") + lista.map(k => boton(k, NOMBRES[k] || k, ICO[k] || "caja", n[k])).join("");
+  $("cats").querySelector('[aria-pressed="true"]')?.scrollIntoView({ inline: "center", block: "nearest" });
   pintaSubs();
   $("tienda").innerHTML += tiendas.map(t => `<option value="${esc(t.id)}">${esc(t.nombre)}</option>`).join("");
   busca();
 }
 async function pintaSubs() {
-  const s = $("subs");
+  const g = $("grupos");
   const filas = est.cat ? (await rpc("subcategorias_catalogo", { cat: est.cat })).filter(f => f.sub) : [];
-  s.hidden = filas.length < 2;
-  s.innerHTML = s.hidden ? "" : `<button class="chip" data-s="" aria-pressed="${!est.sub}">Todo ${esc(NOMBRES[est.cat] || "")}</button>` + filas.map(f => `<button class="chip" data-s="${esc(f.sub)}" aria-pressed="${est.sub === f.sub}">${esc(SUBS[f.sub] || f.sub)}<small>${f.n}</small></button>`).join("");
+  SUBN = Object.fromEntries(filas.map(f => [f.sub, f.nombre]));
+  g.hidden = filas.length < 2;
+  if (g.hidden) return;
+  $("gtit").textContent = NOMBRES[est.cat] || est.cat;
+  const total = filas.reduce((a, f) => a + Number(f.n), 0);
+  $("subs").innerHTML = `<button class="g" data-s="" aria-pressed="${!est.sub}">Todo<small>${total.toLocaleString("es-ES")}</small></button>`
+    + filas.map(f => `<button class="g" data-s="${esc(f.sub)}" aria-pressed="${est.sub === f.sub}">${esc(f.nombre || f.sub)}<small>${Number(f.n).toLocaleString("es-ES")}</small></button>`).join("");
 }
-$("cats").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.cat = b.dataset.c || null; est.sub = null; $("cats").querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b)); pintaSubs(); busca(); };
-$("subs").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.sub = b.dataset.s || null; $("subs").querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b)); busca(); };
+$("cats").onclick = async e => { const b = e.target.closest("button"); if (!b) return; est.cat = b.dataset.c || null; est.sub = null; $("cats").querySelectorAll(".cat").forEach(x => x.setAttribute("aria-pressed", x === b)); await pintaSubs(); busca(); if (est.cat) $("grupos").scrollIntoView({ behavior: "smooth", block: "start" }); };
+$("subs").onclick = e => { const b = e.target.closest("button"); if (!b) return; est.sub = b.dataset.s || null; $("subs").querySelectorAll(".g").forEach(x => x.setAttribute("aria-pressed", x === b)); busca(); };
 $("f").onsubmit = e => { e.preventDefault(); est.q = $("q").value.trim(); busca(); };
 $("tienda").onchange = e => { est.tienda = e.target.value || null; busca(); };
 $("orden").onchange = e => { est.orden = e.target.value; busca(); };
