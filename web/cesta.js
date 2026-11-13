@@ -118,7 +118,7 @@
           <span class="acc"><label class="cs-ya"><input type="checkbox" data-cs-ya="${esc(x.id)}"${x.hecho ? " checked" : ""}> Ya está en su carrito</label><button class="cs-q" data-cs-quita="${esc(x.id)}">Quitar</button></span></div>`).join("")
         + `</section>`;
       }).join("")
-      + `<div class="cs-pie"><span>Total aproximado</span><span>${eur(total)}</span></div><p class="cs-ayuda">Los precios son los de anoche: el que vale es el de la tienda. Comprar desde aquí te cuesta lo mismo.</p><button class="btn ghost cs-vaciar" data-cs="vaciar">Vaciar cesta</button>`;
+      + `<div class="cs-pie"><span>Total aproximado</span><span>${eur(total)}</span></div><p class="cs-ayuda">El precio final es el que ves en cada tienda. Comprar desde aquí te cuesta lo mismo.</p><button class="btn ghost cs-vaciar" data-cs="vaciar">Vaciar cesta</button>`;
   }
 
   document.addEventListener("click", (e) => {
