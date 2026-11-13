@@ -1,0 +1,21 @@
+# Viwai · consultas de solo lectura a la base de datos (las lanza Claude o Alba a mano).
+name: Consultas
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script de scripts/consultas (sin .mjs)"
+        default: categorias_tienda
+jobs:
+  consulta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/consultas/${{ inputs.script }}.mjs
+        env:
+          SUPABASE_URL: https://adoznvxwqvcwyimqnxtj.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
